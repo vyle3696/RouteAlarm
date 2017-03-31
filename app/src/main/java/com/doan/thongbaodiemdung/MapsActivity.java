@@ -2,19 +2,29 @@ package com.doan.thongbaodiemdung;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,6 +34,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 public class MapsActivity extends AppCompatActivity implements LocationListener {
 
     private GoogleMap myMap;
@@ -32,17 +47,27 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
     private Location mLastLocation;
     private Marker mCurrentMarker;
 
-    private static final String MYTAG = "MYTAG";
+    private Geocoder geocoder;
 
-    // Mã yêu cầu uhỏi người dùng cho phép xem vị trí hiện tại của họ (***).
-    // Giá trị mã 8bit (value < 256).
+    public static Location mDestination;
+    private Marker mDestinationMarker;
+    private String mDestinationInfo = "";
+
+    private TextView destinationTextView;
+
+    private static final String MYTAG = "MapsActivity";
+
+    // Mã yêu cầu hỏi người dùng cho phép xem vị trí hiện tại của họ
     public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
+    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Tạo Progress Bar
         myProgress = new ProgressDialog(this);
@@ -53,9 +78,10 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
         // Hiển thị Progress Bar
         myProgress.show();
 
+        geocoder = new Geocoder(this, Locale.getDefault());
 
         SupportMapFragment mapFragment
-                = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
 
 
         // Sét đặt sự kiện thời điểm GoogleMap đã sẵn sàng.
@@ -67,6 +93,15 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
+        destinationTextView = (TextView) findViewById(R.id.destination);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onMapSearch();
+            }
+        });
     }
 
     private void onMyMapReady(GoogleMap googleMap) {
@@ -87,19 +122,35 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
                 askPermissionsAndShowMyLocation();
             }
         });
+
+        myMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                List<Address> addresses = new ArrayList<>();
+                try {
+                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                Address address = addresses.get(0);
+
+                if(address != null) {
+                    StringBuilder builder = new StringBuilder();
+                    for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+                        builder.append(address.getAddressLine(i) + ", ");
+                    }
+
+                    mDestinationInfo = builder.toString();
+                }
+
+                addDestinationMarker(latLng);
+            }
+        });
+
+
         myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         myMap.getUiSettings().setZoomControlsEnabled(true);
-        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        myMap.setMyLocationEnabled(true);*/
     }
 
 
@@ -131,6 +182,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
 
         // Hiển thị vị trí hiện thời trên bản đồ.
         this.showMyLocation();
+        myMap.setMyLocationEnabled(true);
     }
 
 
@@ -180,7 +232,6 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
 
         if (!enabled) {
             Toast.makeText(this, "No location provider enabled!", Toast.LENGTH_LONG).show();
-            Log.i(MYTAG, "No location provider enabled!");
             return null;
         }
         return bestProvider;
@@ -218,7 +269,6 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
         // Với Android API >= 23 phải catch SecurityException.
         catch (SecurityException e) {
             Toast.makeText(this, "Show My Location Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            Log.e(MYTAG, "Show My Location Error:" + e.getMessage());
             e.printStackTrace();
             return;
         }
@@ -227,25 +277,6 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
             myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
 
-            /*CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(latLng)             // Sets the center of the map to location user
-                    .zoom(15)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-            // Thêm Marker cho Map:
-            MarkerOptions option = new MarkerOptions();
-            option.title("My Location");
-            option.snippet("....");
-            option.position(latLng);
-            Marker currentMarker = myMap.addMarker(option);
-            currentMarker.showInfoWindow();
-        } else {
-            Toast.makeText(this, "Location not found!", Toast.LENGTH_LONG).show();
-            Log.i(MYTAG, "Location not found");
-        }*/
 
             //place current position marker
             MarkerOptions markerOptions = new MarkerOptions();
@@ -261,6 +292,56 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             Toast.makeText(this, "Location not found!", Toast.LENGTH_LONG).show();
         }
     }
+
+    //hien thi cong cu search autocomplete
+    public void onMapSearch() {
+        try {
+            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder().setCountry("VN").build();
+            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                    .setFilter(typeFilter).build(MapsActivity.this);
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    private void addDestinationMarker(LatLng latLng) {
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Destination");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+        if(mDestinationMarker != null)
+            mDestinationMarker.remove();
+        mDestinationMarker = myMap.addMarker(markerOptions);
+
+        //move map camera
+        myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+        destinationTextView.setText(mDestinationInfo);
+    }
+
+    //sau khi search tra ve ket qua gan marker cho diem do
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if(resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                LatLng latLng = place.getLatLng();
+
+                mDestinationInfo = place.getName().toString();
+
+                addDestinationMarker(latLng);
+
+            } else if(resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+            } else if(resultCode == RESULT_CANCELED) {
+            }
+        }
+    }
+
 
     @Override
     public void onLocationChanged(Location location)
