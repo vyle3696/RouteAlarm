@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -33,6 +34,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,12 +51,14 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
     private Marker mCurrentMarker;
 
     private Geocoder geocoder;
+    private Polyline currentPolyline;
 
     public static Location mDestination;
     private Marker mDestinationMarker;
     private String mDestinationInfo = "";
 
     private TextView destinationTextView;
+    private TextView distanceTextView;
 
     private static final String MYTAG = "MapsActivity";
 
@@ -94,6 +99,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
         });
 
         destinationTextView = (TextView) findViewById(R.id.destination);
+        distanceTextView = (TextView) findViewById(R.id.distance);
+        destinationTextView.setText("Bạn chưa chọn địa điểm nào");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -256,7 +263,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
         Location myLocation = null;
         try {
 
-            // Đoạn code nay cần người dùng cho phép (Hỏi ở trên ***).
+            // Đoạn code nay cần người dùng cho phép
             locationManager.requestLocationUpdates(
                     locationProvider,
                     MIN_TIME_BW_UPDATES,
@@ -266,7 +273,6 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             myLocation = locationManager
                     .getLastKnownLocation(locationProvider);
         }
-        // Với Android API >= 23 phải catch SecurityException.
         catch (SecurityException e) {
             Toast.makeText(this, "Show My Location Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
@@ -320,8 +326,42 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
         myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 
+        //draw path between current location to search location
+        Location searchLocation = new Location(LocationManager.GPS_PROVIDER);
+        searchLocation.setLatitude(latLng.latitude);
+        searchLocation.setLongitude(latLng.longitude);
+
+        if(mLastLocation != null) {
+            List<Location> list = new ArrayList<>();
+            list.add(mLastLocation);
+            list.add(searchLocation);
+            drawPath(list);
+
+            distanceTextView.setText("Khoảng cách: " + mLastLocation.distanceTo(searchLocation) + "m");
+        } else {
+            Toast.makeText(this, "Chưa lấy được vị trí hiện tại", Toast.LENGTH_SHORT).show();
+        }
+        mDestination = searchLocation;
         destinationTextView.setText(mDestinationInfo);
     }
+
+    private void drawPath(List<Location> list) {
+        PolylineOptions options = new PolylineOptions();
+        options.color(Color.RED);
+        options.width(5);
+        options.visible(true);
+
+        for(Location loc : list) {
+            options.add(new LatLng(loc.getLatitude(), loc.getLongitude()));
+        }
+
+        if(currentPolyline != null) {
+            currentPolyline.remove();
+        }
+
+        currentPolyline = myMap.addPolyline(options);
+    }
+
 
     //sau khi search tra ve ket qua gan marker cho diem do
     @Override
