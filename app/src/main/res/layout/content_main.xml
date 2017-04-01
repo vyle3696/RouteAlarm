@@ -44,4 +44,10 @@
                 android:textAppearance="?android:textAppearanceSmall"/>
         </LinearLayout>
     </LinearLayout>
+
+    <Switch
+        android:id="@+id/switchAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bật/tắt thông báo" />
 </LinearLayout>

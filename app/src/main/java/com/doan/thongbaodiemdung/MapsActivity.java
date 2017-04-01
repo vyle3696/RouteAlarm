@@ -19,6 +19,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,9 +60,13 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
     private String mDestinationInfo = "";
 
     private TextView destinationTextView;
-    private TextView distanceTextView;
+    public static TextView distanceTextView;
+    private Intent intentService;
 
     private static final String MYTAG = "MapsActivity";
+
+    private boolean isAlarmOn;      //Kiểm tra xem người dùng đã bật báo thức map chưa
+    private Switch alarmSwitch;
 
     // Mã yêu cầu hỏi người dùng cho phép xem vị trí hiện tại của họ
     public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
@@ -107,6 +113,26 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onClick(View view) {
                 onMapSearch();
+            }
+        });
+
+        alarmSwitch = (Switch) findViewById(R.id.switchAlarm);
+
+        alarmSwitch.setEnabled(false);
+        destinationTextView.setText("Bạn chưa chọn địa điểm nào");
+        intentService = new Intent(MapsActivity.this, BackgroundService.class);
+
+        alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked) {
+                    Toast.makeText(MapsActivity.this, "Đã thiết lập báo thức", Toast.LENGTH_SHORT).show();
+                    startService(intentService);
+                } else {
+                    Toast.makeText(MapsActivity.this, "Đã hủy thiết lập báo thức", Toast.LENGTH_SHORT).show();
+                    stopService(intentService);
+                }
             }
         });
     }
@@ -283,7 +309,6 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
             myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
 
-
             //place current position marker
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
@@ -312,6 +337,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
 
     }
 
+
+    // Hàm này nữa, để làm gì vậy.....
     private void addDestinationMarker(LatLng latLng) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
@@ -338,13 +365,17 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             drawPath(list);
 
             distanceTextView.setText("Khoảng cách: " + mLastLocation.distanceTo(searchLocation) + "m");
+            alarmSwitch.setEnabled(true);
         } else {
             Toast.makeText(this, "Chưa lấy được vị trí hiện tại", Toast.LENGTH_SHORT).show();
-        }
+                    }
         mDestination = searchLocation;
         destinationTextView.setText(mDestinationInfo);
     }
 
+
+    // Hàm này dùng để làm gì vại??????????????????
+    // code xong nhớ cmt lại nhaaaaaaaaaa
     private void drawPath(List<Location> list) {
         PolylineOptions options = new PolylineOptions();
         options.color(Color.RED);
@@ -417,4 +448,34 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
 
     }
 
+
+    // Bật tắt thông báo
+    private void SwitchTheSwitch()
+    {
+        alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if(checked)
+                {
+                    Toast.makeText(getApplicationContext(),"Switch on", Toast.LENGTH_LONG).show();
+                    isAlarmOn = true;
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"Switch off", Toast.LENGTH_LONG).show();
+                    isAlarmOn = false;
+                }
+            }
+        });
+    }
+
+
+    //Ứng dụng sẽ thông báo khi khoảng cách hiện tại <= minDistance
+    private void InformAlarm(float minDistance, float currentDistance)
+    {
+        if(currentDistance <= minDistance)
+        {
+
+        }
+    }
 }
