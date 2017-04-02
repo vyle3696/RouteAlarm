@@ -13,6 +13,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -44,60 +46,46 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends AppCompatActivity implements LocationListener {
+public class MapsActivity extends AppCompatActivity {
 
-    private GoogleMap myMap;
-    private ProgressDialog myProgress;
+    private GoogleMap mMap;
+    private ProgressDialog mProgress;
 
-    private Location mLastLocation;
-    private Marker mCurrentMarker;
-
-    private Geocoder geocoder;
-    private Polyline currentPolyline;
+    private MapsHandle mapsHandle;
+    private GPSTracker gps;
 
     public static Location mDestination;
     private Marker mDestinationMarker;
     private String mDestinationInfo = "";
 
-    private TextView destinationTextView;
     public static TextView distanceTextView;
+    private TextView destinationTextView;
+    private Switch switchButton;
+
     private Intent intentService;
 
-    private static final String MYTAG = "MapsActivity";
+    private Polyline currentPolyline;
 
-    private boolean isAlarmOn;      //Kiểm tra xem người dùng đã bật báo thức map chưa
-    private Switch alarmSwitch;
-
-    // Mã yêu cầu hỏi người dùng cho phép xem vị trí hiện tại của họ
-    public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-
+    public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Tạo Progress Bar
-        myProgress = new ProgressDialog(this);
-        myProgress.setTitle("Map Loading ...");
-        myProgress.setMessage("Please wait...");
-        myProgress.setCancelable(true);
-
-        // Hiển thị Progress Bar
-        myProgress.show();
-
-        geocoder = new Geocoder(this, Locale.getDefault());
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Loading map ...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(true);
+        mProgress.show();
 
         SupportMapFragment mapFragment
                 = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
 
-
-        // Sét đặt sự kiện thời điểm GoogleMap đã sẵn sàng.
         mapFragment.getMapAsync(new OnMapReadyCallback() {
-
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 onMyMapReady(googleMap);
@@ -106,23 +94,13 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
 
         destinationTextView = (TextView) findViewById(R.id.destination);
         distanceTextView = (TextView) findViewById(R.id.distance);
-        destinationTextView.setText("Bạn chưa chọn địa điểm nào");
+        switchButton = (Switch) findViewById(R.id.switchAlarm);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onMapSearch();
-            }
-        });
-
-        alarmSwitch = (Switch) findViewById(R.id.switchAlarm);
-
-        alarmSwitch.setEnabled(false);
+        switchButton.setEnabled(false);
         destinationTextView.setText("Bạn chưa chọn địa điểm nào");
         intentService = new Intent(MapsActivity.this, BackgroundService.class);
 
-        alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
@@ -135,77 +113,62 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
                 }
             }
         });
+
+        //hien thi cong cu tim kiem
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onMapSearch();
+            }
+        });
     }
 
+    //su kien khi map da load xong
+    //thiet dat cac thong so va su kien click tren ban do de hien thong tin diem da click
     private void onMyMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mapsHandle = new MapsHandle(this, mMap);
 
-        // Lấy đối tượng Google Map ra:
-        myMap = googleMap;
-
-        // Thiết lập sự kiện đã tải Map thành công
-        myMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-
-                // Đã tải thành công thì tắt Dialog Progress đi
-                myProgress.dismiss();
+                mProgress.dismiss();
 
                 // Hiển thị vị trí người dùng.
                 askPermissionsAndShowMyLocation();
             }
         });
 
-        myMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        //lay thong tin cua diem vua click
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                List<Address> addresses = new ArrayList<>();
-                try {
-                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-
-                Address address = addresses.get(0);
-
-                if(address != null) {
-                    StringBuilder builder = new StringBuilder();
-                    for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                        builder.append(address.getAddressLine(i) + ", ");
-                    }
-
-                    mDestinationInfo = builder.toString();
-                }
-
+                mDestinationInfo = mapsHandle.getPlaceInfo(latLng);
                 addDestinationMarker(latLng);
             }
         });
 
-
-        myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        myMap.getUiSettings().setZoomControlsEnabled(true);
+        mapsHandle.setting();
     }
 
-
+    //kiem tra dieu kien nguoi dung co dong y cho lay dia diem hien tai hay khong
+    //neu cho thi hien thi dia diem do
     private void askPermissionsAndShowMyLocation() {
-
-
-        // Với API >= 23, bạn phải hỏi người dùng cho phép xem vị trí của họ.
+        //ask permission if API >= 23
         if (Build.VERSION.SDK_INT >= 23) {
             int accessCoarsePermission
-                    = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+                    = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
             int accessFinePermission
-                    = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-
+                    = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
 
             if (accessCoarsePermission != PackageManager.PERMISSION_GRANTED
                     || accessFinePermission != PackageManager.PERMISSION_GRANTED) {
 
-                // Các quyền cần người dùng cho phép.
-                String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION};
+                String[] permissions = new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION};
 
-                // Hiển thị một Dialog hỏi người dùng cho phép các quyền trên.
+                //request permission
                 ActivityCompat.requestPermissions(this, permissions,
                         REQUEST_ID_ACCESS_COURSE_FINE_LOCATION);
 
@@ -213,34 +176,27 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             }
         }
 
-        // Hiển thị vị trí hiện thời trên bản đồ.
+        //show current location
         this.showMyLocation();
-        myMap.setMyLocationEnabled(true);
+        mapsHandle.setMyLocationEnable(true);
     }
 
-
-    // Khi người dùng trả lời yêu cầu cấp quyền (cho phép hoặc từ chối).
+    //tra ve ket qua nguoi dung co cho phep lay vi tri hay khong
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //
         switch (requestCode) {
             case REQUEST_ID_ACCESS_COURSE_FINE_LOCATION: {
-
-
-                // Chú ý: Nếu yêu cầu bị bỏ qua, mảng kết quả là rỗng.
+                //user allow permission
                 if (grantResults.length > 1
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 
                     Toast.makeText(this, "Permission granted!", Toast.LENGTH_LONG).show();
-
-                    // Hiển thị vị trí hiện thời trên bản đồ.
                     this.showMyLocation();
+                    mapsHandle.setMyLocationEnable(true);
                 }
-                // Hủy bỏ hoặc từ chối.
+                //user don't allow
                 else {
                     Toast.makeText(this, "Permission denied!", Toast.LENGTH_LONG).show();
                 }
@@ -249,78 +205,18 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
-    // Tìm một nhà cung cấp vị trị hiện thời đang được mở.
-    private String getEnabledLocationProvider() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-
-        // Tiêu chí để tìm một nhà cung cấp vị trí.
-        Criteria criteria = new Criteria();
-
-        // Tìm một nhà cung vị trí hiện thời tốt nhất theo tiêu chí trên.
-        // ==> "gps", "network",...
-        String bestProvider = locationManager.getBestProvider(criteria, true);
-
-        boolean enabled = locationManager.isProviderEnabled(bestProvider);
-
-        if (!enabled) {
-            Toast.makeText(this, "No location provider enabled!", Toast.LENGTH_LONG).show();
-            return null;
-        }
-        return bestProvider;
-    }
-
-    // Chỉ gọi phương thức này khi đã có quyền xem vị trí người dùng.
+    //hien thi dia diem hien tai khi moi vua load xong ban do
     private void showMyLocation() {
 
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        gps = new GPSTracker(MapsActivity.this);
 
-        String locationProvider = this.getEnabledLocationProvider();
+        if(gps.isCanGetLocation()) {
+            LatLng latLng = new LatLng(gps.getLatitude(), gps.getLongitude());
 
-        if (locationProvider == null) {
-            return;
-        }
-
-        // Millisecond
-        final long MIN_TIME_BW_UPDATES = 1000;
-        // Met
-        final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
-
-        Location myLocation = null;
-        try {
-
-            // Đoạn code nay cần người dùng cho phép
-            locationManager.requestLocationUpdates(
-                    locationProvider,
-                    MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
-
-            // Lấy ra vị trí.
-            myLocation = locationManager
-                    .getLastKnownLocation(locationProvider);
-        }
-        catch (SecurityException e) {
-            Toast.makeText(this, "Show My Location Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-            return;
-        }
-        if (myLocation != null) {
-            mLastLocation = myLocation;
-            LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-
-            //place current position marker
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title("Current position");
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            mCurrentMarker = myMap.addMarker(markerOptions);
-            mCurrentMarker.showInfoWindow();
-
-            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
         } else {
-            Toast.makeText(this, "Location not found!", Toast.LENGTH_LONG).show();
+            gps.showSettingsAlert();
         }
     }
 
@@ -334,65 +230,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
     }
-
-
-    // Hàm này nữa, để làm gì vậy.....
-    private void addDestinationMarker(LatLng latLng) {
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Destination");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-        if(mDestinationMarker != null)
-            mDestinationMarker.remove();
-        mDestinationMarker = myMap.addMarker(markerOptions);
-
-        //move map camera
-        myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        //mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-
-        //draw path between current location to search location
-        Location searchLocation = new Location(LocationManager.GPS_PROVIDER);
-        searchLocation.setLatitude(latLng.latitude);
-        searchLocation.setLongitude(latLng.longitude);
-
-        if(mLastLocation != null) {
-            List<Location> list = new ArrayList<>();
-            list.add(mLastLocation);
-            list.add(searchLocation);
-            drawPath(list);
-
-            distanceTextView.setText("Khoảng cách: " + mLastLocation.distanceTo(searchLocation) + "m");
-            alarmSwitch.setEnabled(true);
-        } else {
-            Toast.makeText(this, "Chưa lấy được vị trí hiện tại", Toast.LENGTH_SHORT).show();
-                    }
-        mDestination = searchLocation;
-        destinationTextView.setText(mDestinationInfo);
-    }
-
-
-    // Hàm này dùng để làm gì vại??????????????????
-    // code xong nhớ cmt lại nhaaaaaaaaaa
-    private void drawPath(List<Location> list) {
-        PolylineOptions options = new PolylineOptions();
-        options.color(Color.RED);
-        options.width(5);
-        options.visible(true);
-
-        for(Location loc : list) {
-            options.add(new LatLng(loc.getLatitude(), loc.getLongitude()));
-        }
-
-        if(currentPolyline != null) {
-            currentPolyline.remove();
-        }
-
-        currentPolyline = myMap.addPolyline(options);
-    }
-
 
     //sau khi search tra ve ket qua gan marker cho diem do
     @Override
@@ -401,11 +239,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
             if(resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 LatLng latLng = place.getLatLng();
-
                 mDestinationInfo = place.getName().toString();
 
                 addDestinationMarker(latLng);
-
             } else if(resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
             } else if(resultCode == RESULT_CANCELED) {
@@ -413,69 +249,32 @@ public class MapsActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    //gan marker cho diem den va ve duong noi va tinh khoang cach giua diem hien tai va diem den
+    private void addDestinationMarker(LatLng latLng) {
+        //add marker for destination
+        mapsHandle.addMarker(latLng, mDestinationInfo);
 
-    @Override
-    public void onLocationChanged(Location location)
-    {
-        mLastLocation = location;
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //set switch button to off and disable
+        switchButton.setChecked(false);
+        switchButton.setEnabled(false);
 
-        //place current position marker
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        //draw path between current location to search location
+        Location searchLocation = new Location(LocationManager.GPS_PROVIDER);
+        searchLocation.setLatitude(latLng.latitude);
+        searchLocation.setLongitude(latLng.longitude);
 
-        if(mCurrentMarker != null) {
-            mCurrentMarker.remove();
+        if(gps.getCurrentLocation() != null) {
+            List<Location> list = new ArrayList<>();
+            list.add(gps.getCurrentLocation());
+            list.add(searchLocation);
+            mapsHandle.drawPath(list);
+
+            distanceTextView.setText("Khoảng cách: " + gps.getCurrentLocation().distanceTo(searchLocation) + "m");
+            switchButton.setEnabled(true);
+        } else {
+            Toast.makeText(this, "Chưa lấy được vị trí hiện tại", Toast.LENGTH_SHORT).show();
         }
-        mCurrentMarker = myMap.addMarker(markerOptions);
-    }
-
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-
-    // Bật tắt thông báo
-    private void SwitchTheSwitch()
-    {
-        alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if(checked)
-                {
-                    Toast.makeText(getApplicationContext(),"Switch on", Toast.LENGTH_LONG).show();
-                    isAlarmOn = true;
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(),"Switch off", Toast.LENGTH_LONG).show();
-                    isAlarmOn = false;
-                }
-            }
-        });
-    }
-
-
-    //Ứng dụng sẽ thông báo khi khoảng cách hiện tại <= minDistance
-    private void InformAlarm(float minDistance, float currentDistance)
-    {
-        if(currentDistance <= minDistance)
-        {
-
-        }
+        mDestination = searchLocation;
+        destinationTextView.setText(mDestinationInfo);
     }
 }
