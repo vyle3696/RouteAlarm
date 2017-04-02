@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+    android:entries="@array/min_distance_list"
+    android:entryValues="@array/min_distance_list"
+    android:key="pref_minDistance"
+    android:title="Khoảng cách ngắn nhất để báo thức"
+    android:persistent="true"
+    android:defaultValue="100"/>
+
+    <ListPreference
+        android:entries="@array/ringtone_list"
+        android:entryValues="@array/ringtone_list"
+        android:key="pref_ringtone"
+        android:title="Nhạc báo thức"
+        android:persistent="true"
+        android:defaultValue="@string/default_ringtone"/>
+
+</PreferenceScreen>

@@ -3,6 +3,7 @@ package com.doan.thongbaodiemdung;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,6 +11,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -28,12 +30,18 @@ public class BackgroundService extends Service implements LocationListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener{
+
     private Location mLastLocation;
     private Location mDestination;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private boolean isRinging;
     private MediaPlayer mediaPlayer;
+    private String minDistance;
+    private String ringtone;
+    private int resId;
+
+    private SharedPreferences sharedPreferences;
 
     public BackgroundService(){}
 
@@ -47,11 +55,43 @@ public class BackgroundService extends Service implements LocationListener,
         super.onCreate();
 
         buildGoogleApiClient();
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ringtone = sharedPreferences.getString("pref_ringtone", "");
+        minDistance = sharedPreferences.getString("pref_minDistance", "");
+        Log.d("BackgroundService", "ringtone name: " + ringtone);
+
+        // register listener for SharedPreferences changes
+        PreferenceManager.getDefaultSharedPreferences(this).
+                registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+
+        resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());
+        mediaPlayer = MediaPlayer.create(this, resId);
+        mediaPlayer.setLooping(true);
+
         mDestination = MapsActivity.mDestination;
         isRinging = false;
-        mediaPlayer = MediaPlayer.create(this, R.raw.ringtone);
-        mediaPlayer.setLooping(true);
     }
+
+    private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    if(key.equals("pref_ringtone")) {
+                        ringtone = sharedPreferences.getString(key, "");
+                        resId = BackgroundService.this.getResources().getIdentifier(ringtone, "raw",
+                                BackgroundService.this.getPackageName());
+                        if(mediaPlayer.isPlaying()) {
+                            mediaPlayer.stop();
+                            isRinging = false;
+                        }
+                        mediaPlayer = MediaPlayer.create(BackgroundService.this, resId);
+                        mediaPlayer.setLooping(true);
+                    } else if(key.equals("pref_minDistance")) {
+                        minDistance = sharedPreferences.getString(key, "");
+                    }
+                }
+            };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -88,11 +128,11 @@ public class BackgroundService extends Service implements LocationListener,
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         if(mDestination != null) {
-            //if distance lower than 500, ring alarm
+            //if current position close to destination position, ring alarm
             //Toast.makeText(this, "Distance: " + mLastLocation.distanceTo(mDestination), Toast.LENGTH_SHORT).show();
             MapsActivity.distanceTextView.setText("Khoảng cách: " + mLastLocation.distanceTo(mDestination) + "m");
             Log.d("Service", "Updating... " + mLastLocation.distanceTo(mDestination) + "m");
-            if(mLastLocation.distanceTo(mDestination) < 246 && !isRinging) {
+            if(mLastLocation.distanceTo(mDestination) < Integer.parseInt(minDistance) && !isRinging) {
                 //alarm ringing
                 mediaPlayer.start();
                 isRinging = true;
@@ -127,6 +167,8 @@ public class BackgroundService extends Service implements LocationListener,
     public void onDestroy() {
         super.onDestroy();
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        mediaPlayer.stop();
+        if(mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
     }
 }

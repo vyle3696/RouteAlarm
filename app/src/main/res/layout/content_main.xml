@@ -43,11 +43,12 @@
                 android:paddingLeft="8dp"
                 android:textAppearance="?android:textAppearanceSmall"/>
         </LinearLayout>
-    </LinearLayout>
 
-    <Switch
-        android:id="@+id/switchAlarm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bật/tắt thông báo" />
+        <Switch
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/switchAlarm"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
 </LinearLayout>

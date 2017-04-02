@@ -1,18 +1,13 @@
 package com.doan.thongbaodiemdung;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +15,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -34,17 +31,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class MapsActivity extends AppCompatActivity {
 
@@ -55,7 +46,6 @@ public class MapsActivity extends AppCompatActivity {
     private GPSTracker gps;
 
     public static Location mDestination;
-    private Marker mDestinationMarker;
     private String mDestinationInfo = "";
 
     public static TextView distanceTextView;
@@ -63,8 +53,6 @@ public class MapsActivity extends AppCompatActivity {
     private Switch switchButton;
 
     private Intent intentService;
-
-    private Polyline currentPolyline;
 
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
@@ -81,6 +69,9 @@ public class MapsActivity extends AppCompatActivity {
         mProgress.setMessage("Please wait...");
         mProgress.setCancelable(true);
         mProgress.show();
+
+        //set default value in the app's preferences
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         SupportMapFragment mapFragment
                 = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
@@ -276,5 +267,20 @@ public class MapsActivity extends AppCompatActivity {
         }
         mDestination = searchLocation;
         destinationTextView.setText(mDestinationInfo);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intentSettings = new Intent(MapsActivity.this, SettingsActivity.class);
+        startActivity(intentSettings);
+
+        return super.onOptionsItemSelected(item);
     }
 }
