@@ -32,8 +32,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.Polyline;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +55,7 @@ public class MapsActivity extends AppCompatActivity {
 
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class MapsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(isChecked) {
+                if (isChecked) {
                     Toast.makeText(MapsActivity.this, "Đã thiết lập báo thức", Toast.LENGTH_SHORT).show();
                     startService(intentService);
                 } else {
@@ -114,7 +114,6 @@ public class MapsActivity extends AppCompatActivity {
             }
         });
     }
-
     //su kien khi map da load xong
     //thiet dat cac thong so va su kien click tren ban do de hien thong tin diem da click
     private void onMyMapReady(GoogleMap googleMap) {
