@@ -4,6 +4,12 @@
     tools:context="com.example.honghanh.alarmtravel.MainActivity">
 
     <item
+        android:id="@+id/action_search"
+        app:showAsAction="always"
+        android:title="settting"
+        android:icon="@drawable/ic_search_black_24dp" />
+
+    <item
         android:id="@+id/action_settings"
         app:showAsAction="always"
         android:title="settting"

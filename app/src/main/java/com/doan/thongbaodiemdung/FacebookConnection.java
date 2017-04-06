@@ -28,8 +28,10 @@ public class FacebookConnection extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        getSupportActionBar().hide();
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
 

@@ -10,19 +10,20 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.doan.thongbaodiemdung.Data.DatabaseHelper;
+import com.doan.thongbaodiemdung.Data.Route;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
@@ -44,8 +45,9 @@ public class MapsActivity extends AppCompatActivity {
     private MapsHandle mapsHandle;
     private GPSTracker gps;
 
-    public static Location mDestination;
+    private Location mCurrentDestination;
     private String mDestinationInfo = "";
+    private double currentDistance;
 
     public static TextView distanceTextView;
     private TextView destinationTextView;
@@ -56,6 +58,7 @@ public class MapsActivity extends AppCompatActivity {
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
 
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +72,9 @@ public class MapsActivity extends AppCompatActivity {
         mProgress.setMessage("Please wait...");
         mProgress.setCancelable(true);
         mProgress.show();
+
+        dbHelper = new DatabaseHelper(this);
+        final Route route = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " WHERE isEnable = 1");
 
         //set default value in the app's preferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -87,33 +93,53 @@ public class MapsActivity extends AppCompatActivity {
         distanceTextView = (TextView) findViewById(R.id.distance);
         switchButton = (Switch) findViewById(R.id.switchAlarm);
 
-        switchButton.setEnabled(false);
-        destinationTextView.setText("Bạn chưa chọn địa điểm nào");
         intentService = new Intent(MapsActivity.this, BackgroundService.class);
+
+        if(route != null) {
+            Location location = new Location(LocationManager.GPS_PROVIDER);
+            location.setLatitude(route.getLatitude());
+            location.setLongitude(route.getLongitude());
+            mCurrentDestination = location;
+
+            mDestinationInfo = route.getInfo();
+
+            destinationTextView.setText(route.getInfo());
+            distanceTextView.setText("Khoảng cách: " + route.getDistance() + "m");
+            if(route.getIsEnable() == 1) {
+                switchButton.setChecked(true);
+                startService(intentService);
+            }
+            Log.d("MainActivityAlarm", route.toString());
+        } else
+        {
+            switchButton.setEnabled(false);
+            destinationTextView.setText("Bạn chưa chọn địa điểm nào");
+        }
 
         switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked) {
+                Route routeEnable = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " WHERE isEnable = 1");
+                if(isChecked) {
                     Toast.makeText(MapsActivity.this, "Đã thiết lập báo thức", Toast.LENGTH_SHORT).show();
+                    if(routeEnable == null)
+                        addRouteToDatabase(mDestinationInfo, mCurrentDestination.getLatitude(), mCurrentDestination.getLongitude());
+
                     startService(intentService);
+
                 } else {
                     Toast.makeText(MapsActivity.this, "Đã hủy thiết lập báo thức", Toast.LENGTH_SHORT).show();
+                    if(routeEnable != null) {
+                        routeEnable.setIsEnable(0);
+                        dbHelper.updateRoute(routeEnable);
+                    }
                     stopService(intentService);
                 }
             }
         });
-
-        //hien thi cong cu tim kiem
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onMapSearch();
-            }
-        });
     }
+
     //su kien khi map da load xong
     //thiet dat cac thong so va su kien click tren ban do de hien thong tin diem da click
     private void onMyMapReady(GoogleMap googleMap) {
@@ -207,6 +233,7 @@ public class MapsActivity extends AppCompatActivity {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
         } else {
             gps.showSettingsAlert();
+            gps.getLocation();
         }
     }
 
@@ -257,15 +284,30 @@ public class MapsActivity extends AppCompatActivity {
             List<Location> list = new ArrayList<>();
             list.add(gps.getCurrentLocation());
             list.add(searchLocation);
-            mapsHandle.drawPath(list);
+            //mapsHandle.drawPath(list);
 
-            distanceTextView.setText("Khoảng cách: " + gps.getCurrentLocation().distanceTo(searchLocation) + "m");
+            currentDistance = gps.getCurrentLocation().distanceTo(searchLocation);
+            distanceTextView.setText("Khoảng cách: " + currentDistance + "m");
             switchButton.setEnabled(true);
+
+            destinationTextView.setText(mDestinationInfo);
+            mCurrentDestination = searchLocation;
         } else {
             Toast.makeText(this, "Chưa lấy được vị trí hiện tại", Toast.LENGTH_SHORT).show();
         }
-        mDestination = searchLocation;
-        destinationTextView.setText(mDestinationInfo);
+
+
+    }
+
+    private void addRouteToDatabase(String info, double latitude, double longitude) {
+        dbHelper.delete("isEnable = 0");
+        Route route = new Route();
+        route.setInfo(info)
+                .setLatitude(latitude)
+                .setLongitude(longitude)
+                .setIsEnable(1)
+                .setDistance(currentDistance);
+        dbHelper.insertRoute(route);
     }
 
     @Override
@@ -277,9 +319,17 @@ public class MapsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intentSettings = new Intent(MapsActivity.this, SettingsActivity.class);
-        startActivity(intentSettings);
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            Intent intentSettings = new Intent(MapsActivity.this, SettingsActivity.class);
+            startActivity(intentSettings);
+        } else {
+            onMapSearch();
+        }
 
         return super.onOptionsItemSelected(item);
     }
+
 }
