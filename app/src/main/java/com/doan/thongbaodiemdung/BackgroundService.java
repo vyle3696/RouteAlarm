@@ -79,7 +79,7 @@ public class BackgroundService extends Service implements LocationListener,
         Notification.Builder noti = new Notification.Builder(this)
                 .setContentTitle("Alarm Travel")
                 .setContentText(route.getInfo())
-                .setSmallIcon(R.drawable.cast_ic_notification_small_icon);
+                .setSmallIcon(R.drawable.logo);
 
         startForeground(1, noti.build());
     }
@@ -148,6 +148,7 @@ public class BackgroundService extends Service implements LocationListener,
 
                 Intent intent = new Intent(this, AlarmActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("info", route.getInfo());
 
                 startActivity(intent);
                 stopSelf();

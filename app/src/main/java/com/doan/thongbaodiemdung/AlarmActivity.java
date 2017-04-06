@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 
@@ -23,6 +24,7 @@ public class AlarmActivity extends AppCompatActivity {
     private Button button;
 
     private ImageView dimiss_image;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,9 @@ public class AlarmActivity extends AppCompatActivity {
             }
         });*/
 
+        String info = getIntent().getStringExtra("info");
+        textView = (TextView) findViewById(R.id.info_textview);
+        textView.setText(info);
 
         dimiss_image = (ImageView) findViewById(R.id.dissmiss_image);
 

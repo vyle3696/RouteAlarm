@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">ThongBaoDiemDung</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="app_name">Alarm Travel</string>
+    <string name="title_activity_maps">Alarm Travel</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Tùy chỉnh</string>
+    <string name="action_settings">Tùy chỉnh</string>
     <string name="default_ringtone">ringtone</string>
     <string name="facebook_app_id">1468167886551331</string>
 </resources>
