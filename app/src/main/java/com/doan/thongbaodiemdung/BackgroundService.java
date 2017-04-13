@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -19,7 +20,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.Route;
@@ -27,6 +28,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * Created by HongHa on 4/1/2017.
@@ -44,7 +47,8 @@ public class BackgroundService extends Service implements LocationListener,
     private String minDistance;
 
     private SharedPreferences sharedPreferences;
-    private DatabaseHelper dbHelper;
+    private DatabaseHelper dbHelper = new DatabaseHelper(this);
+    private Route route;
 
     public BackgroundService(){}
 
@@ -59,8 +63,6 @@ public class BackgroundService extends Service implements LocationListener,
 
         buildGoogleApiClient();
 
-        dbHelper = new DatabaseHelper(this);
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         minDistance = sharedPreferences.getString("pref_minDistance", "");
 
@@ -68,7 +70,7 @@ public class BackgroundService extends Service implements LocationListener,
         PreferenceManager.getDefaultSharedPreferences(this).
                 registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
 
-        Route route = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " WHERE isEnable = 1");
+        route = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " WHERE isEnable = 1");
         if(route != null) {
             Location searchLocation = new Location(LocationManager.GPS_PROVIDER);
             searchLocation.setLatitude(route.getLatitude());
@@ -133,25 +135,32 @@ public class BackgroundService extends Service implements LocationListener,
             //if current position close to destination position, ring alarm
             //Toast.makeText(this, "Distance: " + mLastLocation.distanceTo(mDestination), Toast.LENGTH_SHORT).show();
             //MainActivity.distanceTextView.setText("Khoảng cách: " + mLastLocation.distanceTo(mDestination) + "m");
-            Log.d("Service", "Updating... " + mLastLocation.distanceTo(mDestination) + "m");
+            //Log.d("Service", "Updating... " + mLastLocation.distanceTo(mDestination) + "m");
             if(mLastLocation.distanceTo(mDestination) < Integer.parseInt(minDistance)) {
                 //alarm ringing
                 PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
                 PowerManager.WakeLock wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
                 wakeLock.acquire();
 
-                Route route = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " WHERE isEnable = 1");
-                if(route != null) {
-                    route.setIsEnable(0);
-                    dbHelper.updateRoute(route);
+                try {
+                    if(route != null) {
+                        route.setIsEnable(0);
+                        dbHelper.updateRoute(route);
+
+                        Intent intent = new Intent(this, AlarmActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("info", route.getInfo());
+                        startActivity(intent);
+                        stopSelf();
+                    }
+                    else {
+                        Toast.makeText(this, "route null", Toast.LENGTH_SHORT).show();
+                    }
+
+                }catch (Exception ex) {
+                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
-                Intent intent = new Intent(this, AlarmActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("info", route.getInfo());
-
-                startActivity(intent);
-                stopSelf();
             }
         }
     }

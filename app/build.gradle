@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'keyalias'
+            keyPassword '123456789'
+            storeFile file('D:/Git/RouteAlarm/KeyStore/keystore.jks')
+            storePassword '123456789'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion '25.0.2'
     defaultConfig {
@@ -11,6 +19,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
+        signingConfig signingConfigs.config
     }
     /*buildTypes {
         release {
@@ -19,6 +28,16 @@ android {
 
         }
     }*/
+    productFlavors {
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+        }
+        release {
+            signingConfig signingConfigs.config
+        }
+    }
 }
 
 repositories { mavenCentral() }

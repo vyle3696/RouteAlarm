@@ -8,20 +8,15 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.doan.thongbaodiemdung.Data.DatabaseHelper;
+import android.widget.Toast;
 
 public class AlarmActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
     private SharedPreferences sharedPreferences;
     private String ringtone;
-
-    private DatabaseHelper dbHelper;
-    private Button button;
 
     private ImageView dimiss_image;
     private TextView textView;
@@ -37,25 +32,18 @@ public class AlarmActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_alarm);
 
-        dbHelper = new DatabaseHelper(this);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ringtone = sharedPreferences.getString("pref_ringtone", "");
 
-        int resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());
-        mediaPlayer = MediaPlayer.create(this, resId);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-
-        /*button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeAlarm();
-                Intent intent = new Intent(AlarmActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });*/
+        try {
+            int resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());
+            mediaPlayer = MediaPlayer.create(this, resId);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }catch (Exception ex) {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
         String info = getIntent().getStringExtra("info");
         textView = (TextView) findViewById(R.id.info_textview);
