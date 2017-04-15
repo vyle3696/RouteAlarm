@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.doan.thongbaodiemdung.Activity.MainActivity;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -28,10 +29,8 @@ public class FacebookConnection extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
-        getSupportActionBar().hide();
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
 
@@ -40,7 +39,7 @@ public class FacebookConnection extends AppCompatActivity {
 
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Intent mainIntent = new Intent(FacebookConnection.this, MapsActivity.class);
+                Intent mainIntent = new Intent(FacebookConnection.this, MainActivity.class);
                 FacebookConnection.this.startActivity(mainIntent);
             }
 
@@ -64,7 +63,7 @@ public class FacebookConnection extends AppCompatActivity {
         accessTokenTracker.startTracking();
 
         if (isLoggedIn()){
-            Intent mainIntent = new Intent(FacebookConnection.this, MapsActivity.class);
+            Intent mainIntent = new Intent(FacebookConnection.this, MainActivity.class);
             FacebookConnection.this.startActivity(mainIntent);
 
         }

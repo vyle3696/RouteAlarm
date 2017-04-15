@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_maps"
+            android:icon="@drawable/ic_maps"
+            android:title="Map"/>
+
+        <item
+            android:id="@+id/nav_alarm"
+            android:icon="@drawable/ic_alarm"
+            android:title="List Alarm"/>
+
+        <item
+            android:id="@+id/nav_friends"
+            android:icon="@drawable/ic_friends"
+            android:title="Friends"/>
+    </group>
+
+    <item android:title="Other">
+        <menu>
+            <item
+                android:id="@+id/nav_info"
+                android:title="About us"/>
+            <item
+                android:id="@+id/nav_help"
+                android:title="Help"/>
+        </menu>
+    </item>
+</menu>

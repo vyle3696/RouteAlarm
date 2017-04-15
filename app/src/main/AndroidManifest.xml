@@ -73,10 +73,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.doan.thongbaodiemdung.MapsActivity" />
         </activity>
-        <activity android:name=".AlarmActivity"
-            android:showOnLockScreen="true"
+        <activity
+            android:name=".AlarmActivity"
             android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:showOnLockScreen="true"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".Activity.MainActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
     </application>
 

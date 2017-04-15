@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.doan.thongbaodiemdung.Activity.MainActivity;
+
 public class AlarmActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
@@ -55,7 +57,7 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mediaPlayer.stop();
-                Intent intent = new Intent(AlarmActivity.this, MapsActivity.class);
+                Intent intent = new Intent(AlarmActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
