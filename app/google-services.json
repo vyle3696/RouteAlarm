@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1009613113569",
+    "project_id": "thongbaodiemden"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009613113569:android:f89d563c0c5b0b11",
+        "android_client_info": {
+          "package_name": "com.doan.thongbaodiemdung"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1009613113569-ag7vagb77h8oa43ntpncbkdimt51nv7r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.doan.thongbaodiemdung",
+            "certificate_hash": "b997de02f5b6e92c78570591204879f8066d22fc"
+          }
+        },
+        {
+          "client_id": "1009613113569-52ol7ro0d4pspb8vsdn1lbbtr4c3fbao.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrGJtDCmKuV1w50ZD0615UYDWDxmwKObU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
