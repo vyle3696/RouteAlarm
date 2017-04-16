@@ -1,19 +1,19 @@
 {
   "project_info": {
-    "project_number": "1009613113569",
-    "project_id": "thongbaodiemden"
+    "project_number": "900889126727",
+    "project_id": "alarmtravel"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1009613113569:android:f89d563c0c5b0b11",
+        "mobilesdk_app_id": "1:900889126727:android:f89d563c0c5b0b11",
         "android_client_info": {
           "package_name": "com.doan.thongbaodiemdung"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1009613113569-ag7vagb77h8oa43ntpncbkdimt51nv7r.apps.googleusercontent.com",
+          "client_id": "900889126727-d4ajmq7lehq81rf2qarjhrgqgc5o3oev.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.doan.thongbaodiemdung",
@@ -21,13 +21,13 @@
           }
         },
         {
-          "client_id": "1009613113569-52ol7ro0d4pspb8vsdn1lbbtr4c3fbao.apps.googleusercontent.com",
+          "client_id": "900889126727-40op13g9dc8jhfgpti5shknh02ag57qa.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDrGJtDCmKuV1w50ZD0615UYDWDxmwKObU"
+          "current_key": "AIzaSyBP3MEtzPtJt03xn1pgQ5rzymiYyfb4Oh4"
         }
       ],
       "services": {

@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'keyalias'
             keyPassword '123456789'
-            storeFile file('C:/Users/vthha/Documents/RouteAlarm/KeyStore/keystore.jks')
+            storeFile file('D:\\Projects\\Android/RouteAlarm/KeyStore/keystore.jks')
             storePassword '123456789'
         }
     }
@@ -52,9 +52,10 @@ dependencies {
     })
     compile 'com.facebook.android:facebook-android-sdk:4.20.0'
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.google.android.gms:play-services:10.2.0'
-    compile 'com.google.android.gms:play-services-maps:10.2.0'
-    compile 'com.google.android.gms:play-services-auth:10.2.0'
+    compile 'com.google.android.gms:play-services:10.2.1'
+    compile 'com.google.android.gms:play-services-maps:10.2.1'
+    compile 'com.google.firebase:firebase-auth:10.2.1'
+    compile 'com.google.android.gms:play-services-auth:10.2.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:25.3.0'
