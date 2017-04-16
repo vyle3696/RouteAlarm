@@ -28,10 +28,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 
-/**
- * Created by VYLE on 04/04/2017.
- */
-
 public class SignIn extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
@@ -68,7 +64,7 @@ public class SignIn extends AppCompatActivity implements
 
             @Override
             public void onError(FacebookException e) {
-                Toast.makeText(SignIn.this, "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
+                Toast.makeText(SignIn.this, "Vui lòng kết nối mạng để đăng nhập", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -147,7 +143,8 @@ public class SignIn extends AppCompatActivity implements
             Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
             SignIn.this.startActivity(mainIntent);
         } else {
-
+            if(result.getStatus().getStatusCode() == 12501)
+                Toast.makeText(getBaseContext(),"Vui lòng kết nối mạng để đăng nhập",Toast.LENGTH_LONG).show();
         }
     }
 
