@@ -32,7 +32,7 @@ public class SplashScreen extends AppCompatActivity {
                 } finally {
                     finish();
 
-                    Intent mainIntent = new Intent(SplashScreen.this, FacebookConnection.class);
+                    Intent mainIntent = new Intent(SplashScreen.this, SignIn.class);
                     SplashScreen.this.startActivity(mainIntent);
                 }
             }

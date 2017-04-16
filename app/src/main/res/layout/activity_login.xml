@@ -12,18 +12,22 @@
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="60dp"
-            android:scaleX="1.2"
-            android:scaleY="1.2" />
+            android:layout_marginLeft="79dp"
+            android:layout_marginRight="79dp"
+            android:scaleX="1.6"
+            android:scaleY="1.6" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/google_signin_button"
             android:layout_width="221dp"
             android:layout_height="37dp"
             android:layout_gravity="center"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
             android:layout_marginTop="110dp">
 
         </com.google.android.gms.common.SignInButton>
