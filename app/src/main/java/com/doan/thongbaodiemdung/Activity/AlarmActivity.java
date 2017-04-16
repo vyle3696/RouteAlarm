@@ -1,4 +1,4 @@
-package com.doan.thongbaodiemdung;
+package com.doan.thongbaodiemdung.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,12 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.doan.thongbaodiemdung.Activity.MainActivity;
+import com.doan.thongbaodiemdung.Other.BackgroundService;
+import com.doan.thongbaodiemdung.R;
 
 public class AlarmActivity extends AppCompatActivity {
-
     private MediaPlayer mediaPlayer;
-    private SharedPreferences sharedPreferences;
     private String ringtone;
 
     private ImageView dimiss_image;
@@ -34,9 +33,7 @@ public class AlarmActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_alarm);
 
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        ringtone = sharedPreferences.getString("pref_ringtone", "");
+        ringtone = getIntent().getStringExtra("ringtone");
 
         try {
             int resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());
@@ -57,6 +54,7 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mediaPlayer.stop();
+                BackgroundService.IS_ALARMING = false;
                 Intent intent = new Intent(AlarmActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -66,6 +64,7 @@ public class AlarmActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         mediaPlayer.stop();
+        BackgroundService.IS_ALARMING = false;
         super.onDestroy();
     }
 }

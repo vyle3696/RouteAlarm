@@ -36,12 +36,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBN0-rzCge_etnqsBiQrsQOxuVdps-bA6M" />
 
-        <activity android:name=".SplashScreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".Activity.SplashScreen">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".MapsActivity"
@@ -54,18 +56,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".FacebookConnection">
+        <activity android:name=".Activity.FacebookConnection">
             <intent-filter>
                 <action android:name="com.doan.thongbaodiemdung.FACEBOOKCONNECTION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".GoogleConnection">
+        <activity android:name=".GoogleConnection" />
 
-        </activity>
-
-        <service android:name=".BackgroundService" />
+        <service android:name=".Other.BackgroundService" />
 
         <activity
             android:name=".SettingsActivity"
@@ -77,18 +77,20 @@
                 android:value="com.doan.thongbaodiemdung.MapsActivity" />
         </activity>
         <activity
-            android:name=".AlarmActivity"
+            android:name=".Activity.AlarmActivity"
             android:screenOrientation="sensorPortrait"
             android:showOnLockScreen="true"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activity.MainActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".GoogleConnection" />
+        <activity android:name=".Activity.SetAlarmActivity" />
+        <activity android:name=".Activity.EditAlarmActivity"></activity>
     </application>
 
 </manifest>

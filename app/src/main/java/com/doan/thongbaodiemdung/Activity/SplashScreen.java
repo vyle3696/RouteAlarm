@@ -1,7 +1,9 @@
-package com.doan.thongbaodiemdung;
+package com.doan.thongbaodiemdung.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.doan.thongbaodiemdung.R;
 
 /**
  * Created by VYLE on 04/04/2017.

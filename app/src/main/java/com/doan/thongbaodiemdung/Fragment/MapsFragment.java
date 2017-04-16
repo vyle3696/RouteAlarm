@@ -1,7 +1,6 @@
 package com.doan.thongbaodiemdung.Fragment;
 
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +9,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -23,16 +22,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.doan.thongbaodiemdung.BackgroundService;
-import com.doan.thongbaodiemdung.Data.DatabaseHelper;
-import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.GPSTracker;
-import com.doan.thongbaodiemdung.MapsHandle;
+import com.doan.thongbaodiemdung.Activity.SetAlarmActivity;
+import com.doan.thongbaodiemdung.Other.GPSTracker;
+import com.doan.thongbaodiemdung.Other.MapsHandle;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.SettingsActivity;
 import com.google.android.gms.common.api.Status;
@@ -44,10 +38,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,20 +60,13 @@ public class MapsFragment extends Fragment {
     private GPSTracker gps;
 
     private Location mCurrentDestination;
-    private static String mDestinationInfo = "";
+    private String mDestinationInfo = "";
     private double currentDistance;
 
-    public static TextView distanceTextView;
-    private TextView destinationTextView;
-    private Switch switchButton;
-
-    private Intent intentService;
+    private FloatingActionButton fabSetAlarm;
 
     public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-
-    private DatabaseHelper dbHelper;
-
 
     public MapsFragment() {
         // Required empty public constructor
@@ -102,13 +86,6 @@ public class MapsFragment extends Fragment {
         mProgress.setCancelable(true);
         mProgress.show();
 
-        dbHelper = new DatabaseHelper(context);
-        final Route route = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " WHERE isEnable = 1");
-
-        //set default value in the app's preferences
-        PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
-
-
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -127,52 +104,21 @@ public class MapsFragment extends Fragment {
             }
         });
 
-        destinationTextView = (TextView) rootView.findViewById(R.id.destination);
-        distanceTextView = (TextView) rootView.findViewById(R.id.distance);
-        switchButton = (Switch) rootView.findViewById(R.id.switchAlarm);
+        fabSetAlarm = (FloatingActionButton) rootView.findViewById(R.id.fab_set_alarm);
 
-        intentService = new Intent(context, BackgroundService.class);
-
-        if(route != null) {
-            Location location = new Location(LocationManager.GPS_PROVIDER);
-            location.setLatitude(route.getLatitude());
-            location.setLongitude(route.getLongitude());
-            mCurrentDestination = location;
-
-            mDestinationInfo = route.getInfo();
-
-            destinationTextView.setText(route.getInfo());
-            distanceTextView.setText("Khoảng cách: " + route.getDistance() + "m");
-            if(route.getIsEnable() == 1) {
-                switchButton.setChecked(true);
-                context.startService(intentService);
-            }
-            Log.d("MainActivityAlarm", route.toString());
-        } else
-        {
-            switchButton.setEnabled(false);
-            destinationTextView.setText("Bạn chưa chọn địa điểm nào");
-        }
-
-        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        fabSetAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                Route routeEnable = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " WHERE isEnable = 1");
-                if(isChecked) {
-                    Toast.makeText(context, "Đã thiết lập báo thức", Toast.LENGTH_SHORT).show();
-                    if(routeEnable == null)
-                        addRouteToDatabase(mDestinationInfo, mCurrentDestination.getLatitude(), mCurrentDestination.getLongitude());
-
-                    context.startService(intentService);
-
+            public void onClick(View view) {
+                if(mCurrentDestination != null) {
+                    Intent intent = new Intent(context, SetAlarmActivity.class);
+                    intent.putExtra("latitude", mCurrentDestination.getLatitude());
+                    intent.putExtra("longitude", mCurrentDestination.getLongitude());
+                    intent.putExtra("des_info", mDestinationInfo);
+                    intent.putExtra("cur_dis", currentDistance);
+                    context.startActivity(intent);
                 } else {
-                    Toast.makeText(context, "Đã hủy thiết lập báo thức", Toast.LENGTH_SHORT).show();
-                    if(routeEnable != null) {
-                        routeEnable.setIsEnable(0);
-                        dbHelper.updateRoute(routeEnable);
-                    }
-                    context.stopService(intentService);
+                    Toast.makeText(getContext(), "Bạn chưa chọn địa điểm nào. Bấm vào bản đồ để chọn địa điểm.",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -282,10 +228,6 @@ public class MapsFragment extends Fragment {
         //add marker for destination
         mapsHandle.addMarker(latLng, mDestinationInfo);
 
-        //set switch button to off and disable
-        switchButton.setChecked(false);
-        switchButton.setEnabled(false);
-
         //draw path between current location to search location
         Location searchLocation = new Location(LocationManager.GPS_PROVIDER);
         searchLocation.setLatitude(latLng.latitude);
@@ -298,27 +240,12 @@ public class MapsFragment extends Fragment {
             //mapsHandle.drawPath(list);
 
             currentDistance = gps.getCurrentLocation().distanceTo(searchLocation);
-            distanceTextView.setText("Khoảng cách: " + currentDistance + "m");
-            switchButton.setEnabled(true);
-
-            destinationTextView.setText(mDestinationInfo);
             mCurrentDestination = searchLocation;
         } else {
             Toast.makeText(context, "Chưa lấy được vị trí hiện tại", Toast.LENGTH_SHORT).show();
         }
 
 
-    }
-
-    private void addRouteToDatabase(String info, double latitude, double longitude) {
-        dbHelper.delete("isEnable = 0");
-        Route route = new Route();
-        route.setInfo(info)
-                .setLatitude(latitude)
-                .setLongitude(longitude)
-                .setIsEnable(1)
-                .setDistance(currentDistance);
-        dbHelper.insertRoute(route);
     }
 
     @Override

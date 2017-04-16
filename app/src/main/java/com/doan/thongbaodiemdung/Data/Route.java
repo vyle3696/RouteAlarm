@@ -1,16 +1,21 @@
 package com.doan.thongbaodiemdung.Data;
 
+import java.io.Serializable;
+
 /**
  * Created by vthha on 4/5/2017.
  */
 
-public class Route {
+public class Route implements Serializable{
     private int id;
     private Double latitude;
     private Double longitude;
+    private String name;
     private String info;
     private int isEnable;
     private Double distance;
+    private int minDistance;
+    private String ringtone;
 
     public int getId() {
         return id;
@@ -63,6 +68,33 @@ public class Route {
 
     public Route setDistance(Double distance) {
         this.distance = distance;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Route setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public int getMinDistance() {
+        return minDistance;
+    }
+
+    public Route setMinDistance(int minDistance) {
+        this.minDistance = minDistance;
+        return this;
+    }
+
+    public String getRingtone() {
+        return ringtone;
+    }
+
+    public Route setRingtone(String ringtone) {
+        this.ringtone = ringtone;
         return this;
     }
 

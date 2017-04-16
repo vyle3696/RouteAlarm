@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.doan.thongbaodiemdung.Data.Route;
+import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
 import com.doan.thongbaodiemdung.MapsActivity;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
@@ -158,6 +160,8 @@ public class MainActivity extends AppCompatActivity {
                 MapsFragment mapsFragment = new MapsFragment();
                 return mapsFragment;
             case 1:
+                AlarmListFragment alarmListFragment = new AlarmListFragment();
+                return alarmListFragment;
             default:
                 return new MapsFragment();
         }

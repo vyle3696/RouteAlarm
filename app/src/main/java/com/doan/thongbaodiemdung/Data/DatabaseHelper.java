@@ -27,8 +27,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LATITUDE = "latitude";
     public static final String COLUMN_LONGITUDE = "longitude";
     public static final String COLUMN_INFO = "info";
+    public static final String COLUMN_NAME = "name";
     public static final String COLUMN_ISENABLE = "isEnable";
     public static final String COLUMN_DISTANCE = "distance";
+    public static final String COLUMN_DISTORING = "disToRing";
+    public static final String COLUMN_RINGTONE = "ringtone";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -37,8 +40,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_LATITUDE + " DOUBLE, "
                 + COLUMN_LONGITUDE + " DOUBLE, "
                 + COLUMN_INFO + " TEXT, "
-                + COLUMN_ISENABLE + " INTEGER,"
-                + COLUMN_DISTANCE + " DOUBLE)";
+                + COLUMN_NAME + " TEXT, "
+                + COLUMN_ISENABLE + " INTEGER, "
+                + COLUMN_DISTANCE + " DOUBLE, "
+                + COLUMN_DISTORING + " INT, "
+                + COLUMN_RINGTONE + " TEXT)";
         db.execSQL(script);
     }
 
@@ -109,10 +115,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private ContentValues routeToValues(Route route) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_INFO, route.getInfo());
+        contentValues.put(COLUMN_NAME, route.getName());
         contentValues.put(COLUMN_LATITUDE, route.getLatitude());
         contentValues.put(COLUMN_LONGITUDE, route.getLongitude());
         contentValues.put(COLUMN_ISENABLE, route.getIsEnable());
         contentValues.put(COLUMN_DISTANCE, route.getDistance());
+        contentValues.put(COLUMN_DISTORING, route.getMinDistance());
+        contentValues.put(COLUMN_RINGTONE, route.getRingtone());
         return contentValues;
     }
 
@@ -122,10 +131,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Route route = new Route();
             route.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)))
                     .setInfo(cursor.getString(cursor.getColumnIndex(COLUMN_INFO)))
+                    .setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)))
                     .setLatitude(cursor.getDouble(cursor.getColumnIndex(COLUMN_LATITUDE)))
                     .setLongitude(cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE)))
                     .setIsEnable(cursor.getInt(cursor.getColumnIndex(COLUMN_ISENABLE)))
-                    .setDistance(cursor.getDouble(cursor.getColumnIndex(COLUMN_DISTANCE)));
+                    .setDistance(cursor.getDouble(cursor.getColumnIndex(COLUMN_DISTANCE)))
+                    .setMinDistance(cursor.getInt(cursor.getColumnIndex(COLUMN_DISTORING)))
+                    .setRingtone(cursor.getString(cursor.getColumnIndex(COLUMN_RINGTONE)));
             return route;
         } catch (Exception ex) {
             ex.printStackTrace();
