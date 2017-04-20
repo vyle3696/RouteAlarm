@@ -1,6 +1,7 @@
 package com.doan.thongbaodiemdung;
 
 import com.doan.thongbaodiemdung.Account;
+import com.doan.thongbaodiemdung.Constants;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.appevents.internal.*;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -32,6 +34,13 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -41,7 +50,11 @@ public class SignIn extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
+
     private DatabaseReference mDatabase;
+    private String graphPath;
 
     private LoginButton loginButton;
     private CallbackManager callbackManager;
@@ -66,8 +79,19 @@ public class SignIn extends AppCompatActivity implements
         if (isLoggedIn()) {
             LoginFacebookHandle();
             Debug("Facebook login logged in", "Successfully");
+            Debug("Permission: ", getAccessToken().getPermissions().toString());
+            JsonHandle();
         }
         InitGoogleSignin();
+
+        mAuth = FirebaseAuth.getInstance();
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+            }
+        };
+
     }
 
     private void InitGoogleSignin()
@@ -91,6 +115,8 @@ public class SignIn extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
 
+        mAuth.addAuthStateListener(firebaseAuthListener);
+
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -106,6 +132,13 @@ public class SignIn extends AppCompatActivity implements
                 }
             });
         }
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        mAuth.removeAuthStateListener(firebaseAuthListener);
     }
 
     @Override
@@ -173,8 +206,11 @@ public class SignIn extends AppCompatActivity implements
 
             @Override
             public void onSuccess(LoginResult loginResult) {
-                LoginFacebookHandle();
                 Debug("Facebook login new","Successfully");
+                Debug("Permission: ", getAccessToken().getPermissions().toString());
+                handleFacebookAccessToken(loginResult.getAccessToken());
+                LoginFacebookHandle();
+
             }
 
             @Override
@@ -188,6 +224,7 @@ public class SignIn extends AppCompatActivity implements
             }
         });
 
+        loginButton.setReadPermissions("user_friends");
         accessTokenTracker= new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
@@ -200,21 +237,51 @@ public class SignIn extends AppCompatActivity implements
 
 
     //Get json content from graph facebook
-    private void getJsonObject()
+    private void JsonHandle()
     {
+//        new GraphRequest(
+//                AccessToken.getCurrentAccessToken(),
+//                "/1861013520819747/friends_using_app",
+//                null,
+//                HttpMethod.GET,
+//                new GraphRequest.Callback() {
+//                    public void onCompleted(GraphResponse response) {
+//
+//                        //System.out.println("Response::" + String.valueOf(response.getJSONObject()));
+//                        Log.e("Json", String.valueOf(response.getJSONObject()));
+//                    }
+//                }
+//        ).executeAsync();
+
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/me",
+                "/" + getAccessToken().getUserId() + "/friends",
                 null,
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                            /* handle the result */
-                        //System.out.println("Response::" + String.valueOf(response.getJSONObject()));
+            /* handle the result */
                         Log.e("Json", String.valueOf(response.getJSONObject()));
                     }
                 }
         ).executeAsync();
+
+        /*GraphRequest request = GraphRequest.newMeRequest(
+                getAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        // Insert your code here
+                        Log.e("Json", String.valueOf(response.getJSONObject()));
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "name,id,friends");
+        request.setParameters(parameters);
+        request.executeAsync();
+*/
+
     }
 
     //Login facebook thành công
@@ -223,6 +290,32 @@ public class SignIn extends AppCompatActivity implements
             Toast.makeText(getBaseContext(),"Đăng nhập Facebook thành công",Toast.LENGTH_LONG).show();
             Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
             SignIn.this.startActivity(mainIntent);
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.d(TAG, "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(getBaseContext(), "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        // ...
+                    }
+                });
     }
 
     @Override
