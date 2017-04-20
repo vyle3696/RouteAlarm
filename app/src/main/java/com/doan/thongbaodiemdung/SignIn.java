@@ -1,5 +1,7 @@
 package com.doan.thongbaodiemdung;
 
+import com.doan.thongbaodiemdung.Account;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +18,9 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -27,10 +32,16 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import org.json.JSONObject;
 
 public class SignIn extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
+
+    private DatabaseReference mDatabase;
 
     private LoginButton loginButton;
     private CallbackManager callbackManager;
@@ -49,37 +60,12 @@ public class SignIn extends AppCompatActivity implements
         callbackManager = CallbackManager.Factory.create();
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
-                SignIn.this.startActivity(mainIntent);
-            }
+        FacebookOncreate();
 
-            @Override
-            public void onCancel() {
-                Toast.makeText(SignIn.this, "Đã đăng xuất", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                Toast.makeText(SignIn.this, "Vui lòng kết nối mạng để đăng nhập", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        accessTokenTracker= new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
-
-            }
-        };
-        accessTokenTracker.startTracking();
-
-        if (isLoggedIn()){
-            Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
-            SignIn.this.startActivity(mainIntent);
-            Toast.makeText(getBaseContext(),"Đăng nhập Facebook thành công",Toast.LENGTH_LONG).show();
+        if (isLoggedIn()) {
+            LoginFacebookHandle();
+            Debug("Facebook login logged in", "Successfully");
         }
         InitGoogleSignin();
     }
@@ -136,6 +122,8 @@ public class SignIn extends AppCompatActivity implements
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+
+    //Google signin handle
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
             GoogleSignInAccount acct = result.getSignInAccount();
@@ -148,14 +136,24 @@ public class SignIn extends AppCompatActivity implements
         }
     }
 
+    //Google Sign in
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+
+    //Check if the account was logged in in last time
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
+    }
+
+
+    //Get Facebook Access token
+    public AccessToken getAccessToken()
+    {
+        return AccessToken.getCurrentAccessToken();
     }
 
     //Hàm kế thừa từ google connection class để bắt sự kiện click google button
@@ -168,9 +166,80 @@ public class SignIn extends AppCompatActivity implements
         }
     }
 
+    //Init facebook api
+    private void FacebookOncreate()
+    {
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                LoginFacebookHandle();
+                Debug("Facebook login new","Successfully");
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(SignIn.this, "Đã đăng xuất", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Toast.makeText(SignIn.this, "Vui lòng kết nối mạng để đăng nhập", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        accessTokenTracker= new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
+
+            }
+        };
+        accessTokenTracker.startTracking();
+
+    }
+
+
+    //Get json content from graph facebook
+    private void getJsonObject()
+    {
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                            /* handle the result */
+                        //System.out.println("Response::" + String.valueOf(response.getJSONObject()));
+                        Log.e("Json", String.valueOf(response.getJSONObject()));
+                    }
+                }
+        ).executeAsync();
+    }
+
+    //Login facebook thành công
+    private void LoginFacebookHandle()
+    {
+            Toast.makeText(getBaseContext(),"Đăng nhập Facebook thành công",Toast.LENGTH_LONG).show();
+            Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
+            SignIn.this.startActivity(mainIntent);
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+
+    // Push account to firebase
+    private void PushDatabase(Account account)
+    {
+
+    }
+
+    private void Debug(String title, String content)
+    {
+        Log.e(title, content);
     }
 }
 

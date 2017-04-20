@@ -41,12 +41,12 @@
 
         <activity android:name=".Activity.SplashScreen">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
 
 
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
         <activity
             android:name=".MapsActivity"
@@ -59,21 +59,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
-        <activity android:name=".Activity.FacebookConnection">
-=======
-        <activity android:name=".SignIn">
->>>>>>> origin/master
-            <intent-filter>
-                <action android:name="com.doan.thongbaodiemdung.FACEBOOKCONNECTION" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-<<<<<<< HEAD
-        <activity android:name=".GoogleConnection" />
-=======
->>>>>>> origin/master
+        <activity android:name=".SignIn"/>
 
         <service android:name=".Other.BackgroundService" />
 
@@ -92,13 +79,13 @@
             android:showOnLockScreen="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activity.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
-        <activity android:name=".GoogleConnection" />
+
         <activity android:name=".Activity.SetAlarmActivity" />
         <activity android:name=".Activity.EditAlarmActivity"></activity>
     </application>

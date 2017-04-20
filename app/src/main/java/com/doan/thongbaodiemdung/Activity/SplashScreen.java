@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.doan.thongbaodiemdung.R;
+import com.doan.thongbaodiemdung.SignIn;
 
 /**
  * Created by VYLE on 04/04/2017.
