@@ -16,6 +16,7 @@ public class Route implements Serializable{
     private Double distance;
     private int minDistance;
     private String ringtone;
+    private String ringtonePath;
 
     public int getId() {
         return id;
@@ -97,6 +98,17 @@ public class Route implements Serializable{
         this.ringtone = ringtone;
         return this;
     }
+
+    public String getRingtonePath() {
+        return ringtonePath;
+    }
+
+    public Route setRingtonePath(String ringtonePath) {
+        this.ringtonePath = ringtonePath;
+        return this;
+    }
+
+
 
     @Override
     public String toString() {

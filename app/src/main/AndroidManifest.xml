@@ -88,6 +88,7 @@
 
         <activity android:name=".Activity.SetAlarmActivity" />
         <activity android:name=".Activity.EditAlarmActivity"></activity>
+        <activity android:name=".Activity.LoadRingtoneActivity"/>
     </application>
 
 </manifest>

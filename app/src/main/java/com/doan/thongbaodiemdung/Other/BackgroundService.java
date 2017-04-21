@@ -131,6 +131,8 @@ public class BackgroundService extends Service implements LocationListener,
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("info", listRoute.get(i).getName());
                         intent.putExtra("ringtone", listRoute.get(i).getRingtone());
+                        intent.putExtra("ringtonePath", listRoute.get(i).getRingtonePath());
+                        //Toast.makeText(BackgroundService.this, "Path: " + listRoute.get(i).getRingtonePath(), Toast.LENGTH_LONG).show();
                         startActivity(intent);
                         IS_ALARMING = true;
                         break;

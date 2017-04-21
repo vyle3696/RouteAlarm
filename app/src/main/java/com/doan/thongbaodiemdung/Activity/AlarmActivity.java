@@ -1,10 +1,8 @@
 package com.doan.thongbaodiemdung.Activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,9 +13,12 @@ import android.widget.Toast;
 import com.doan.thongbaodiemdung.Other.BackgroundService;
 import com.doan.thongbaodiemdung.R;
 
+import java.io.IOException;
+
 public class AlarmActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private String ringtone;
+    private String ringtonePath;
 
     private ImageView dimiss_image;
     private TextView textView;
@@ -26,22 +27,41 @@ public class AlarmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         setContentView(R.layout.activity_alarm);
+        ringtonePath = getIntent().getStringExtra("ringtonePath");
 
-        ringtone = getIntent().getStringExtra("ringtone");
 
-        try {
-            int resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());
-            mediaPlayer = MediaPlayer.create(this, resId);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
-        }catch (Exception ex) {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        // phat nhac bao thuc
+        //neu đường dãn nhạc tồn tại
+        if (ringtonePath != null) {
+
+            try {
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setDataSource(ringtonePath);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            //ringtone = getIntent().getStringExtra("ringtone");
+            ringtone = "ringtone";
+
+            try {
+                int resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());
+                mediaPlayer = MediaPlayer.create(this, resId);
+                mediaPlayer.setLooping(true);
+                mediaPlayer.start();
+            } catch (Exception ex) {
+                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+            }
         }
 
         String info = getIntent().getStringExtra("info");
