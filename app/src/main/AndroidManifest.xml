@@ -40,13 +40,11 @@
             android:value="AIzaSyBN0-rzCge_etnqsBiQrsQOxuVdps-bA6M" />
 
         <activity android:name=".Activity.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-
-
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".MapsActivity"
@@ -59,8 +57,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".SignIn"/>
+        <activity android:name=".SignIn" />
 
         <service android:name=".Other.BackgroundService" />
 
@@ -79,16 +76,18 @@
             android:showOnLockScreen="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activity.MainActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-
         <activity android:name=".Activity.SetAlarmActivity" />
-        <activity android:name=".Activity.EditAlarmActivity"></activity>
-        <activity android:name=".Activity.LoadRingtoneActivity"/>
+        <activity android:name=".Activity.EditAlarmActivity" />
+        <activity android:name=".Activity.LoadRingtoneActivity" />
+        <activity android:name=".Activity.EditRingtoneActivity"></activity>
     </application>
 
 </manifest>

@@ -129,4 +129,13 @@ public class LoadRingtoneActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = getIntent();
+        intent.putExtra("ringtoneName","");
+        intent.putExtra("ringtonePath","");
+        setResult(1,intent);
+        super.onBackPressed();
+    }
 }

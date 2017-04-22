@@ -39,7 +39,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#000111"/>
+        android:background="#ced8e8"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,7 +76,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#000111"/>
+        android:background="#ced8e8"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -108,7 +108,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#000111"/>
+        android:background="#ced8e8"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -147,9 +147,10 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#000111"/>
+        android:background="#ced8e8"/>
 
     <LinearLayout
+        android:id="@+id/edit_ringtone_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">

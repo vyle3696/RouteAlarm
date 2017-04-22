@@ -63,7 +63,7 @@ public class BackgroundService extends Service implements LocationListener,
 
         listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " WHERE isEnable = 1");
 
-        if(listRoute != null) {
+        if(listRoute != null && listRoute.size() > 0) {
             Notification.Builder noti = new Notification.Builder(this)
                     .setContentTitle("Alarm Travel")
                     .setContentText(listRoute.get(0).getInfo())

@@ -32,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DISTANCE = "distance";
     public static final String COLUMN_DISTORING = "disToRing";
     public static final String COLUMN_RINGTONE = "ringtone";
+    public static final String COLUMN_RINGTONEPATH = "ringtonePath";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -44,7 +45,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_ISENABLE + " INTEGER, "
                 + COLUMN_DISTANCE + " DOUBLE, "
                 + COLUMN_DISTORING + " INT, "
-                + COLUMN_RINGTONE + " TEXT)";
+                + COLUMN_RINGTONE + " TEXT, "
+                + COLUMN_RINGTONEPATH + " TEXT)";
         db.execSQL(script);
     }
 
@@ -122,6 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_DISTANCE, route.getDistance());
         contentValues.put(COLUMN_DISTORING, route.getMinDistance());
         contentValues.put(COLUMN_RINGTONE, route.getRingtone());
+        contentValues.put(COLUMN_RINGTONEPATH, route.getRingtonePath());
         return contentValues;
     }
 
@@ -137,7 +140,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     .setIsEnable(cursor.getInt(cursor.getColumnIndex(COLUMN_ISENABLE)))
                     .setDistance(cursor.getDouble(cursor.getColumnIndex(COLUMN_DISTANCE)))
                     .setMinDistance(cursor.getInt(cursor.getColumnIndex(COLUMN_DISTORING)))
-                    .setRingtone(cursor.getString(cursor.getColumnIndex(COLUMN_RINGTONE)));
+                    .setRingtone(cursor.getString(cursor.getColumnIndex(COLUMN_RINGTONE)))
+                    .setRingtonePath(cursor.getString(cursor.getColumnIndex(COLUMN_RINGTONEPATH)));
             return route;
         } catch (Exception ex) {
             ex.printStackTrace();

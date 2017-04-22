@@ -38,7 +38,7 @@ public class AlarmActivity extends AppCompatActivity {
 
         // phat nhac bao thuc
         //neu đường dãn nhạc tồn tại
-        if (ringtonePath != null) {
+        if (!ringtonePath.equals("")) {
 
             try {
                 mediaPlayer = new MediaPlayer();
@@ -48,11 +48,20 @@ public class AlarmActivity extends AppCompatActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                ringtone = "ringtone";
+
+                try {
+                    int resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());
+                    mediaPlayer = MediaPlayer.create(this, resId);
+                    mediaPlayer.setLooping(true);
+                    mediaPlayer.start();
+                } catch (Exception ex) {
+                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
 
         } else {
-            //ringtone = getIntent().getStringExtra("ringtone");
-            ringtone = "ringtone";
+            ringtone = getIntent().getStringExtra("ringtone");
 
             try {
                 int resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());

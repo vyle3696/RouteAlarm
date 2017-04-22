@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.Route;
@@ -29,10 +30,7 @@ public class SetAlarmActivity extends AppCompatActivity {
     private Button btnSetAlarm;
     private SeekBar disSeekBar;
     private LinearLayout layoutRingtone;
-    private MediaPlayer mediaRingtone;
 
-
-    private String mDesName;
     private String mDesInfo;
     private int mDisToRing;
     private String mRingtone;
@@ -62,7 +60,6 @@ public class SetAlarmActivity extends AppCompatActivity {
 
 
         final Intent intent = getIntent();
-        mDesName = "";
         mDesInfo = intent.getStringExtra("des_info");
         mLatitude = intent.getDoubleExtra("latitude", defaultValue);
         mLongitude = intent.getDoubleExtra("longitude", defaultValue);
@@ -74,7 +71,8 @@ public class SetAlarmActivity extends AppCompatActivity {
         txtDesInfo.setText(mDesInfo);
         editDesName.setText(mDesInfo);
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        txtCurDistance.setText("" + ((mDistance < 1000)? "" + mDistance + "m": "" + decimalFormat.format(mDistance/1000.0) + "km"));
+        mDistance = mDistance < 1000 ? mDistance : mDistance/1000.0;
+        txtCurDistance.setText(decimalFormat.format(mDistance) + (mDistance < 1000 ? "m" : "km"));
 
         disSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -104,6 +102,10 @@ public class SetAlarmActivity extends AppCompatActivity {
                             mLongitude, mDistance, mDisToRing, mRingtone, mRingtonePath );
                     intentService = new Intent(SetAlarmActivity.this, BackgroundService.class);
                     startService(intentService);
+                    Toast.makeText(SetAlarmActivity.this, "Thiết lập báo thức thành công", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                } else {
+                    Toast.makeText(SetAlarmActivity.this, "Tên của báo thức không được để trống", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -112,8 +114,10 @@ public class SetAlarmActivity extends AppCompatActivity {
         layoutRingtone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SetAlarmActivity.this, LoadRingtoneActivity.class);
-                startActivityForResult(intent,1);
+                Intent intent = new Intent(SetAlarmActivity.this, EditRingtoneActivity.class);
+                intent.putExtra("ringtoneName", "ringtone");
+                intent.putExtra("ringtonePath", "");
+                startActivityForResult(intent,10);
             }
         });
     }
@@ -122,11 +126,9 @@ public class SetAlarmActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1)
+        if (requestCode == 10)
         {
-//            String ringtoneName = data.getStringExtra("ringtoneName");
-//            String ringtonePath = data.getStringExtra("ringtonePath");
-            SetRingtone(data.getStringExtra("ringtoneName"),data.getStringExtra("ringtonePath"));
+            setRingtone(data.getStringExtra("ringtoneName"),data.getStringExtra("ringtonePath"));
         }
 
 
@@ -144,14 +146,13 @@ public class SetAlarmActivity extends AppCompatActivity {
                 .setMinDistance(minDistance)
                 .setRingtone(ringtone)
                 .setRingtonePath(ringtonePath);
-        //Toast.makeText(SetAlarmActivity.this, "Path: " + route.getRingtonePath(), Toast.LENGTH_LONG).show();
         dbHelper.insertRoute(route);
     }
 
-    public void SetRingtone(String RingtoneName, String RingtonePath)
+    public void setRingtone(String ringtoneName, String ringtonePath)
     {
-        mRingtone = RingtoneName;
-        mRingtonePath = RingtonePath;
+        mRingtone = ringtoneName;
+        mRingtonePath = ringtonePath;
         txtRingtone.setText(mRingtone);
     }
 }
