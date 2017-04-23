@@ -8,10 +8,18 @@ public class Account {
 
     private String id;
     private String name;
+    private String avatarURL;
 
     public Account()
     {
 
+    }
+
+    public Account(String id, String name, String avatarURL)
+    {
+        this.id = id;
+        this.name = name;
+        this.avatarURL = avatarURL;
     }
 
     public Account(String id, String name)
@@ -29,4 +37,6 @@ public class Account {
     {
         return name;
     }
+
+    public String getAvatarURL() {return avatarURL;}
 }
