@@ -1,11 +1,15 @@
 package com.doan.thongbaodiemdung.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +26,16 @@ public class AlarmActivity extends AppCompatActivity {
 
     private ImageView dimiss_image;
     private TextView textView;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //lệnh rung màn hình
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        long[] pattern = {0, 200, 500 };
+        vibrator.vibrate(pattern, 0);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -79,10 +89,22 @@ public class AlarmActivity extends AppCompatActivity {
 
         dimiss_image = (ImageView) findViewById(R.id.dissmiss_image);
 
+        //Tạo hiệu ứng cho imageView
+        AlphaAnimation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
+        AlphaAnimation fadeOut = new AlphaAnimation( 1.0f , 0.0f ) ;
+        dimiss_image.startAnimation(fadeIn);
+        dimiss_image.startAnimation(fadeOut);
+        fadeIn.setDuration(500);
+        fadeOut.setDuration(500);
+        fadeIn.setStartOffset(500+fadeOut.getStartOffset()+500);
+        //fadeOut.setStartOffset(500+fadeIn.getStartOffset()+500);
+        fadeOut.setRepeatCount(Animation.INFINITE);
+
         dimiss_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mediaPlayer.stop();
+                vibrator.cancel();
                 BackgroundService.IS_ALARMING = false;
                 Intent intent = new Intent(AlarmActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -90,8 +112,10 @@ public class AlarmActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onDestroy() {
+        vibrator.cancel();
         mediaPlayer.stop();
         BackgroundService.IS_ALARMING = false;
         super.onDestroy();
