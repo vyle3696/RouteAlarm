@@ -1,7 +1,5 @@
 package com.doan.thongbaodiemdung;
 
-import com.doan.thongbaodiemdung.Constants;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.doan.thongbaodiemdung.Constants.FB_ACCOUNT;
@@ -57,7 +56,10 @@ public class SignIn extends AppCompatActivity implements
 
         mAuth = FirebaseAuth.getInstance();
 
+        if(mAuth.getCurrentUser() != null)
+        Debug("mAuth: ", mAuth.toString());
         InitFacebookLogin();
+
     }
 
 
@@ -78,9 +80,8 @@ public class SignIn extends AppCompatActivity implements
     {
         mCallbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
-        loginButton.setReadPermissions("public_profile");
-        loginButton.setReadPermissions("user_friends");
+        loginButton.setReadPermissions(Arrays.asList(
+                "public_profile", "email", "user_friends"));
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
 
             // Đăng nhập vào facebook lần đầu tiên
@@ -120,6 +121,8 @@ public class SignIn extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            LoginFacebookHandle();
+                            Debug("Permissions ", getAccessToken().getPermissions().toString());
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -135,12 +138,12 @@ public class SignIn extends AppCompatActivity implements
     private void LoginFacebookHandle()
     {
         Toast.makeText(getBaseContext(),"Đăng nhập Facebook thành công",Toast.LENGTH_LONG).show();
-        TestFunction();
+        UpdateDatabse();
         Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
         SignIn.this.startActivity(mainIntent);
     }
 
-    private void TestFunction()
+    private void UpdateDatabse()
     {
         UpdateAccountDatabase();
         UpdateFriendsDatabase();
@@ -183,7 +186,9 @@ public class SignIn extends AppCompatActivity implements
                         Account account = new Account(id, name,avatarURL);
 
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                        ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).setValue(account);
+
+                        if(mAuth.getCurrentUser() != null)
+                            ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).setValue(account);
 
                         Debug("Up account to db", "Successful");
                     }
@@ -214,8 +219,9 @@ public class SignIn extends AppCompatActivity implements
                                 JSONObject obj = array.getJSONObject(i);
                                 String name = obj.getString("name");
                                 String id = obj.getString("id");
-                                String avatarURL = "https" + "://graph.facebook.com/" + id + "/picture?width=64&height=64";
+                                String avatarURL = "https" + "://graph.facebook.com/" + id + "/picture";
                                 Account account = new Account(id, name, avatarURL);
+                                if(mAuth.getCurrentUser() != null)
                                 ref.child(FB_FRIENDS).child(mAuth.getCurrentUser().getUid()).child(String.valueOf(i)).setValue(account);
                             } catch (JSONException e) {
                                 e.printStackTrace();
