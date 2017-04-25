@@ -1,7 +1,6 @@
 package com.doan.thongbaodiemdung.Activity;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.Other.BackgroundService;
+import com.doan.thongbaodiemdung.Other.FirebaseHandle;
 import com.doan.thongbaodiemdung.R;
 
 import java.text.DecimalFormat;
@@ -71,8 +71,8 @@ public class SetAlarmActivity extends AppCompatActivity {
         txtDesInfo.setText(mDesInfo);
         editDesName.setText(mDesInfo);
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        mDistance = mDistance < 1000 ? mDistance : mDistance/1000.0;
-        txtCurDistance.setText(decimalFormat.format(mDistance) + (mDistance < 1000 ? "m" : "km"));
+        //mDistance = mDistance < 1000 ? mDistance : mDistance/1000.0;
+        txtCurDistance.setText((mDistance < 1000) ? (decimalFormat.format(mDistance) + "m") : (decimalFormat.format(mDistance/1000.0) + "km"));
 
         disSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -147,6 +147,9 @@ public class SetAlarmActivity extends AppCompatActivity {
                 .setRingtone(ringtone)
                 .setRingtonePath(ringtonePath);
         dbHelper.insertRoute(route);
+        route = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " ORDER BY id DESC LIMIT 1");
+        FirebaseHandle firebaseHandle = new FirebaseHandle();
+        firebaseHandle.updateRoute(route);
     }
 
     public void setRingtone(String ringtoneName, String ringtonePath)

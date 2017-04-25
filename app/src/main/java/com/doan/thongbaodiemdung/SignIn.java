@@ -21,6 +21,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -123,6 +124,7 @@ public class SignIn extends AppCompatActivity implements
                             FirebaseUser user = mAuth.getCurrentUser();
                             LoginFacebookHandle();
                             Debug("Permissions ", getAccessToken().getPermissions().toString());
+
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -178,27 +180,37 @@ public class SignIn extends AppCompatActivity implements
                         try {
                             name = jsonObject.getString("name");
                             id =jsonObject.getString("id");
-                            avatarURL = mAuth.getCurrentUser().getPhotoUrl().toString();
+                            Debug("mAuth", String.valueOf(mAuth == null));
+                            if(mAuth.getCurrentUser() != null)
+                                avatarURL = mAuth.getCurrentUser().getPhotoUrl().toString();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
-                        Account account = new Account(id, name,avatarURL);
+                        Account account = new Account(id, name, avatarURL);
 
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-                        if(mAuth.getCurrentUser() != null)
-                            ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).setValue(account);
+                        try {
+                            ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).child("id").setValue(id);
 
-                        Debug("Up account to db", "Successful");
+                            ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).child("name").setValue(name);
+
+                            ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).child("avatarURL").setValue(avatarURL);
+                            Debug("Up account to db", "Successful");
+                        }catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
                     }
+
                 }
         ).executeAsync();
     }
 
     private void UpdateFriendsDatabase()
     {
-        new GraphRequest(
+        /*new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/" + getAccessToken().getUserId() + "/friends",
                 null,
@@ -230,7 +242,7 @@ public class SignIn extends AppCompatActivity implements
                         Debug("Up friends to db", "Successful");
                     }
                 }
-        ).executeAsync();
+        ).executeAsync();*/
     }
 }
 

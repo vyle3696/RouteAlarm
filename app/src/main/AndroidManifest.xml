@@ -60,6 +60,7 @@
         <activity android:name=".SignIn" />
 
         <service android:name=".Other.BackgroundService" />
+        <service android:name=".Other.AppService"/>
 
         <activity
             android:name=".SettingsActivity"

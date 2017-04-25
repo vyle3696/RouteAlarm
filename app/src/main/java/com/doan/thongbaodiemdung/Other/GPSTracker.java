@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by vthha on 4/2/2017.
@@ -150,6 +151,7 @@ public class GPSTracker extends Service implements LocationListener {
         this.location = location;
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+        Log.e("GPSTracker", "Updating...");
     }
 
     @Override

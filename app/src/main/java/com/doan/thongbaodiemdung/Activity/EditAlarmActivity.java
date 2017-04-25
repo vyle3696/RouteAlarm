@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +15,7 @@ import android.widget.Toast;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
-import com.doan.thongbaodiemdung.Other.BackgroundService;
+import com.doan.thongbaodiemdung.Other.FirebaseHandle;
 import com.doan.thongbaodiemdung.R;
 
 import java.text.DecimalFormat;
@@ -67,8 +65,7 @@ public class EditAlarmActivity extends AppCompatActivity {
         txtDesInfo.setText(route.getInfo());
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         Double curDis = route.getDistance();
-        curDis = curDis < 1000 ? curDis : curDis/1000.0;
-        txtCurDis.setText(decimalFormat.format(curDis) + (curDis < 1000 ? "m" : "km"));
+        txtCurDis.setText((curDis < 1000) ? (decimalFormat.format(curDis) + "m") : (decimalFormat.format(curDis/1000.0) + "km"));
         txtMinDis.setText(route.getMinDistance() + "m");
         btnSetMinDis.setProgress(route.getMinDistance());
         txtRingtone.setText(route.getRingtone());
@@ -116,6 +113,11 @@ public class EditAlarmActivity extends AppCompatActivity {
                             .setRingtone(mRingtone)
                             .setRingtonePath(mRingtonePath);
                     dbHelper.updateRoute(route);
+                    FirebaseHandle firebaseHandle = new FirebaseHandle();
+                    firebaseHandle.updateRoute(route);
+//                    firebaseHandle.updateRoute(String.valueOf(route.getId()), route.getName(),
+//                            String.valueOf(route.getDistance()), String.valueOf(route.getIsEnable()),
+//                            String.valueOf(route.getMinDistance()), route.getRingtone(), route.getRingtonePath());
                     Toast.makeText(EditAlarmActivity.this, "Cập nhật báo thức thành công", Toast.LENGTH_SHORT).show();
                     onBackPressed();
                 } else {

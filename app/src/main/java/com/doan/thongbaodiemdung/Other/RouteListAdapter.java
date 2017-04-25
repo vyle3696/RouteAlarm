@@ -89,12 +89,16 @@ public class RouteListAdapter extends BaseAdapter {
                     //set alarm
                     route.setIsEnable(1);
                     dbHelper.updateRoute(route);
+                    FirebaseHandle firebaseHandle = new FirebaseHandle();
+                    firebaseHandle.updateRoute(route);
                     holder.imgAlarm.setImageResource(R.drawable.ic_location_on);
                     context.startService(new Intent(context, BackgroundService.class));
                 } else {
                     //disable alarm
                     route.setIsEnable(0);
                     dbHelper.updateRoute(route);
+                    FirebaseHandle firebaseHandle = new FirebaseHandle();
+                    firebaseHandle.updateRoute(route);
                     holder.imgAlarm.setImageResource(R.drawable.ic_location_off);
                 }
             }

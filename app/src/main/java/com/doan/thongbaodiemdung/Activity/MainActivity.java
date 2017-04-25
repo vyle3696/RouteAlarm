@@ -25,7 +25,9 @@ import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
 import com.doan.thongbaodiemdung.MapsActivity;
+import com.doan.thongbaodiemdung.Other.AppService;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
+import com.doan.thongbaodiemdung.Other.FirebaseHandle;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.SettingsActivity;
 import com.google.android.gms.common.api.Status;
@@ -95,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
             CURRENT_TAG = TAG_MAP;
             loadHomeFragment();
         }
+
+        Intent intent = new Intent(this, AppService.class);
+        startService(intent);
     }
 
     /***

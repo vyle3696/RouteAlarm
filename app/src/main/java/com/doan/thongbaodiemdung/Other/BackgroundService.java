@@ -126,6 +126,8 @@ public class BackgroundService extends Service implements LocationListener,
 
                         listRoute.get(i).setIsEnable(0);
                         dbHelper.updateRoute(listRoute.get(i));
+                        FirebaseHandle firebaseHandle = new FirebaseHandle();
+                        firebaseHandle.updateRoute(listRoute.get(i));
 
                         Intent intent = new Intent(this, AlarmActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
