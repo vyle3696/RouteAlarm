@@ -12,6 +12,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 import static com.doan.thongbaodiemdung.Other.Constants.FB_ACCOUNT;
 
 /**
@@ -23,7 +25,7 @@ public class FirebaseHandle {
     private DatabaseReference mRef;
     private String userID;
     private static FirebaseHandle instance;
-    private Account account;
+    private List<String> listFriends;
 
     private FirebaseHandle() {
         mAuth = FirebaseAuth.getInstance();
@@ -39,7 +41,7 @@ public class FirebaseHandle {
 
     public void setUserID(String id) {
         this.userID = id;
-        //setAccountLisener();
+        setAccountListener();
     }
 
     public void setStatusChange() {
@@ -82,40 +84,21 @@ public class FirebaseHandle {
     }
 
     public void setAccountListener() {
-     
-        account = new Account();
-        try {
-            mRef.child(FB_ACCOUNT).child(userID).child("name")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            account.setName(dataSnapshot.getValue(String.class));
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+        mRef.child(FB_ACCOUNT).child(userID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //nen lay list friend o day
+                        //no se lay quai lay quai cho nay
+                        if(dataSnapshot.hasChild("friends")) {
 
                         }
-                    });
+                    }
 
-            mRef.child(FB_ACCOUNT).child(userID).child("avatarURL")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            account.setAvatarURL(dataSnapshot.getValue(String.class));
-                        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public Account getAccount() {
-        return account;
+                    }
+                });
     }
 }

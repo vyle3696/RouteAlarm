@@ -1,6 +1,8 @@
 package com.doan.thongbaodiemdung.Activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -98,20 +100,19 @@ public class MainActivity extends AppCompatActivity {
      * Load navigation menu header information
      */
     private void loadNavHeader() {
-        Account account = FirebaseHandle.getInstance().getAccount();
-        if(account != null) {
-            Log.e("MainActivity", account.getName());
-            txtName.setText(account.getName());
+        SharedPreferences sharedPreferences = this.getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        if(sharedPreferences != null) {
+            txtName.setText(sharedPreferences.getString("name", "User name"));
 
             //load profile image
-            Glide.with(this).load(account.getAvatarURL())
+            Glide.with(this).load(sharedPreferences.getString("avatarURL", "avatar"))
                     .crossFade()
                     .thumbnail(0.5f)
                     .bitmapTransform(new CircleTransform(this))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imgProfile);
         } else {
-            Log.e("MainActivity", "Account null");
+            txtName.setText("User name");
         }
     }
 

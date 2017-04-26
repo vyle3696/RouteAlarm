@@ -1,11 +1,14 @@
 package com.doan.thongbaodiemdung.Activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
@@ -65,7 +68,6 @@ public class SignIn extends AppCompatActivity implements
         InitFacebookLogin();
 
     }
-
 
     @Override
     public void onClick(View view) {
@@ -189,7 +191,7 @@ public class SignIn extends AppCompatActivity implements
 
                             //update friend database
                             UpdateFriendsDatabase();
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -198,13 +200,12 @@ public class SignIn extends AppCompatActivity implements
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
                         try {
-                            FirebaseHandle.getInstance().setAccountListener();
-
                             ref.child(FB_ACCOUNT).child(id).child("name").setValue(name);
 
                             ref.child(FB_ACCOUNT).child(id).child("avatarURL").setValue(avatarURL);
-                            Debug("Up account to db", "Successful");
-                            Log.e("SignIn", (id == null) ? "null" : "notnull");
+
+                            savePreference(name, avatarURL);
+
                             FirebaseHandle.getInstance().setUserID(id);
 
                             //Khoi chay mainActivity
@@ -218,6 +219,16 @@ public class SignIn extends AppCompatActivity implements
 
                 }
         ).executeAsync();
+    }
+
+    private void savePreference(String name, String avatarURL) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("name", name);
+        editor.putString("avatarURL", avatarURL);
+
+        editor.apply();
     }
 
     private void UpdateFriendsDatabase()
