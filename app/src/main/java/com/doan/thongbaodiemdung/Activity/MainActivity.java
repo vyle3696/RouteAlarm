@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -256,5 +257,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //super.onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.e("MainActivity", "Stop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.e("MainActivity", "Pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+        Log.e("MainActivity", "Destroy");
     }
 }

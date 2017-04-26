@@ -19,8 +19,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+
+import static com.doan.thongbaodiemdung.Constants.FB_ACCOUNT;
 
 /**
  * Created by Hong Hanh on 4/25/2017.
@@ -56,13 +65,14 @@ public class AppService extends Service implements LocationListener,
 
         firebaseHandle = new FirebaseHandle();
 
-//        firebaseHandle.updateStatus("On");
+        firebaseHandle.setStatusChange();
 
         List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
 
         for(Route route : listRoute) {
             firebaseHandle.updateRoute(route);
         }
+
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -125,12 +135,16 @@ public class AppService extends Service implements LocationListener,
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        Log.e("AppService", "Remove");
         super.onTaskRemoved(rootIntent);
     }
 
     @Override
     public void onDestroy() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        Log.e("AppService", "Destroy");
         super.onDestroy();
     }
+
+
 }
