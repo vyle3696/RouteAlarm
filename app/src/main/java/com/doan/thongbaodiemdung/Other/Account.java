@@ -1,4 +1,4 @@
-package com.doan.thongbaodiemdung;
+package com.doan.thongbaodiemdung.Other;
 
 /**
  * Created by HongHa on 4/20/2017.
@@ -39,4 +39,12 @@ public class Account {
     }
 
     public String getAvatarURL() {return avatarURL;}
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAvatarURL(String avatarURL) {
+        this.avatarURL = avatarURL;
+    }
 }

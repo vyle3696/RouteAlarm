@@ -1,4 +1,4 @@
-package com.doan.thongbaodiemdung;
+package com.doan.thongbaodiemdung.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.doan.thongbaodiemdung.Activity.MainActivity;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
+import com.doan.thongbaodiemdung.Other.Account;
+import com.doan.thongbaodiemdung.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -21,7 +23,6 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -38,13 +39,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.doan.thongbaodiemdung.Constants.FB_ACCOUNT;
-import static com.doan.thongbaodiemdung.Constants.FB_FRIENDS;
+import static com.doan.thongbaodiemdung.Other.Constants.FB_ACCOUNT;
+import static com.doan.thongbaodiemdung.Other.Constants.FB_FRIENDS;
 
 public class SignIn extends AppCompatActivity implements
         View.OnClickListener {
 
-    public static String userID;
+    public String userID;
 
     private static final String TAG = "FacebookLogin";
 
@@ -143,14 +144,12 @@ public class SignIn extends AppCompatActivity implements
     {
         Toast.makeText(getBaseContext(),"Đăng nhập Facebook thành công",Toast.LENGTH_LONG).show();
         UpdateDatabse();
-        Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
-        SignIn.this.startActivity(mainIntent);
+
     }
 
     private void UpdateDatabse()
     {
         UpdateAccountDatabase();
-        UpdateFriendsDatabase();
     }
 
     private AccessToken getAccessToken()
@@ -183,9 +182,13 @@ public class SignIn extends AppCompatActivity implements
                             name = jsonObject.getString("name");
                             id =jsonObject.getString("id");
                             userID = id;
+                            Log.e("SignIn", (userID == null) ? "null" : "notnull");
                             Debug("mAuth", String.valueOf(mAuth == null));
                             if(mAuth.getCurrentUser() != null)
                                 avatarURL = mAuth.getCurrentUser().getPhotoUrl().toString();
+
+                            //update friend database
+                            UpdateFriendsDatabase();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -195,10 +198,18 @@ public class SignIn extends AppCompatActivity implements
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
                         try {
+                            FirebaseHandle.getInstance().setAccountListener();
+
                             ref.child(FB_ACCOUNT).child(id).child("name").setValue(name);
 
                             ref.child(FB_ACCOUNT).child(id).child("avatarURL").setValue(avatarURL);
                             Debug("Up account to db", "Successful");
+                            Log.e("SignIn", (id == null) ? "null" : "notnull");
+                            FirebaseHandle.getInstance().setUserID(id);
+
+                            //Khoi chay mainActivity
+                            Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
+                            startActivity(mainIntent);
                         }catch (Exception e)
                         {
                             e.printStackTrace();

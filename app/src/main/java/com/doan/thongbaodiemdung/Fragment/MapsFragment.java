@@ -15,7 +15,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.doan.thongbaodiemdung.Activity.SetAlarmActivity;
-import com.doan.thongbaodiemdung.Other.GPSTracker;
+import com.doan.thongbaodiemdung.Service.GPSTracker;
 import com.doan.thongbaodiemdung.Other.MapsHandle;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.SettingsActivity;

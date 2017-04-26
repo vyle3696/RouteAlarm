@@ -12,8 +12,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.R;
+import com.doan.thongbaodiemdung.Service.BackgroundService;
 
 import java.util.List;
 
@@ -89,16 +91,16 @@ public class RouteListAdapter extends BaseAdapter {
                     //set alarm
                     route.setIsEnable(1);
                     dbHelper.updateRoute(route);
-                    FirebaseHandle firebaseHandle = new FirebaseHandle();
-                    firebaseHandle.updateRoute(route);
+
+                    FirebaseHandle.getInstance().updateRoute(route);
                     holder.imgAlarm.setImageResource(R.drawable.ic_location_on);
                     context.startService(new Intent(context, BackgroundService.class));
                 } else {
                     //disable alarm
                     route.setIsEnable(0);
                     dbHelper.updateRoute(route);
-                    FirebaseHandle firebaseHandle = new FirebaseHandle();
-                    firebaseHandle.updateRoute(route);
+
+                    FirebaseHandle.getInstance().updateRoute(route);
                     holder.imgAlarm.setImageResource(R.drawable.ic_location_off);
                 }
             }

@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import android.widget.ListView;
 import com.doan.thongbaodiemdung.Activity.EditAlarmActivity;
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.Other.FirebaseHandle;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Other.RouteListAdapter;
 import com.doan.thongbaodiemdung.R;
 
@@ -78,8 +77,8 @@ public class AlarmListFragment extends Fragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //delete route
                         dbHelper.deleteRoute("id = " + route.getId());
-                        FirebaseHandle firebaseHandle = new FirebaseHandle();
-                        firebaseHandle.removeRoute(String.valueOf(route.getId()));
+
+                        FirebaseHandle.getInstance().removeRoute(String.valueOf(route.getId()));
                         //remove item
                         listView.setAdapter(null);
                         listView.setAdapter(new RouteListAdapter(getListRoute(), getContext()));

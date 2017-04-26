@@ -1,4 +1,4 @@
-package com.doan.thongbaodiemdung.Other;
+package com.doan.thongbaodiemdung.Service;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -21,6 +21,7 @@ import android.util.Log;
 
 import com.doan.thongbaodiemdung.Activity.AlarmActivity;
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -126,8 +127,8 @@ public class BackgroundService extends Service implements LocationListener,
 
                         listRoute.get(i).setIsEnable(0);
                         dbHelper.updateRoute(listRoute.get(i));
-                        FirebaseHandle firebaseHandle = new FirebaseHandle();
-                        firebaseHandle.updateRoute(listRoute.get(i));
+
+                        FirebaseHandle.getInstance().updateRoute(listRoute.get(i));
 
                         Intent intent = new Intent(this, AlarmActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

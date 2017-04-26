@@ -1,6 +1,5 @@
 package com.doan.thongbaodiemdung.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,20 +20,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.doan.thongbaodiemdung.Data.Route;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
-import com.doan.thongbaodiemdung.MapsActivity;
-import com.doan.thongbaodiemdung.Other.AppService;
+import com.doan.thongbaodiemdung.Other.Account;
+import com.doan.thongbaodiemdung.Service.AppService;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
-import com.doan.thongbaodiemdung.Other.FirebaseHandle;
 import com.doan.thongbaodiemdung.R;
-import com.doan.thongbaodiemdung.SettingsActivity;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -107,16 +98,21 @@ public class MainActivity extends AppCompatActivity {
      * Load navigation menu header information
      */
     private void loadNavHeader() {
-        txtName.setText("Hồng Hạnh");
+        Account account = FirebaseHandle.getInstance().getAccount();
+        if(account != null) {
+            Log.e("MainActivity", account.getName());
+            txtName.setText(account.getName());
 
-        //load profile image
-        Glide.with(this).load(urlProfileImg)
-                .crossFade()
-                .thumbnail(0.5f)
-                .bitmapTransform(new CircleTransform(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgProfile);
-
+            //load profile image
+            Glide.with(this).load(account.getAvatarURL())
+                    .crossFade()
+                    .thumbnail(0.5f)
+                    .bitmapTransform(new CircleTransform(this))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imgProfile);
+        } else {
+            Log.e("MainActivity", "Account null");
+        }
     }
 
     /***

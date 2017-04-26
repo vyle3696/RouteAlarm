@@ -57,10 +57,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignIn" />
+        <activity android:name=".Activity.SignIn" />
 
-        <service android:name=".Other.BackgroundService" />
-        <service android:name=".Other.AppService"/>
+        <service android:name=".Service.BackgroundService" />
+        <service android:name=".Service.AppService"/>
 
         <activity
             android:name=".SettingsActivity"

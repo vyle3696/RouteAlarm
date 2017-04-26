@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.Other.BackgroundService;
-import com.doan.thongbaodiemdung.Other.FirebaseHandle;
+import com.doan.thongbaodiemdung.Service.BackgroundService;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.R;
 
 import java.text.DecimalFormat;
@@ -148,8 +148,8 @@ public class SetAlarmActivity extends AppCompatActivity {
                 .setRingtonePath(ringtonePath);
         dbHelper.insertRoute(route);
         route = dbHelper.getRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE + " ORDER BY id DESC LIMIT 1");
-        FirebaseHandle firebaseHandle = new FirebaseHandle();
-        firebaseHandle.updateRoute(route);
+
+        FirebaseHandle.getInstance().updateRoute(route);
     }
 
     public void setRingtone(String ringtoneName, String ringtonePath)

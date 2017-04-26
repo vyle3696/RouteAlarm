@@ -1,18 +1,18 @@
-package com.doan.thongbaodiemdung.Other;
+package com.doan.thongbaodiemdung.Data;
 
 import android.util.Log;
 
 import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.SignIn;
+import com.doan.thongbaodiemdung.Activity.SignIn;
+import com.doan.thongbaodiemdung.Other.Account;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.doan.thongbaodiemdung.Constants.FB_ACCOUNT;
+import static com.doan.thongbaodiemdung.Other.Constants.FB_ACCOUNT;
 
 /**
  * Created by Hong Hanh on 4/24/2017.
@@ -22,11 +22,24 @@ public class FirebaseHandle {
     private FirebaseAuth mAuth;
     private DatabaseReference mRef;
     private String userID;
+    private static FirebaseHandle instance;
+    private Account account;
 
-    public FirebaseHandle() {
+    private FirebaseHandle() {
         mAuth = FirebaseAuth.getInstance();
         mRef = FirebaseDatabase.getInstance().getReference();
-        this.userID = SignIn.userID;
+    }
+
+    public static FirebaseHandle getInstance() {
+        if(instance == null) {
+            instance = new FirebaseHandle();
+        }
+        return instance;
+    }
+
+    public void setUserID(String id) {
+        this.userID = id;
+        //setAccountLisener();
     }
 
     public void setStatusChange() {
@@ -68,8 +81,41 @@ public class FirebaseHandle {
                 .child("listRoute").child(id).removeValue();
     }
 
-    public void updateStatus(String status) {
-        mRef.child(FB_ACCOUNT).child(userID)
-                .child("status").setValue(status);
+    public void setAccountListener() {
+     
+        account = new Account();
+        try {
+            mRef.child(FB_ACCOUNT).child(userID).child("name")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            account.setName(dataSnapshot.getValue(String.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+            mRef.child(FB_ACCOUNT).child(userID).child("avatarURL")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            account.setAvatarURL(dataSnapshot.getValue(String.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public Account getAccount() {
+        return account;
     }
 }

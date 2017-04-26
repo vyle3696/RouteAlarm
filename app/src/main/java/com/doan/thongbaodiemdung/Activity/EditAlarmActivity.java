@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.Other.FirebaseHandle;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.R;
 
 import java.text.DecimalFormat;
@@ -113,11 +113,9 @@ public class EditAlarmActivity extends AppCompatActivity {
                             .setRingtone(mRingtone)
                             .setRingtonePath(mRingtonePath);
                     dbHelper.updateRoute(route);
-                    FirebaseHandle firebaseHandle = new FirebaseHandle();
-                    firebaseHandle.updateRoute(route);
-//                    firebaseHandle.updateRoute(String.valueOf(route.getId()), route.getName(),
-//                            String.valueOf(route.getDistance()), String.valueOf(route.getIsEnable()),
-//                            String.valueOf(route.getMinDistance()), route.getRingtone(), route.getRingtonePath());
+
+                    FirebaseHandle.getInstance().updateRoute(route);
+
                     Toast.makeText(EditAlarmActivity.this, "Cập nhật báo thức thành công", Toast.LENGTH_SHORT).show();
                     onBackPressed();
                 } else {

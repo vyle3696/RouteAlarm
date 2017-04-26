@@ -1,4 +1,4 @@
-package com.doan.thongbaodiemdung;
+package com.doan.thongbaodiemdung.Other;
 
 /**
  * Created by HongHa on 4/20/2017.

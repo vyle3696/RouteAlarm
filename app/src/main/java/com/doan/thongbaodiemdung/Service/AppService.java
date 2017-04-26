@@ -1,4 +1,4 @@
-package com.doan.thongbaodiemdung.Other;
+package com.doan.thongbaodiemdung.Service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -7,29 +7,20 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.Route;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
-
-import static com.doan.thongbaodiemdung.Constants.FB_ACCOUNT;
 
 /**
  * Created by Hong Hanh on 4/25/2017.
@@ -43,7 +34,6 @@ public class AppService extends Service implements LocationListener,
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
-    private FirebaseHandle firebaseHandle;
 
     @Nullable
     @Override
@@ -63,14 +53,12 @@ public class AppService extends Service implements LocationListener,
             startService(intent);
         }
 
-        firebaseHandle = new FirebaseHandle();
-
-        firebaseHandle.setStatusChange();
+        FirebaseHandle.getInstance().setStatusChange();
 
         List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
 
         for(Route route : listRoute) {
-            firebaseHandle.updateRoute(route);
+            FirebaseHandle.getInstance().updateRoute(route);
         }
 
     }
@@ -91,9 +79,7 @@ public class AppService extends Service implements LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        FirebaseHandle firebaseHandle = new FirebaseHandle();
-        firebaseHandle.updateCurPos(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
-        Log.e("AppService", "running...");
+        FirebaseHandle.getInstance().updateCurPos(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
     }
 
     @Override
@@ -134,15 +120,8 @@ public class AppService extends Service implements LocationListener,
     }
 
     @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        Log.e("AppService", "Remove");
-        super.onTaskRemoved(rootIntent);
-    }
-
-    @Override
     public void onDestroy() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        Log.e("AppService", "Destroy");
         super.onDestroy();
     }
 

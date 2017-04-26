@@ -1,4 +1,4 @@
-package com.doan.thongbaodiemdung.Other;
+package com.doan.thongbaodiemdung.Service;
 
 import android.app.AlertDialog;
 import android.app.Service;
