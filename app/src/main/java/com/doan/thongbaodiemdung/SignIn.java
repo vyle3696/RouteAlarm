@@ -44,6 +44,8 @@ import static com.doan.thongbaodiemdung.Constants.FB_FRIENDS;
 public class SignIn extends AppCompatActivity implements
         View.OnClickListener {
 
+    public static String userID;
+
     private static final String TAG = "FacebookLogin";
 
     private CallbackManager mCallbackManager;
@@ -180,6 +182,7 @@ public class SignIn extends AppCompatActivity implements
                         try {
                             name = jsonObject.getString("name");
                             id =jsonObject.getString("id");
+                            userID = id;
                             Debug("mAuth", String.valueOf(mAuth == null));
                             if(mAuth.getCurrentUser() != null)
                                 avatarURL = mAuth.getCurrentUser().getPhotoUrl().toString();
@@ -192,11 +195,9 @@ public class SignIn extends AppCompatActivity implements
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
                         try {
-                            ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).child("id").setValue(id);
+                            ref.child(FB_ACCOUNT).child(id).child("name").setValue(name);
 
-                            ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).child("name").setValue(name);
-
-                            ref.child(FB_ACCOUNT).child(mAuth.getCurrentUser().getUid()).child("avatarURL").setValue(avatarURL);
+                            ref.child(FB_ACCOUNT).child(id).child("avatarURL").setValue(avatarURL);
                             Debug("Up account to db", "Successful");
                         }catch (Exception e)
                         {
@@ -210,7 +211,7 @@ public class SignIn extends AppCompatActivity implements
 
     private void UpdateFriendsDatabase()
     {
-        /*new GraphRequest(
+        new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/" + getAccessToken().getUserId() + "/friends",
                 null,
@@ -234,7 +235,7 @@ public class SignIn extends AppCompatActivity implements
                                 String avatarURL = "https" + "://graph.facebook.com/" + id + "/picture";
                                 Account account = new Account(id, name, avatarURL);
                                 if(mAuth.getCurrentUser() != null)
-                                ref.child(FB_FRIENDS).child(mAuth.getCurrentUser().getUid()).child(String.valueOf(i)).setValue(account);
+                                    ref.child(FB_FRIENDS).child(userID).child("friend" + i).setValue(id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -242,7 +243,7 @@ public class SignIn extends AppCompatActivity implements
                         Debug("Up friends to db", "Successful");
                     }
                 }
-        ).executeAsync();*/
+        ).executeAsync();
     }
 }
 
