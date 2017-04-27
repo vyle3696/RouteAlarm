@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
+import com.doan.thongbaodiemdung.Fragment.FriendsListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
 import com.doan.thongbaodiemdung.Other.Account;
 import com.doan.thongbaodiemdung.Service.AppService;
@@ -165,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
             case 1:
                 AlarmListFragment alarmListFragment = new AlarmListFragment();
                 return alarmListFragment;
+            case 2:
+                FriendsListFragment friendsListFragment = new FriendsListFragment();
+                return friendsListFragment;
             default:
                 return new MapsFragment();
         }
