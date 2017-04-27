@@ -129,14 +129,11 @@ public class SignIn extends AppCompatActivity implements
                             FirebaseUser user = mAuth.getCurrentUser();
                             LoginFacebookHandle();
                             Debug("Permissions ", getAccessToken().getPermissions().toString());
-
-                            //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(SignIn.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
                     }
                 });
@@ -257,7 +254,7 @@ public class SignIn extends AppCompatActivity implements
                                 String avatarURL = "https" + "://graph.facebook.com/" + id + "/picture";
                                 Account account = new Account(id, name, avatarURL);
                                 if(mAuth.getCurrentUser() != null)
-                                    ref.child(FB_FRIENDS).child(userID).child("friend" + i).setValue(id);
+                                    ref.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(String.valueOf(i)).setValue(id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

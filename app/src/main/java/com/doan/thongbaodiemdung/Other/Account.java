@@ -15,6 +15,11 @@ public class Account {
 
     }
 
+    public Account(String id)
+    {
+        this.id = id;
+    }
+
     public Account(String id, String name, String avatarURL)
     {
         this.id = id;
@@ -46,5 +51,9 @@ public class Account {
 
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.Activity.SignIn;
 import com.doan.thongbaodiemdung.Other.Account;
+import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -12,7 +13,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.doan.thongbaodiemdung.Other.Constants.FB_ACCOUNT;
 
@@ -25,7 +32,7 @@ public class FirebaseHandle {
     private DatabaseReference mRef;
     private String userID;
     private static FirebaseHandle instance;
-    private List<String> listFriends;
+    private List<Account> listFriends;
 
     private FirebaseHandle() {
         mAuth = FirebaseAuth.getInstance();
@@ -84,14 +91,24 @@ public class FirebaseHandle {
     }
 
     public void setAccountListener() {
-        mRef.child(FB_ACCOUNT).child(userID)
-                .addValueEventListener(new ValueEventListener() {
+        listFriends = new ArrayList<>();
+        if(mRef.child(FB_ACCOUNT).child(userID).child("friends") != null)
+        mRef.child(FB_ACCOUNT).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //nen lay list friend o day
                         //no se lay quai lay quai cho nay
-                        if(dataSnapshot.hasChild("friends")) {
 
+                        for (DataSnapshot postSnapshot: dataSnapshot.child(userID).child("friends").getChildren()) {
+                            if(listFriends.size() <  dataSnapshot.child(userID).child("friends").getChildrenCount())
+                            {
+                                String id = postSnapshot.getValue(String.class);
+                                Account tempAccount = new Account(id);
+                                tempAccount.setName(dataSnapshot.child(id).child("name").getValue(String.class));
+                                tempAccount.setAvatarURL(dataSnapshot.child(id).child("avatarURL").getValue(String.class));
+                                listFriends.add(tempAccount);
+                                Log.e("FirebaseHandle", dataSnapshot.child(id).child("name").getValue(String.class));
+                            }
                         }
                     }
 
@@ -100,5 +117,10 @@ public class FirebaseHandle {
 
                     }
                 });
+    }
+
+    public List<Account> getListFriends()
+    {
+        return listFriends;
     }
 }
