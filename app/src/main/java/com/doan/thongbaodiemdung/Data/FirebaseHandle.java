@@ -32,7 +32,7 @@ public class FirebaseHandle {
     private DatabaseReference mRef;
     private String userID;
     private static FirebaseHandle instance;
-    private List<Account> listFriends;
+    private List<FriendInfo> listFriends;
 
     private FirebaseHandle() {
         mAuth = FirebaseAuth.getInstance();
@@ -78,7 +78,7 @@ public class FirebaseHandle {
                 .child("listRoute").child(String.valueOf(route.getId())).setValue(route);
     }
 
-    public void updateCurPos(String latitude, String longitude) {
+    public void updateCurPos(Double latitude, Double longitude) {
         mRef.child(FB_ACCOUNT).child(userID)
                 .child("curPos").child("latitude").setValue(latitude);
         mRef.child(FB_ACCOUNT).child(userID)
@@ -103,11 +103,13 @@ public class FirebaseHandle {
                             if(listFriends.size() <  dataSnapshot.child(userID).child("friends").getChildrenCount())
                             {
                                 String id = postSnapshot.getValue(String.class);
-                                Account tempAccount = new Account(id);
+                                FriendInfo tempAccount = new FriendInfo();
                                 tempAccount.setName(dataSnapshot.child(id).child("name").getValue(String.class));
                                 tempAccount.setAvatarURL(dataSnapshot.child(id).child("avatarURL").getValue(String.class));
+                                tempAccount.setStatus(dataSnapshot.child(id).child("status").getValue(String.class));
+                                tempAccount.setLatitude(dataSnapshot.child(id).child("curPos").child("latitude").getValue(Double.class));
+                                tempAccount.setLongitude(dataSnapshot.child(id).child("curPos").child("longitude").getValue(Double.class));
                                 listFriends.add(tempAccount);
-                                Log.e("FirebaseHandle", dataSnapshot.child(id).child("name").getValue(String.class));
                             }
                         }
                     }
@@ -119,7 +121,7 @@ public class FirebaseHandle {
                 });
     }
 
-    public List<Account> getListFriends()
+    public List<FriendInfo> getListFriends()
     {
         return listFriends;
     }

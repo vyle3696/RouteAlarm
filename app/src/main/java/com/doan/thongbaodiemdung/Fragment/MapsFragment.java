@@ -27,7 +27,6 @@ import com.doan.thongbaodiemdung.Activity.SetAlarmActivity;
 import com.doan.thongbaodiemdung.Service.GPSTracker;
 import com.doan.thongbaodiemdung.Other.MapsHandle;
 import com.doan.thongbaodiemdung.R;
-import com.doan.thongbaodiemdung.SettingsActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
@@ -52,7 +51,6 @@ public class MapsFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap mMap;
-    private ProgressDialog mProgress;
     private Context context;
 
     private MapsHandle mapsHandle;
@@ -78,12 +76,6 @@ public class MapsFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         context = rootView.getContext();
-
-        mProgress = new ProgressDialog(context);
-        mProgress.setTitle("Loading map ...");
-        mProgress.setMessage("Please wait...");
-        mProgress.setCancelable(true);
-        mProgress.show();
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -134,8 +126,6 @@ public class MapsFragment extends Fragment {
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mProgress.dismiss();
-
                 // Hiển thị vị trí người dùng.
                 askPermissionsAndShowMyLocation();
             }
@@ -288,12 +278,8 @@ public class MapsFragment extends Fragment {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intentSettings = new Intent(context, SettingsActivity.class);
-            startActivity(intentSettings);
-        } else {
+        if (id == R.id.action_search)
             onMapSearch();
-        }
         return super.onOptionsItemSelected(item);
     }
 

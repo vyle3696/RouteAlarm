@@ -30,7 +30,7 @@
             android:id="@+id/friend_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:textSize="20dp"
             android:text="Hong Hanh"
             android:focusable="false"
             />
@@ -38,7 +38,7 @@
             android:id="@+id/friend_distance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="10dp"
+            android:textSize="15dp"
             android:text="10km"
             android:focusable="false"/>
     </LinearLayout>

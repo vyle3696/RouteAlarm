@@ -79,7 +79,7 @@ public class AppService extends Service implements LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        FirebaseHandle.getInstance().updateCurPos(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+        FirebaseHandle.getInstance().updateCurPos(location.getLatitude(), location.getLongitude());
     }
 
     @Override

@@ -4,34 +4,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.doan.thongbaodiemdung.Activity.EditAlarmActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tên điểm đến:"
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
-            android:textSize="20dp" />
+            android:layout_marginTop="5dp"
+            android:text="Tên điểm đến:"
+            android:textSize="20dp"
+            android:textStyle = "bold"
+            android:textColor="@android:color/black"/>
 
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp">
 
             <EditText
                 android:id="@+id/edit_name_des"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginRight="10dp"/>
+                android:textSize="15dp" />
         </HorizontalScrollView>
 
     </LinearLayout>
@@ -44,7 +48,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,21 +58,22 @@
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"/>
 
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp">
             <TextView
                 android:id="@+id/edit_des_info"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="20dp"/>
+                android:textSize="20dp"
+                android:textColor="@android:color/black"/>
         </HorizontalScrollView>
 
     </LinearLayout>
@@ -81,7 +86,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -89,19 +94,21 @@
             android:text="Khoảng cách hiện tại:"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/edit_cur_dis"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
-            android:textSize="20dp"/>
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@android:color/black"/>
 
     </LinearLayout>
 
@@ -122,7 +129,9 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"/>
         <TextView
             android:id="@+id/edit_dis_to_ring"
             android:layout_width="wrap_content"
@@ -131,7 +140,8 @@
             android:textSize="15dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/black"/>
 
         <SeekBar
             android:id="@+id/edit_seekBar"
@@ -162,7 +172,9 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"/>
         <TextView
             android:id="@+id/edit_ringtone"
             android:layout_width="wrap_content"
@@ -171,7 +183,8 @@
             android:textSize="15dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/black"/>
     </LinearLayout>
 
     <LinearLayout

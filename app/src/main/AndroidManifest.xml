@@ -14,7 +14,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -46,31 +47,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="com.doan.thongbaodiemdung.MAINACTIVITY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".Activity.SignIn" />
 
         <service android:name=".Service.BackgroundService" />
-        <service android:name=".Service.AppService"/>
+        <service android:name=".Service.AppService" />
 
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".MapsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.doan.thongbaodiemdung.MapsActivity" />
-        </activity>
         <activity
             android:name=".Activity.AlarmActivity"
             android:screenOrientation="sensorPortrait"
@@ -85,10 +66,25 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".Activity.SetAlarmActivity" />
-        <activity android:name=".Activity.EditAlarmActivity" />
-        <activity android:name=".Activity.LoadRingtoneActivity" />
-        <activity android:name=".Activity.EditRingtoneActivity"></activity>
+        <activity
+            android:name=".Activity.SetAlarmActivity"
+            android:label="Thiết lập báo thức"
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity
+            android:name=".Activity.EditAlarmActivity"
+            android:label="Chỉnh sửa báo thức"
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity
+            android:name=".Activity.LoadRingtoneActivity"
+            android:label="Nhạc chuông tùy chỉnh"
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity
+            android:name=".Activity.EditRingtoneActivity"
+            android:label="Nhạc chuông"
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity android:name=".Activity.LocationFriendActivity"
+            android:label="Vị trí của bạn bè"
+            android:theme="@style/AppTheme.ActionBar" ></activity>
     </application>
 
 </manifest>

@@ -3,8 +3,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_maps"
-            android:icon="@drawable/ic_maps"
-            android:title="Map"/>
+            android:icon="@drawable/ic_map"
+            android:title="Map" />
 
         <item
             android:id="@+id/nav_alarm"
