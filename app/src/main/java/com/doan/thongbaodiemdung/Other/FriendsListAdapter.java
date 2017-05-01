@@ -35,6 +35,7 @@ public class FriendsListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private Context context;
 
+
     public FriendsListAdapter(List<FriendInfo> accounts, Context context) {
         this.accounts = accounts;
         this.context = context;
