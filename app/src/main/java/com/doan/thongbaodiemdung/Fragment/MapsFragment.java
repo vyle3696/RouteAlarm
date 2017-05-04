@@ -121,7 +121,7 @@ public class MapsFragment extends Fragment {
     //thiet dat cac thong so va su kien click tren ban do de hien thong tin diem da click
     private void onMyMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mapsHandle = new MapsHandle(context, mMap);
+        mapsHandle = MapsHandle.getInstance(context, mMap);
 
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
@@ -199,7 +199,7 @@ public class MapsFragment extends Fragment {
     //hien thi dia diem hien tai khi moi vua load xong ban do
     private void showMyLocation() {
 
-        gps = new GPSTracker(context);
+        gps = GPSTracker.getInstance(context);
 
         if(gps.isCanGetLocation()) {
             LatLng latLng = new LatLng(gps.getLatitude(), gps.getLongitude());

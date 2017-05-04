@@ -25,16 +25,24 @@ import java.util.Locale;
  */
 
 public class MapsHandle {
-    private Context mContext;
+
+    public static MapsHandle instance;
+
     private GoogleMap mMap;
     private Geocoder geocoder;
     private Marker mMarker;
     private Polyline currentPolyline;
 
-    public MapsHandle(Context mContext, GoogleMap mMap) {
-        this.mContext = mContext;
+    private MapsHandle(Context mContext, GoogleMap mMap) {
         this.mMap = mMap;
         geocoder = new Geocoder(mContext, Locale.getDefault());
+    }
+
+    public static MapsHandle getInstance(Context context, GoogleMap map) {
+        if(instance == null) {
+            instance = new MapsHandle(context, map);
+        }
+        return instance;
     }
 
     public String getPlaceInfo(LatLng latLng) {

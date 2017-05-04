@@ -21,6 +21,7 @@ import android.util.Log;
 public class GPSTracker extends Service implements LocationListener {
     @Nullable
 
+    public static GPSTracker instance;
     private final Context mContext;
 
     private boolean isGPSEnable = false;
@@ -36,9 +37,16 @@ public class GPSTracker extends Service implements LocationListener {
 
     protected LocationManager locationManager;
 
-    public GPSTracker(Context mContext) {
+    private GPSTracker(Context mContext) {
         this.mContext = mContext;
         getLocation();
+    }
+
+    public static GPSTracker getInstance(Context context){
+        if(instance == null) {
+            instance = new GPSTracker(context);
+        }
+        return instance;
     }
 
     public Location getLocation() {
