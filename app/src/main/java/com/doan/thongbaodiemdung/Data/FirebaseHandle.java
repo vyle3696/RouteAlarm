@@ -91,19 +91,21 @@ public class FirebaseHandle {
     }
 
     public void setAccountListener() {
-        listFriends = new ArrayList<>();
         if(mRef.child(FB_ACCOUNT).child(userID).child("friends") != null)
         mRef.child(FB_ACCOUNT).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        //nen lay list friend o day
-                        //no se lay quai lay quai cho nay
-
+                        listFriends = new ArrayList<>();
                         for (DataSnapshot postSnapshot: dataSnapshot.child(userID).child("friends").getChildren()) {
                             if(listFriends.size() <  dataSnapshot.child(userID).child("friends").getChildrenCount())
                             {
-                                String id = postSnapshot.getValue(String.class);
                                 FriendInfo tempAccount = new FriendInfo();
+                                String id = postSnapshot.child("id").getValue(String.class);
+                                tempAccount.setId(id);
+                                if(postSnapshot.hasChild("isFollowing"))
+                                    tempAccount.setFollowing(postSnapshot.child("isFollowing").getValue(Boolean.class));
+                                else
+                                    tempAccount.setFollowing(false);
                                 tempAccount.setName(dataSnapshot.child(id).child("name").getValue(String.class));
                                 tempAccount.setAvatarURL(dataSnapshot.child(id).child("avatarURL").getValue(String.class));
                                 tempAccount.setStatus(dataSnapshot.child(id).child("status").getValue(String.class));
@@ -124,5 +126,10 @@ public class FirebaseHandle {
     public List<FriendInfo> getListFriends()
     {
         return listFriends;
+    }
+
+    public void setFollowFriend(String id, boolean isFollowing) {
+        mRef.child(FB_ACCOUNT).child(userID).child("friends").child(id)
+                .child("isFollowing").setValue(isFollowing);
     }
 }

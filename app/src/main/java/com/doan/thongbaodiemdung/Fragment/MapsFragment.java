@@ -5,8 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Path;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +19,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +28,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.doan.thongbaodiemdung.Activity.LocationFriendActivity;
 import com.doan.thongbaodiemdung.Activity.SetAlarmActivity;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
+import com.doan.thongbaodiemdung.Data.FriendInfo;
 import com.doan.thongbaodiemdung.Service.GPSTracker;
 import com.doan.thongbaodiemdung.Other.MapsHandle;
 import com.doan.thongbaodiemdung.R;
@@ -36,7 +45,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,6 +148,7 @@ public class MapsFragment extends Fragment {
             public void onMapClick(LatLng latLng) {
                 mDestinationInfo = mapsHandle.getPlaceInfo(latLng);
                 addDestinationMarker(latLng);
+                Log.e("MapsFragment", "on map click listener");
             }
         });
 
@@ -280,6 +292,8 @@ public class MapsFragment extends Fragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search)
             onMapSearch();
+        if (id == R.id.action_show_friends)
+            showFriends();
         return super.onOptionsItemSelected(item);
     }
 
@@ -312,5 +326,57 @@ public class MapsFragment extends Fragment {
             } else if(resultCode == RESULT_CANCELED) {
             }
         }
+    }
+
+    public void showFriends() {
+        List<FriendInfo> friends = FirebaseHandle.getInstance().getListFriends();
+        final MarkerOptions markerOptions = new MarkerOptions();
+        for (final FriendInfo friend : friends) {
+            if(friend.isFollowing()) {
+                markerOptions.position(new LatLng(friend.getLatitude(), friend.getLongitude()));
+                Log.e("MapsFragent", friend.getName());
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        mMap.addMarker(markerOptions);
+                    }
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        try {
+
+                            Bitmap bitmap = Glide.with(context)
+                                    .load(friend.getAvatarURL())
+                                    .asBitmap()
+                                    .into(-1, -1).get();
+
+                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(circleBitmap(bitmap)));
+
+                        } catch (Exception ex) {
+                            Log.e("LocationFriendActivity", ex.getMessage());
+                        }
+                        return null;
+                    }
+                }.execute();
+            }
+        }
+    }
+
+    public static Bitmap circleBitmap(Bitmap bitmap) {
+        final int width = bitmap.getWidth();
+        final int height = bitmap.getHeight();
+        final Bitmap circleBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        final Path path = new Path();
+        path.addCircle((float) width/2,
+                (float) height/2,
+                (float) Math.min(width, height/2),
+                Path.Direction.CCW);
+
+        final Canvas canvas = new Canvas(circleBitmap);
+        canvas.clipPath(path);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        return circleBitmap;
     }
 }

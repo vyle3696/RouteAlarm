@@ -7,11 +7,21 @@ import java.io.Serializable;
  */
 
 public class FriendInfo implements Serializable{
+    private String id;
     private String name;
     private String avatarURL;
     private Double latitude;
     private Double longitude;
     private String status;
+    private boolean isFollowing;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -51,5 +61,13 @@ public class FriendInfo implements Serializable{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isFollowing() {
+        return isFollowing;
+    }
+
+    public void setFollowing(boolean following) {
+        isFollowing = following;
     }
 }

@@ -67,9 +67,11 @@ public class FriendsListFragment extends Fragment {
                 Object obj = adapterView.getItemAtPosition(i);
                 FriendInfo friendInfo = (FriendInfo) obj;
 
-                Intent intent = new Intent(context , LocationFriendActivity.class);
-                intent.putExtra("account", friendInfo);
-                context.startActivity(intent);
+                if(friendInfo.getStatus().equals("online")) {
+                    Intent intent = new Intent(context, LocationFriendActivity.class);
+                    intent.putExtra("account", friendInfo);
+                    context.startActivity(intent);
+                }
             }
         });
 

@@ -8,4 +8,10 @@
         app:showAsAction="always"
         android:title="settting"
         android:icon="@drawable/ic_search_black_24dp" />
+
+    <item
+        android:id="@+id/action_show_friends"
+        app:showAsAction="always"
+        android:title="show friends"
+        android:icon="@drawable/ic_friends_white"/>
 </menu>

@@ -253,8 +253,10 @@ public class SignIn extends AppCompatActivity implements
                                 String id = obj.getString("id");
                                 String avatarURL = "https" + "://graph.facebook.com/" + id + "/picture";
                                 Account account = new Account(id, name, avatarURL);
-                                if(mAuth.getCurrentUser() != null)
-                                    ref.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(String.valueOf(i)).setValue(id);
+                                if(mAuth.getCurrentUser() != null) {
+                                    ref.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
+                                            .child("id").setValue(id);
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

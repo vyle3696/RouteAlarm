@@ -28,20 +28,20 @@ public class MapsHandle {
 
     public static MapsHandle instance;
 
-    private GoogleMap mMap;
-    private Geocoder geocoder;
+    private static GoogleMap mMap;
+    private static Geocoder geocoder;
     private Marker mMarker;
     private Polyline currentPolyline;
 
-    private MapsHandle(Context mContext, GoogleMap mMap) {
-        this.mMap = mMap;
-        geocoder = new Geocoder(mContext, Locale.getDefault());
+    private MapsHandle() {
     }
 
     public static MapsHandle getInstance(Context context, GoogleMap map) {
         if(instance == null) {
-            instance = new MapsHandle(context, map);
+            instance = new MapsHandle();
         }
+        mMap = map;
+        geocoder = new Geocoder(context, Locale.getDefault());
         return instance;
     }
 
