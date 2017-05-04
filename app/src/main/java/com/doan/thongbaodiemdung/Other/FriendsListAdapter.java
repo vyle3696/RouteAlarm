@@ -26,6 +26,7 @@ import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.Service.BackgroundService;
 import com.google.android.gms.games.Games;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -64,6 +65,7 @@ public class FriendsListAdapter extends BaseAdapter {
         public ImageView friend_avatar;
         public TextView friend_name;
         public CheckBox friend_chkBox;
+        public TextView friend_distance;
     }
 
     @Override
@@ -77,6 +79,7 @@ public class FriendsListAdapter extends BaseAdapter {
             holder.friend_name = (TextView) view.findViewById(R.id.friend_name);
             holder.itemLayout = (LinearLayout) view.findViewById(R.id.friend_item);
             holder.friend_chkBox = (CheckBox) view.findViewById(R.id.friend_chkbox);
+            holder.friend_distance = (TextView) view.findViewById(R.id.friend_distance);
             view.setTag(holder);
         } else{
             holder = (FriendsListAdapter.ViewHolder) view.getTag();
@@ -91,8 +94,19 @@ public class FriendsListAdapter extends BaseAdapter {
 
         holder.friend_name.setText(accounts.get(i).getName());
 
-        if(accounts.get(i).getStatus().equals("online")) {
-            holder.itemLayout.setBackgroundColor(Color.WHITE);
+        Log.e(accounts.get(i).getStatus(), "ne");
+
+
+        if(accounts.get(i).getStatus() == "online") {
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+            Double distance = FirebaseHandle.getInstance().getDistanceFromFriend(accounts.get(i).getId());
+            holder.friend_distance.setText((distance < 1000) ? ("Khoảng cách với bạn: " + decimalFormat.format(distance) + " m") : ("Khoảng cách với bạn: " + decimalFormat.format(distance / 1000.0) + " km"));
+        }
+        else
+            holder.friend_distance.setText("Người này hiện đang offline");
+
+        if(accounts.get(i).getStatus().equals("offline")) {
+            holder.itemLayout.setBackgroundColor(Color.GRAY);
         }
 
         if(accounts.get(i).isFollowing()) {
@@ -114,6 +128,8 @@ public class FriendsListAdapter extends BaseAdapter {
                 }
             }
         });
+
+
 
         return view;
     }

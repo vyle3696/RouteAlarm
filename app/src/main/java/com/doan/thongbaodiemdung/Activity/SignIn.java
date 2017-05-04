@@ -12,7 +12,9 @@ import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
+import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
+import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.Other.Account;
 import com.doan.thongbaodiemdung.R;
 import com.facebook.AccessToken;
@@ -55,6 +57,8 @@ public class SignIn extends AppCompatActivity implements
     private CallbackManager mCallbackManager;
 
     private FirebaseAuth mAuth;
+
+    private DatabaseHelper dbHelper = new DatabaseHelper(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,7 +147,6 @@ public class SignIn extends AppCompatActivity implements
     {
         Toast.makeText(getBaseContext(),"Đăng nhập Facebook thành công",Toast.LENGTH_LONG).show();
         UpdateDatabse();
-
     }
 
     private void UpdateDatabse()
@@ -265,6 +268,15 @@ public class SignIn extends AppCompatActivity implements
                     }
                 }
         ).executeAsync();
+    }
+
+    public void UpListAlarmToFirebase()
+    {
+        List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
+
+        for(Route route : listRoute) {
+            FirebaseHandle.getInstance().updateRoute(route);
+        }
     }
 }
 
