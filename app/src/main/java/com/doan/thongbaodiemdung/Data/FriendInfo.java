@@ -14,6 +14,8 @@ public class FriendInfo implements Serializable{
     private Double longitude;
     private String status;
     private boolean isFollowing;
+    private boolean isNotifying;
+    private int minDis;
 
     public String getId() {
         return id;
@@ -69,5 +71,21 @@ public class FriendInfo implements Serializable{
 
     public void setFollowing(boolean following) {
         isFollowing = following;
+    }
+
+    public boolean isNotifying() {
+        return isNotifying;
+    }
+
+    public void setNotifying(boolean notifying) {
+        isNotifying = notifying;
+    }
+
+    public int getMinDis() {
+        return minDis;
+    }
+
+    public void setMinDis(int minDis) {
+        this.minDis = minDis;
     }
 }
