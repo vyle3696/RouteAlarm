@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_maps"
@@ -15,6 +16,11 @@
             android:id="@+id/nav_friends"
             android:icon="@drawable/ic_friends"
             android:title="Friends"/>
+
+        <item
+            android:id="@+id/nav_Logout"
+            android:icon="@drawable/logout"
+            android:title="Logout" />
     </group>
 
     <item android:title="Other">
@@ -27,4 +33,5 @@
                 android:title="Help"/>
         </menu>
     </item>
+
 </menu>

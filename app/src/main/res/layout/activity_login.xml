@@ -17,19 +17,6 @@
             android:layout_gravity="center"
             android:layout_marginTop="60dp"
             android:layout_marginLeft="79dp"
-            android:layout_marginRight="79dp"
-            android:scaleX="1.6"
-            android:scaleY="1.6" />
-
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/google_signin_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginTop="110dp">
-
-        </com.google.android.gms.common.SignInButton>
+            android:layout_marginRight="79dp" />
     </FrameLayout>
 </LinearLayout>

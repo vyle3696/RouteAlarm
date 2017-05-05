@@ -3,6 +3,7 @@ package com.doan.thongbaodiemdung.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,7 +13,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,14 +22,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
 import com.doan.thongbaodiemdung.Fragment.FriendsListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
-import com.doan.thongbaodiemdung.Other.Account;
-import com.doan.thongbaodiemdung.Service.AppService;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
 import com.doan.thongbaodiemdung.R;
+import com.doan.thongbaodiemdung.Service.AppService;
 
 public class MainActivity extends AppCompatActivity {
 
