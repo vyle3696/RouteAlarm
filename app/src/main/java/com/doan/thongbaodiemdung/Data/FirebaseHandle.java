@@ -1,10 +1,13 @@
 package com.doan.thongbaodiemdung.Data;
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.util.Log;
 
 import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.Activity.SignIn;
 import com.doan.thongbaodiemdung.Other.Account;
+import com.google.android.gms.common.data.DataBuffer;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -14,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,6 +38,8 @@ public class FirebaseHandle {
     private String userID;
     private static FirebaseHandle instance;
     private List<FriendInfo> listFriends;
+    private Double latitude;
+    private Double longitude;
 
     private FirebaseHandle() {
         mAuth = FirebaseAuth.getInstance();
@@ -133,6 +139,10 @@ public class FirebaseHandle {
                                 tempAccount.setLatitude(dataSnapshot.child(id).child("curPos").child("latitude").getValue(Double.class));
                                 tempAccount.setLongitude(dataSnapshot.child(id).child("curPos").child("longitude").getValue(Double.class));
                                 listFriends.add(tempAccount);
+                                latitude = dataSnapshot.child(userID).child("curPos")
+                                        .child("latitude").getValue(Double.class);
+                                longitude = dataSnapshot.child(userID).child("curPos")
+                                        .child("longitude").getValue(Double.class);
                             }
                         }
                     }
@@ -154,6 +164,65 @@ public class FirebaseHandle {
                 .child("isFollowing").setValue(isFollowing);
     }
 
+<<<<<<< HEAD
+    public double getDistanceFromFriend(String friendId)
+    {
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
+
+        Location friendLocation = new Location(LocationManager.GPS_PROVIDER);
+
+        for(FriendInfo friend: listFriends)
+        {
+            if(friend.getId() == friendId) {
+                friendLocation.setLongitude(friend.getLongitude());
+                friendLocation.setLatitude(friend.getLatitude());
+                break;
+            }
+
+        }
+        Log.e("friend location", friendLocation.toString());
+
+        return location.distanceTo(friendLocation);
+    }
+
+    public Map<String, Float> DistanceFromFriends() {
+        Map<String, Float> listDistance = new HashMap<String, Float>();
+
+        Location friendLocation = new Location("");
+        for(FriendInfo friend : listFriends)
+        {
+            friendLocation.setLongitude(friend.getLongitude());
+            friendLocation.setLatitude(friend.getLatitude());
+            if(friend.getStatus() == "online")
+                listDistance.put(friend.getId(), getSeftLocation().distanceTo(friendLocation));
+            else
+                listDistance.put(friend.getId(), null);
+        }
+        return listDistance;
+    }
+
+    private Location getSeftLocation()
+    {
+        final Location location = new Location(LocationManager.GPS_PROVIDER);
+
+        mRef.child(FB_ACCOUNT).child(userID).child("curPos").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                location.setLatitude(dataSnapshot.child("latitude").getValue(Double.class));
+                location.setLongitude(dataSnapshot.child("longitude").getValue(Double.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+
+        return location;
+    }
+
+=======
     public void updateNotiOfFriend(String id, int minDis) {
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child("minDis").setValue(minDis);
@@ -163,4 +232,5 @@ public class FirebaseHandle {
         mRef.child(FB_ACCOUNT).child(userID).child("friends").child(id)
                 .child("isNotifying").setValue(isNotifying);
     }
+>>>>>>> origin/master
 }
