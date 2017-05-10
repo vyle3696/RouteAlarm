@@ -82,9 +82,13 @@
             android:name=".Activity.EditRingtoneActivity"
             android:label="Nhạc chuông"
             android:theme="@style/AppTheme.ActionBar" />
-        <activity android:name=".Activity.LocationFriendActivity"
+        <activity
+            android:name=".Activity.LocationFriendActivity"
             android:label="Vị trí của bạn bè"
-            android:theme="@style/AppTheme.ActionBar" ></activity>
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity android:name=".Activity.SetFriendNotiActivity"
+            android:label="Thông báo vị trí bạn bè"
+            android:theme="@style/AppTheme.ActionBar"></activity>
     </application>
 
 </manifest>

@@ -105,10 +105,15 @@ public class LocationFriendActivity extends AppCompatActivity {
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        marker.setTitle(posInfo);
-                        marker.showInfoWindow();
-                        Toast.makeText(LocationFriendActivity.this, "Khoảng cách: " + distance + "m",
-                                Toast.LENGTH_LONG).show();
+//                        marker.setTitle(posInfo);
+//                        marker.showInfoWindow();
+//                        Toast.makeText(LocationFriendActivity.this, "Khoảng cách: " + distance + "m",
+//                                Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(LocationFriendActivity.this, SetFriendNotiActivity.class);
+                        intent.putExtra("info", posInfo);
+                        intent.putExtra("distance", String.valueOf(distance));
+                        intent.putExtra("friendInfo", account);
+                        startActivity(intent);
                         return true;
                     }
                 });

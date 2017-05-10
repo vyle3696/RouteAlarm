@@ -332,9 +332,8 @@ public class MapsFragment extends Fragment {
         List<FriendInfo> friends = FirebaseHandle.getInstance().getListFriends();
         final MarkerOptions markerOptions = new MarkerOptions();
         for (final FriendInfo friend : friends) {
-            if(friend.isFollowing()) {
+            if(friend.isFollowing() && friend.getStatus().equals("online")) {
                 markerOptions.position(new LatLng(friend.getLatitude(), friend.getLongitude()));
-                Log.e("MapsFragent", friend.getName());
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     protected void onPostExecute(Void aVoid) {
