@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
@@ -97,9 +96,16 @@ public class SignIn extends AppCompatActivity implements
             // Đăng nhập vào facebook lần đầu tiên
             @Override
             public void onSuccess(LoginResult loginResult) {
+
+                LoginButton loginButton1 = (LoginButton) findViewById(R.id.login_button);
+                loginButton1.setVisibility(View.INVISIBLE);
+
+
+
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 LoginFacebookHandle();
+
             }
 
             @Override
@@ -114,8 +120,11 @@ public class SignIn extends AppCompatActivity implements
                 // ...
             }
         });
-        if (isLoggedIn())
+        if (isLoggedIn()) {
+            LoginButton loginButton1 = (LoginButton) findViewById(R.id.login_button);
+            loginButton1.setVisibility(View.INVISIBLE);
             LoginFacebookHandle();
+        }
 
     }
 

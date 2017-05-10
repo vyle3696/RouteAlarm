@@ -5,7 +5,11 @@ android {
         config {
             keyAlias 'keyalias'
             keyPassword '123456789'
+<<<<<<< HEAD
             storeFile file('D:\\RouteAlarm\\KeyStore\\keystore.jks')
+=======
+            storeFile file('D:\\Git\\RouteAlarm\\KeyStore\\keystore.jks')
+>>>>>>> origin/master
             storePassword '123456789'
         }
     }
