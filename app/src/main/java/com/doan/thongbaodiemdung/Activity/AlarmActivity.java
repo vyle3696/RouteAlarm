@@ -14,8 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.doan.thongbaodiemdung.Service.BackgroundService;
 import com.doan.thongbaodiemdung.R;
+import com.doan.thongbaodiemdung.Service.BackgroundService;
 
 import java.io.IOException;
 
@@ -106,8 +106,12 @@ public class AlarmActivity extends AppCompatActivity {
                 mediaPlayer.stop();
                 vibrator.cancel();
                 BackgroundService.IS_ALARMING = false;
-                Intent intent = new Intent(AlarmActivity.this, MainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(AlarmActivity.this, MainActivity.class);
+//                startActivity(intent);
+                SignIn.disconnectFromFacebook();
+                Toast.makeText(getBaseContext(),"Vui lòng đăng nhập lại",Toast.LENGTH_LONG).show();
+                Intent mainIntent = new Intent(AlarmActivity.this, SplashScreen.class);
+                startActivity(mainIntent);
             }
         });
     }

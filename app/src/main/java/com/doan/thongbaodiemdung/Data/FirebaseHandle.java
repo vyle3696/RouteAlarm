@@ -4,11 +4,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.Activity.SignIn;
-import com.doan.thongbaodiemdung.Other.Account;
-import com.google.android.gms.common.data.DataBuffer;
-import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,10 +12,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,8 +77,13 @@ public class FirebaseHandle {
     }
 
     public void updateRoute(Route route){
-        mRef.child(FB_ACCOUNT).child(userID)
-                .child("listRoute").child(String.valueOf(route.getId())).setValue(route);
+        try {
+            mRef.child(FB_ACCOUNT).child(userID)
+                    .child("listRoute").child(String.valueOf(route.getId())).setValue(route);
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     public void updateCurPos(Double latitude, Double longitude) {
@@ -163,8 +159,6 @@ public class FirebaseHandle {
         mRef.child(FB_ACCOUNT).child(userID).child("friends").child(id)
                 .child("isFollowing").setValue(isFollowing);
     }
-
-<<<<<<< HEAD
     public double getDistanceFromFriend(String friendId)
     {
         Location location = new Location(LocationManager.GPS_PROVIDER);
@@ -222,7 +216,6 @@ public class FirebaseHandle {
         return location;
     }
 
-=======
     public void updateNotiOfFriend(String id, int minDis) {
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child("minDis").setValue(minDis);
@@ -232,5 +225,4 @@ public class FirebaseHandle {
         mRef.child(FB_ACCOUNT).child(userID).child("friends").child(id)
                 .child("isNotifying").setValue(isNotifying);
     }
->>>>>>> origin/master
 }

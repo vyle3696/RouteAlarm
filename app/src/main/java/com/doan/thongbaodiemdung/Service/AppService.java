@@ -9,14 +9,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
@@ -29,7 +26,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Hong Hanh on 4/25/2017.
@@ -68,7 +64,12 @@ public class AppService extends Service implements LocationListener,
         List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
 
         for(Route route : listRoute) {
-            FirebaseHandle.getInstance().updateRoute(route);
+            try {
+                FirebaseHandle.getInstance().updateRoute(route);
+            }catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
         }
 
     }
