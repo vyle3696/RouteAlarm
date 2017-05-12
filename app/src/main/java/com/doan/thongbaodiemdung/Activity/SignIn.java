@@ -277,17 +277,6 @@ public class SignIn extends AppCompatActivity implements
                 }
         ).executeAsync();
     }
-<<<<<<< HEAD
-=======
-
-    public void UpListAlarmToFirebase()
-    {
-        List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
-
-        for(Route route : listRoute) {
-            FirebaseHandle.getInstance().updateRoute(route);
-        }
-    }
 
     public static void disconnectFromFacebook() {
 
@@ -305,7 +294,6 @@ public class SignIn extends AppCompatActivity implements
             }
         }).executeAsync();
     }
->>>>>>> origin/master
 }
 
 
