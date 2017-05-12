@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -106,7 +107,7 @@ public class EditAlarmActivity extends AppCompatActivity {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!editDesName.getText().equals("")) {
+                if(editDesName.getText().length() > 0) {
                     //Set alarm
                     route.setName(editDesName.getText().toString())
                             .setMinDistance(mMinDis)
@@ -116,10 +117,12 @@ public class EditAlarmActivity extends AppCompatActivity {
 
                     FirebaseHandle.getInstance().updateRoute(route);
 
-                    Toast.makeText(EditAlarmActivity.this, "Cập nhật báo thức thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditAlarmActivity.this,
+                            getResources().getText(R.string.update_alarm_success), Toast.LENGTH_SHORT).show();
                     onBackPressed();
                 } else {
-                    Toast.makeText(EditAlarmActivity.this, "Tên của báo thức không được để trống", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditAlarmActivity.this,
+                            getResources().getText(R.string.error_update_alarm), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -128,15 +131,16 @@ public class EditAlarmActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(EditAlarmActivity.this);
-                dialog.setTitle("Lưu ý");
-                dialog.setMessage("Nếu bấm thoát sẽ không lưu lại những dữ liệu đã sửa đổi. Bạn có muốn thoát không?");
-                dialog.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+                dialog.setTitle(getResources().getText(R.string.warning));
+                dialog.setMessage(getResources().getText(R.string.warning_exit));
+                dialog.setPositiveButton(getResources().getText(R.string.exit),
+                        new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         onBackPressed();
                     }
                 });
-                dialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                dialog.setNegativeButton(getResources().getText(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 

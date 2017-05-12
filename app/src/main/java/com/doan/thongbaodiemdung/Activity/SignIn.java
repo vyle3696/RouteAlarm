@@ -45,6 +45,7 @@ import java.util.List;
 
 import static com.doan.thongbaodiemdung.Other.Constants.FB_ACCOUNT;
 import static com.doan.thongbaodiemdung.Other.Constants.FB_FRIENDS;
+import static com.doan.thongbaodiemdung.Other.Constants.ID;
 
 public class SignIn extends AppCompatActivity implements
         View.OnClickListener {
@@ -56,8 +57,6 @@ public class SignIn extends AppCompatActivity implements
     private CallbackManager mCallbackManager;
 
     private FirebaseAuth mAuth;
-
-    private DatabaseHelper dbHelper = new DatabaseHelper(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,10 +137,9 @@ public class SignIn extends AppCompatActivity implements
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             LoginFacebookHandle();
-                            Debug("Permissions ", getAccessToken().getPermissions().toString());
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -154,7 +152,7 @@ public class SignIn extends AppCompatActivity implements
 
     private void LoginFacebookHandle()
     {
-        Toast.makeText(getBaseContext(),"Đăng nhập Facebook thành công",Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getResources().getText(R.string.login_success),Toast.LENGTH_LONG).show();
         UpdateDatabse();
     }
 
@@ -193,8 +191,7 @@ public class SignIn extends AppCompatActivity implements
                             name = jsonObject.getString("name");
                             id =jsonObject.getString("id");
                             userID = id;
-                            Log.e("SignIn", (userID == null) ? "null" : "notnull");
-                            Debug("mAuth", String.valueOf(mAuth == null));
+
                             if(mAuth.getCurrentUser() != null)
                                 avatarURL = mAuth.getCurrentUser().getPhotoUrl().toString();
 
@@ -234,7 +231,8 @@ public class SignIn extends AppCompatActivity implements
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_info", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putString("name", name);
+        if(!name.equals(""))
+            editor.putString("name", name);
         editor.putString("avatarURL", avatarURL);
 
         editor.apply();
@@ -267,25 +265,15 @@ public class SignIn extends AppCompatActivity implements
                                 Account account = new Account(id, name, avatarURL);
                                 if(mAuth.getCurrentUser() != null) {
                                     ref.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
-                                            .child("id").setValue(id);
+                                            .child(ID).setValue(id);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
-                        Debug("Up friends to db", "Successful");
                     }
                 }
         ).executeAsync();
-    }
-
-    public void UpListAlarmToFirebase()
-    {
-        List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
-
-        for(Route route : listRoute) {
-            FirebaseHandle.getInstance().updateRoute(route);
-        }
     }
 }
 

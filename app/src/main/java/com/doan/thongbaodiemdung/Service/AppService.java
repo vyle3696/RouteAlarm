@@ -18,6 +18,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.doan.thongbaodiemdung.Activity.AlarmActivity;
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.FriendInfo;
@@ -94,21 +95,30 @@ public class AppService extends Service implements LocationListener,
         List<FriendInfo> friends = FirebaseHandle.getInstance().getListFriends();
         if(friends != null) {
             for (FriendInfo friend: friends) {
-                if(friend.getStatus().equals("online") && friend.isNotifying() && friend.isFollowing()) {
+                if(friend.getStatus().equals("online") && friend.isFollowing()) {
                     Location friendPos = new Location(LocationManager.GPS_PROVIDER);
                     friendPos.setLatitude(friend.getLatitude());
                     friendPos.setLongitude(friend.getLongitude());
                     if(location.distanceTo(friendPos) < friend.getMinDis()) {
-                        Notification.Builder noti = new Notification.Builder(this)
-                                .setSmallIcon(R.drawable.ic_friends_white)
-                                .setContentText(location.distanceTo(friendPos) + "m")
-                                .setContentTitle(friend.getName() + " đang ở gần bạn");
-                        noti.setAutoCancel(true);
-                        noti.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-                        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                        manager.notify(1, noti.build());
+                        if(friend.getRingtoneName().equals("")) {
+                            Notification.Builder noti = new Notification.Builder(this)
+                                    .setSmallIcon(R.drawable.ic_friends_white)
+                                    .setContentText(location.distanceTo(friendPos) + "m")
+                                    .setContentTitle(friend.getName() + " đang ở gần bạn");
+                            noti.setAutoCancel(true);
+                            noti.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+                            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            manager.notify(1, noti.build());
 
-                        FirebaseHandle.getInstance().setNotifyFriend(friend.getId(), false);
+                        } else {
+                            Intent intent = new Intent(AppService.this, AlarmActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("info", friend.getName() + " đang ở cách bạn " + location.distanceTo(friendPos) + " m");
+                            intent.putExtra("ringtone", friend.getRingtoneName());
+                            intent.putExtra("ringtonePath", friend.getRingtonePath());
+                            startActivity(intent);
+                        }
+                        FirebaseHandle.getInstance().setFollowFriend(friend.getId(), false);
                     }
                 }
             }

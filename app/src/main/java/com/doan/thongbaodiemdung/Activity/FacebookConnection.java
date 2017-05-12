@@ -45,12 +45,14 @@ public class FacebookConnection extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                Toast.makeText(FacebookConnection.this, "Đã đăng xuất", Toast.LENGTH_LONG).show();
+                Toast.makeText(FacebookConnection.this, getResources().getText(R.string.logout_success),
+                        Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(FacebookException e) {
-                Toast.makeText(FacebookConnection.this, "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
+                Toast.makeText(FacebookConnection.this, getResources().getText(R.string.login_fail),
+                        Toast.LENGTH_LONG).show();
             }
         });
 

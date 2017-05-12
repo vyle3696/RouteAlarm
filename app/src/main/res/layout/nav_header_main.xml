@@ -7,7 +7,7 @@
     android:id="@+id/view_container"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:background="#FED44D"
+    android:background="#FFC107"
     >
 
 

@@ -71,8 +71,8 @@ public class AlarmListFragment extends Fragment {
 
                 //show alert dialog to confirm user to delete route
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-                alertDialog.setMessage("Bạn có muốn xóa báo thức này không?");
-                alertDialog.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                alertDialog.setMessage(getResources().getText(R.string.ask_for_delete));
+                alertDialog.setPositiveButton(getResources().getText(R.string.delete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //delete route
@@ -86,7 +86,7 @@ public class AlarmListFragment extends Fragment {
                     }
                 });
 
-                alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                alertDialog.setNegativeButton(getResources().getText(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 

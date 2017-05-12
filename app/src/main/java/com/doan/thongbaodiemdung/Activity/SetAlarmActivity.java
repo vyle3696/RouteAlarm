@@ -96,16 +96,18 @@ public class SetAlarmActivity extends AppCompatActivity {
         btnSetAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!editDesName.getText().equals("")) {
+                if(editDesName.getText().length() > 0) {
                     //Set alarm
                     addRouteToDatabase(editDesName.getText().toString(), mDesInfo, mLatitude,
                             mLongitude, mDistance, mDisToRing, mRingtone, mRingtonePath );
                     intentService = new Intent(SetAlarmActivity.this, BackgroundService.class);
                     startService(intentService);
-                    Toast.makeText(SetAlarmActivity.this, "Thiết lập báo thức thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SetAlarmActivity.this,
+                            getResources().getText(R.string.set_alarm_success), Toast.LENGTH_SHORT).show();
                     onBackPressed();
                 } else {
-                    Toast.makeText(SetAlarmActivity.this, "Tên của báo thức không được để trống", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SetAlarmActivity.this,
+                            getResources().getText(R.string.error_update_alarm), Toast.LENGTH_SHORT).show();
                 }
             }
         });
