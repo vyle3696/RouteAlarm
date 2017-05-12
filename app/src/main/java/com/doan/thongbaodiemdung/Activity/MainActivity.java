@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -194,6 +195,12 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_FRIENDS;
                         break;
+                    case R.id.nav_Logout:
+                        SignIn.disconnectFromFacebook();
+                        Toast.makeText(getBaseContext(),"Vui lòng đăng nhập lại",Toast.LENGTH_LONG).show();
+                        Intent mainIntent = new Intent(MainActivity.this, SplashScreen.class);
+                        startActivity(mainIntent);
+                        return true;
                     case R.id.nav_info:
                         //start activity info
                         drawerLayout.closeDrawers();

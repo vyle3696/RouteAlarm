@@ -102,10 +102,12 @@ public class FirebaseHandle {
 
     public void updateCurPos(Double latitude, Double longitude) {
         try {
-            mRef.child(FB_ACCOUNT).child(userID)
-                    .child(CURRENT_POSITION).child(LATITUDE).setValue(latitude);
-            mRef.child(FB_ACCOUNT).child(userID)
-                    .child(CURRENT_POSITION).child(LONGITUDE).setValue(longitude);
+            if(userID != null) {
+                mRef.child(FB_ACCOUNT).child(userID)
+                        .child(CURRENT_POSITION).child(LATITUDE).setValue(latitude);
+                mRef.child(FB_ACCOUNT).child(userID)
+                        .child(CURRENT_POSITION).child(LONGITUDE).setValue(longitude);
+            }
         }catch (Exception ex) {
             ex.printStackTrace();
         }

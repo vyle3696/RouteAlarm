@@ -93,6 +93,7 @@ public class AppService extends Service implements LocationListener,
     public void onLocationChanged(Location location) {
         FirebaseHandle.getInstance().updateCurPos(location.getLatitude(), location.getLongitude());
         FirebaseHandle.getInstance().setStatusChange();
+
         List<FriendInfo> friends = FirebaseHandle.getInstance().getListFriends();
         if(friends != null) {
             for (FriendInfo friend: friends) {
