@@ -13,9 +13,9 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-
 /**
  * Created by VYLE on 04/04/2017.
  */
@@ -79,6 +79,14 @@ public class FacebookConnection extends AppCompatActivity {
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
+    }
+
+    public static void Logout()
+    {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken != null){
+            LoginManager.getInstance().logOut();
+        }
     }
 
 }

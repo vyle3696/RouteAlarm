@@ -4,11 +4,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.Activity.SignIn;
-import com.doan.thongbaodiemdung.Other.Account;
-import com.google.android.gms.common.data.DataBuffer;
-import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,10 +12,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,8 +91,18 @@ public class FirebaseHandle {
     }
 
     public void updateRoute(Route route){
+<<<<<<< HEAD
         mRef.child(FB_ACCOUNT).child(userID)
                 .child(ALARMS).child(String.valueOf(route.getId())).setValue(route);
+=======
+        try {
+            mRef.child(FB_ACCOUNT).child(userID)
+                    .child("listRoute").child(String.valueOf(route.getId())).setValue(route);
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+>>>>>>> origin/master
     }
 
     public void updateCurPos(Double latitude, Double longitude) {
@@ -182,7 +183,10 @@ public class FirebaseHandle {
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child(ISFOLLOWING).setValue(isFollowing);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
     public double getDistanceFromFriend(String friendId)
     {
         Location location = new Location(LocationManager.GPS_PROVIDER);
@@ -203,7 +207,46 @@ public class FirebaseHandle {
         return location.distanceTo(friendLocation);
     }
 
+<<<<<<< HEAD
     public void updateNotiOfFriend(String id, int minDis, String ringtoneName, String ringtonePath) {
+=======
+    public Map<String, Float> DistanceFromFriends() {
+        Map<String, Float> listDistance = new HashMap<String, Float>();
+
+        Location friendLocation = new Location("");
+        for(FriendInfo friend : listFriends)
+        {
+            friendLocation.setLongitude(friend.getLongitude());
+            friendLocation.setLatitude(friend.getLatitude());
+            if(friend.getStatus() == "online")
+                listDistance.put(friend.getId(), getSeftLocation().distanceTo(friendLocation));
+            else
+                listDistance.put(friend.getId(), null);
+        }
+        return listDistance;
+    }
+
+    private Location getSeftLocation()
+    {
+        final Location location = new Location(LocationManager.GPS_PROVIDER);
+
+        mRef.child(FB_ACCOUNT).child(userID).child("curPos").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                location.setLatitude(dataSnapshot.child("latitude").getValue(Double.class));
+                location.setLongitude(dataSnapshot.child("longitude").getValue(Double.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+
+        return location;
+    }
+
+    public void updateNotiOfFriend(String id, int minDis) {
+>>>>>>> origin/master
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child(MIN_DISTANCE).setValue(minDis);
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
