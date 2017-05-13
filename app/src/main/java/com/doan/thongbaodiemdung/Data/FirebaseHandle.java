@@ -4,11 +4,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-import com.doan.thongbaodiemdung.Data.Route;
-import com.doan.thongbaodiemdung.Activity.SignIn;
-import com.doan.thongbaodiemdung.Other.Account;
-import com.google.android.gms.common.data.DataBuffer;
-import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,16 +12,26 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.doan.thongbaodiemdung.Other.Constants.ALARMS;
+import static com.doan.thongbaodiemdung.Other.Constants.AVATAR_URL;
+import static com.doan.thongbaodiemdung.Other.Constants.CURRENT_POSITION;
 import static com.doan.thongbaodiemdung.Other.Constants.FB_ACCOUNT;
 import static com.doan.thongbaodiemdung.Other.Constants.FB_FRIENDS;
+import static com.doan.thongbaodiemdung.Other.Constants.ID;
+import static com.doan.thongbaodiemdung.Other.Constants.ISFOLLOWING;
+import static com.doan.thongbaodiemdung.Other.Constants.LATITUDE;
+import static com.doan.thongbaodiemdung.Other.Constants.LONGITUDE;
+import static com.doan.thongbaodiemdung.Other.Constants.MIN_DISTANCE;
+import static com.doan.thongbaodiemdung.Other.Constants.NAME;
+import static com.doan.thongbaodiemdung.Other.Constants.OFFLINE;
+import static com.doan.thongbaodiemdung.Other.Constants.ONLINE;
+import static com.doan.thongbaodiemdung.Other.Constants.RINGTONE_NAME;
+import static com.doan.thongbaodiemdung.Other.Constants.RINGTONE_PATH;
+import static com.doan.thongbaodiemdung.Other.Constants.STATUS;
 
 /**
  * Created by Hong Hanh on 4/24/2017.
@@ -67,10 +72,10 @@ public class FirebaseHandle {
                 if(connected) {
                     try {
                         mRef.child(FB_ACCOUNT).child(userID)
-                                .child("status").setValue("online");
+                                .child(STATUS).setValue(ONLINE);
 
                         mRef.child(FB_ACCOUNT).child(userID)
-                                .child("status").onDisconnect().setValue("offline");
+                                .child(STATUS).onDisconnect().setValue(OFFLINE);
                     }catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -86,16 +91,23 @@ public class FirebaseHandle {
     }
 
     public void updateRoute(Route route){
-        mRef.child(FB_ACCOUNT).child(userID)
-                .child("listRoute").child(String.valueOf(route.getId())).setValue(route);
+        try {
+            mRef.child(FB_ACCOUNT).child(userID)
+                    .child("listRoute").child(String.valueOf(route.getId())).setValue(route);
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     public void updateCurPos(Double latitude, Double longitude) {
         try {
-            mRef.child(FB_ACCOUNT).child(userID)
-                    .child("curPos").child("latitude").setValue(latitude);
-            mRef.child(FB_ACCOUNT).child(userID)
-                    .child("curPos").child("longitude").setValue(longitude);
+            if(userID != null) {
+                mRef.child(FB_ACCOUNT).child(userID)
+                        .child(CURRENT_POSITION).child(LATITUDE).setValue(latitude);
+                mRef.child(FB_ACCOUNT).child(userID)
+                        .child(CURRENT_POSITION).child(LONGITUDE).setValue(longitude);
+            }
         }catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -104,45 +116,50 @@ public class FirebaseHandle {
 
     public void removeRoute(String id) {
         mRef.child(FB_ACCOUNT).child(userID)
-                .child("listRoute").child(id).removeValue();
+                .child(ALARMS).child(id).removeValue();
     }
 
     public void setAccountListener() {
-        if(mRef.child(FB_ACCOUNT).child(userID).child("friends") != null)
+        if(mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS) != null)
         mRef.child(FB_ACCOUNT).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         listFriends = new ArrayList<>();
-                        for (DataSnapshot postSnapshot: dataSnapshot.child(userID).child("friends").getChildren()) {
-                            if(listFriends.size() <  dataSnapshot.child(userID).child("friends").getChildrenCount())
+                        for (DataSnapshot postSnapshot: dataSnapshot.child(userID).child(FB_FRIENDS).getChildren()) {
+                            if(listFriends.size() <  dataSnapshot.child(userID).child(FB_FRIENDS).getChildrenCount())
                             {
                                 FriendInfo tempAccount = new FriendInfo();
-                                String id = postSnapshot.child("id").getValue(String.class);
+                                String id = postSnapshot.child(ID).getValue(String.class);
                                 tempAccount.setId(id);
-                                if(postSnapshot.hasChild("isFollowing"))
-                                    tempAccount.setFollowing(postSnapshot.child("isFollowing").getValue(Boolean.class));
+                                if(postSnapshot.hasChild(ISFOLLOWING))
+                                    tempAccount.setFollowing(postSnapshot.child(ISFOLLOWING).getValue(Boolean.class));
                                 else
                                     tempAccount.setFollowing(false);
-                                if(postSnapshot.hasChild("minDis")) {
-                                    tempAccount.setMinDis(postSnapshot.child("minDis").getValue(Integer.class));
+                                if(postSnapshot.hasChild(MIN_DISTANCE)) {
+                                    tempAccount.setMinDis(postSnapshot.child(MIN_DISTANCE).getValue(Integer.class));
                                 } else {
                                     tempAccount.setMinDis(100);
                                 }
-                                if(postSnapshot.hasChild("isNotifying")) {
-                                    tempAccount.setNotifying(postSnapshot.child("isNotifying").getValue(Boolean.class));
+                                if(postSnapshot.hasChild(RINGTONE_NAME)) {
+                                    tempAccount.setRingtoneName(postSnapshot.child(RINGTONE_NAME).getValue(String.class));
                                 } else {
-                                    tempAccount.setNotifying(false);
+                                    tempAccount.setRingtoneName("");
                                 }
-                                tempAccount.setName(dataSnapshot.child(id).child("name").getValue(String.class));
-                                tempAccount.setAvatarURL(dataSnapshot.child(id).child("avatarURL").getValue(String.class));
-                                tempAccount.setStatus(dataSnapshot.child(id).child("status").getValue(String.class));
-                                tempAccount.setLatitude(dataSnapshot.child(id).child("curPos").child("latitude").getValue(Double.class));
-                                tempAccount.setLongitude(dataSnapshot.child(id).child("curPos").child("longitude").getValue(Double.class));
+                                if (postSnapshot.hasChild(RINGTONE_PATH)) {
+                                    tempAccount.setRingtonePath(postSnapshot.child(RINGTONE_PATH).getValue(String.class));
+                                } else {
+                                    tempAccount.setRingtonePath("");
+                                }
+                                tempAccount.setName(dataSnapshot.child(id).child(NAME).getValue(String.class));
+                                tempAccount.setAvatarURL(dataSnapshot.child(id).child(AVATAR_URL).getValue(String.class));
+                                tempAccount.setStatus(dataSnapshot.child(id).child(STATUS).getValue(String.class));
+                                tempAccount.setLatitude(dataSnapshot.child(id).child(CURRENT_POSITION).child(LATITUDE).getValue(Double.class));
+                                tempAccount.setLongitude(dataSnapshot.child(id).child(CURRENT_POSITION).child(LONGITUDE).getValue(Double.class));
                                 listFriends.add(tempAccount);
-                                latitude = dataSnapshot.child(userID).child("curPos")
-                                        .child("latitude").getValue(Double.class);
-                                longitude = dataSnapshot.child(userID).child("curPos")
-                                        .child("longitude").getValue(Double.class);
+                                latitude = dataSnapshot.child(userID).child(CURRENT_POSITION)
+                                        .child(LATITUDE).getValue(Double.class);
+                                longitude = dataSnapshot.child(userID).child(CURRENT_POSITION)
+                                        .child(LONGITUDE).getValue(Double.class);
                             }
                         }
                     }
@@ -172,8 +189,8 @@ public class FirebaseHandle {
     }
 
     public void setFollowFriend(String id, boolean isFollowing) {
-        mRef.child(FB_ACCOUNT).child(userID).child("friends").child(id)
-                .child("isFollowing").setValue(isFollowing);
+        mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
+                .child(ISFOLLOWING).setValue(isFollowing);
     }
 
     public double getDistanceFromFriend(String friendId)
@@ -193,11 +210,10 @@ public class FirebaseHandle {
             }
 
         }
-        Log.e("friend location", friendLocation.toString());
-
         return location.distanceTo(friendLocation);
     }
 
+<<<<<<< HEAD
     public Map<String, Float> DistanceFromFriends() {
         Map<String, Float> listDistance = new HashMap<String, Float>();
 
@@ -234,12 +250,19 @@ public class FirebaseHandle {
     }
 
     public void updateNotiOfFriend(String id, int minDis) {
+=======
+    public void updateNotiOfFriend(String id, int minDis, String ringtoneName, String ringtonePath) {
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
-                .child("minDis").setValue(minDis);
+                .child(MIN_DISTANCE).setValue(minDis);
+>>>>>>> origin/master
+        mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
+                .child(RINGTONE_NAME).setValue(ringtoneName);
+        mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
+                .child(RINGTONE_PATH).setValue(ringtonePath);
     }
 
     public void setNotifyFriend(String id, boolean isNotifying) {
-        mRef.child(FB_ACCOUNT).child(userID).child("friends").child(id)
+        mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child("isNotifying").setValue(isNotifying);
     }
 }

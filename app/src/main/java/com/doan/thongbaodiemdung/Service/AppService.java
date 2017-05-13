@@ -9,15 +9,13 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
+import com.doan.thongbaodiemdung.Activity.AlarmActivity;
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.FriendInfo;
@@ -29,7 +27,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Hong Hanh on 4/25/2017.
@@ -68,7 +65,12 @@ public class AppService extends Service implements LocationListener,
         List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
 
         for(Route route : listRoute) {
-            FirebaseHandle.getInstance().updateRoute(route);
+            try {
+                FirebaseHandle.getInstance().updateRoute(route);
+            }catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
         }
 
     }
@@ -91,24 +93,34 @@ public class AppService extends Service implements LocationListener,
     public void onLocationChanged(Location location) {
         FirebaseHandle.getInstance().updateCurPos(location.getLatitude(), location.getLongitude());
         FirebaseHandle.getInstance().setStatusChange();
+
         List<FriendInfo> friends = FirebaseHandle.getInstance().getListFriends();
         if(friends != null) {
             for (FriendInfo friend: friends) {
-                if(friend.getStatus().equals("online") && friend.isNotifying() && friend.isFollowing()) {
+                if(friend.getStatus().equals("online") && friend.isFollowing()) {
                     Location friendPos = new Location(LocationManager.GPS_PROVIDER);
                     friendPos.setLatitude(friend.getLatitude());
                     friendPos.setLongitude(friend.getLongitude());
                     if(location.distanceTo(friendPos) < friend.getMinDis()) {
-                        Notification.Builder noti = new Notification.Builder(this)
-                                .setSmallIcon(R.drawable.ic_friends_white)
-                                .setContentText(location.distanceTo(friendPos) + "m")
-                                .setContentTitle(friend.getName() + " đang ở gần bạn");
-                        noti.setAutoCancel(true);
-                        noti.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-                        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                        manager.notify(1, noti.build());
+                        if(friend.getRingtoneName().equals("")) {
+                            Notification.Builder noti = new Notification.Builder(this)
+                                    .setSmallIcon(R.drawable.ic_friends_white)
+                                    .setContentText(location.distanceTo(friendPos) + "m")
+                                    .setContentTitle(friend.getName() + " đang ở gần bạn");
+                            noti.setAutoCancel(true);
+                            noti.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+                            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            manager.notify(1, noti.build());
 
-                        FirebaseHandle.getInstance().setNotifyFriend(friend.getId(), false);
+                        } else {
+                            Intent intent = new Intent(AppService.this, AlarmActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("info", friend.getName() + " đang ở cách bạn " + location.distanceTo(friendPos) + " m");
+                            intent.putExtra("ringtone", friend.getRingtoneName());
+                            intent.putExtra("ringtonePath", friend.getRingtonePath());
+                            startActivity(intent);
+                        }
+                        FirebaseHandle.getInstance().setFollowFriend(friend.getId(), false);
                     }
                 }
             }

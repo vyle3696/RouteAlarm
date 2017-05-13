@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -50,16 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static String CURRENT_TAG = TAG_MAP;
 
-    private static final String urlProfileImg = "https://scontent.fsgn2-2.fna.fbcdn.net/v/t1.0-9/12119138_1512040019118750_7771828771415927462_n.jpg?oh=962a62cafc003edba31349b4accee231&oe=599A50EB";
-
     //toolbar titles respected to selected nav menu item
     private String[] activityTitles;
 
     //flag to load map fragment when user presses back key
     private boolean shouldLoadMapFragOnBackPress = true;
     private Handler mHandle;
-
-    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +100,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadNavHeader() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        Log.e("MainActivity", "loadNavHeader");
         if(sharedPreferences != null) {
+            Log.e("MainActivity", "user name : " + sharedPreferences.getString("name", "User name"));
             txtName.setText(sharedPreferences.getString("name", "User name"));
 
             //load profile image
@@ -112,9 +111,8 @@ public class MainActivity extends AppCompatActivity {
                     .thumbnail(0.5f)
                     .bitmapTransform(new CircleTransform(this))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.ic_account)
                     .into(imgProfile);
-        } else {
-            txtName.setText("User name");
         }
     }
 
@@ -203,7 +201,16 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_FRIENDS;
                         break;
+<<<<<<< HEAD
                     
+=======
+                    case R.id.nav_Logout:
+                        SignIn.disconnectFromFacebook();
+                        Toast.makeText(getBaseContext(),"Vui lòng đăng nhập lại",Toast.LENGTH_LONG).show();
+                        Intent mainIntent = new Intent(MainActivity.this, SplashScreen.class);
+                        startActivity(mainIntent);
+                        return true;
+>>>>>>> origin/master
                     case R.id.nav_info:
                         //start activity info
                         drawerLayout.closeDrawers();
@@ -267,13 +274,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        Log.e("MainActivity", "Stop");
         super.onStop();
     }
 
     @Override
     protected void onPause() {
-        Log.e("MainActivity", "Pause");
         super.onPause();
     }
 
@@ -281,6 +286,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         super.onDestroy();
-        Log.e("MainActivity", "Destroy");
     }
 }

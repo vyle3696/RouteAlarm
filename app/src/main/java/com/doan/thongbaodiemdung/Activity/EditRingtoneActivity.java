@@ -39,9 +39,9 @@ public class EditRingtoneActivity extends AppCompatActivity {
 
         customRingtoneLayout.setVisibility(View.INVISIBLE);
 
-        if(mRingtoneName.equals("ringtone")) {
+        if(mRingtoneName.equals(getResources().getText(R.string.ringtone))) {
             rdoRingtone.setChecked(true);
-        } else if (mRingtoneName.equals("hello_omfg_ringtone")) {
+        } else if (mRingtoneName.equals(getResources().getText(R.string.hello_ringtone))) {
             rdoHelloRingtone.setChecked(true);
         } else {
             customRingtoneLayout.setVisibility(View.VISIBLE);
@@ -72,7 +72,7 @@ public class EditRingtoneActivity extends AppCompatActivity {
                 rdoCustom.setChecked(false);
                 rdoRingtone.setChecked(true);
                 rdoHelloRingtone.setChecked(false);
-                mRingtoneName = "ringtone";
+                mRingtoneName = getResources().getText(R.string.ringtone).toString();
                 mRingtonePath = "";
             }
         });
@@ -83,7 +83,7 @@ public class EditRingtoneActivity extends AppCompatActivity {
                 rdoCustom.setChecked(false);
                 rdoRingtone.setChecked(false);
                 rdoHelloRingtone.setChecked(true);
-                mRingtoneName = "hello_omfg_ringtone";
+                mRingtoneName = getResources().getText(R.string.hello_ringtone).toString();
                 mRingtonePath = "";
             }
         });

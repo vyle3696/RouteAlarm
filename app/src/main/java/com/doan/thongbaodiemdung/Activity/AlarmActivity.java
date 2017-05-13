@@ -14,8 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.doan.thongbaodiemdung.Service.BackgroundService;
 import com.doan.thongbaodiemdung.R;
+import com.doan.thongbaodiemdung.Service.BackgroundService;
 
 import java.io.IOException;
 

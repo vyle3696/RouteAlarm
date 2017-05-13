@@ -9,35 +9,6 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Thiết lập thông báo"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            />
-
-        <CheckBox
-            android:id="@+id/chk_friend_noti"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ced8e8"
-        android:layout_marginTop="10dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -137,12 +108,100 @@
             android:max="1000"/>
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ced8e8"
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kiểu thông báo:"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Thông báo trên thanh trạng thái"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="18dp"
+                android:textColor="@android:color/black"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:id="@+id/rdo_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Thông báo bằng nhạc chuông"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="18dp"
+                android:textColor="@android:color/black"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:id="@+id/rdo_ringtone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/ringtone_layout_friend">
+            <TextView
+                android:id="@+id/txt_ringtone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Ringtone"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:textSize="18dp"
+                android:textColor="@android:color/black"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=">>"
+                android:textSize="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+
     <Button
         android:id="@+id/set_noti_btn"
         android:layout_width="60sp"
         android:layout_height="60sp"
         android:layout_gravity="bottom|end"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/btn" />

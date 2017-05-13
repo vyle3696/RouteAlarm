@@ -4,6 +4,35 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="default_ringtone">ringtone</string>
     <string name="facebook_app_id">1468167886551331</string>
+    <string name="update_alarm_success">Cập nhật báo thức thành công</string>
+    <string name="error_update_alarm">Tên của báo thức không được để trống</string>
+    <string name="warning_exit">Nếu bấm thoát sẽ không lưu lại những dữ liệu đã sửa đổi. Bạn có muốn thoát không?</string>
+    <string name="warning">Lưu ý</string>
+    <string name="exit">Thoát</string>
+    <string name="cancel">Hủy</string>
+    <string name="ringtone">ringtone</string>
+    <string name="hello_ringtone">hello_omfg_ringtone</string>
+    <string name="login_success">Đăng nhập facebook thành công</string>
+    <string name="login_fail">Đăng nhập thất bại</string>
+    <string name="logout_success">Đã đăng xuất</string>
+    <string name="set_alarm_success">Thiết lập báo thức thành công</string>
+    <string name="online">online</string>
+    <string name="offline">offline</string>
+    <string name="ask_for_delete">Bạn có muốn xóa báo thức này không?</string>
+    <string name="delete">Xóa</string>
+    <string name="set_notify">Đã thiết lập thông báo đối với </string>
+    <string name="delete_notify">Đã hủy thiết lập thông báo đối với </string>
+    <string name="refresh_list_friends">Refresh danh sách bạn bè</string>
+    <string name="warning_set_location">Bạn chưa chọn địa điểm nào. Bấm vào bản đồ để chọn địa điểm.</string>
+    <string name="error_get_current_location">Chưa lấy được địa điểm hiện tại</string>
+    <string name="friend_offline">Người này hiện đang offline</string>
+    <string name="set_follow_friend">Đã thiết lập theo dõi vị trí với </string>
+    <string name="delete_follow_friend">Đã hủy thiết lập theo dõi vị trí với </string>
+    <string name="distance_with_user">Khoảng cách với bạn: </string>
+    <string name="current_distance">Khoảng cách hiện tại: </string>
+    <string name="setting_title">GPS is settings</string>
+    <string name="setting_message">GPS is not enable. Do you want to go to settings menu?</string>
+    <string name="setting">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

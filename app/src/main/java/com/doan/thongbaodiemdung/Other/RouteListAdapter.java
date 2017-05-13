@@ -82,7 +82,7 @@ public class RouteListAdapter extends BaseAdapter {
             holder.btnSetAlarm.setChecked(true);
         }
         holder.alarmName.setText(route.getName());
-        holder.alarmDistance.setText("Khoảng cách hiện tại: " + route.getDistance().toString() + "m");
+        holder.alarmDistance.setText(context.getResources().getText(R.string.current_distance) + route.getDistance().toString() + "m");
 
         holder.btnSetAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

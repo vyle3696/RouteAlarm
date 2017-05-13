@@ -62,7 +62,7 @@ public class MapsHandle {
 
                 mDestinationInfo = builder.toString();
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         if(mDestinationInfo.equals("")) {

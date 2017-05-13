@@ -90,7 +90,6 @@ public class LoadRingtoneActivity extends AppCompatActivity {
         if(songCursor != null && songCursor.moveToFirst())
         {
             int songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
             int songPath = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
 
             do{
@@ -115,14 +114,11 @@ public class LoadRingtoneActivity extends AppCompatActivity {
                     if(ContextCompat.checkSelfPermission(LoadRingtoneActivity.this,
                             Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
                     {
-                        Toast.makeText(this, "Permission granted!", Toast.LENGTH_SHORT).show();
-
                         doStuff();
                     }
                 }
                 else
                 {
-                    Toast.makeText(this,"No Permission granted!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 return;

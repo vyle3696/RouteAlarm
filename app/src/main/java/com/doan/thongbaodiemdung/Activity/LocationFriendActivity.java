@@ -19,6 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.FriendInfo;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
 import com.doan.thongbaodiemdung.Other.MapsHandle;
@@ -41,6 +42,7 @@ public class LocationFriendActivity extends AppCompatActivity {
     private GoogleMap mMap;
     private GPSTracker gps;
     private Location curPos;
+    private FriendInfo account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class LocationFriendActivity extends AppCompatActivity {
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_maps);
 
 
-        final FriendInfo account = (FriendInfo) getIntent().getSerializableExtra("account");
+        account = (FriendInfo) getIntent().getSerializableExtra("account");
         Location friendPos = new Location(LocationManager.GPS_PROVIDER);
         friendPos.setLatitude(account.getLatitude());
         friendPos.setLongitude(account.getLongitude());
@@ -105,10 +107,6 @@ public class LocationFriendActivity extends AppCompatActivity {
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-//                        marker.setTitle(posInfo);
-//                        marker.showInfoWindow();
-//                        Toast.makeText(LocationFriendActivity.this, "Khoảng cách: " + distance + "m",
-//                                Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(LocationFriendActivity.this, SetFriendNotiActivity.class);
                         intent.putExtra("info", posInfo);
                         intent.putExtra("distance", String.valueOf(distance));
@@ -147,5 +145,10 @@ public class LocationFriendActivity extends AppCompatActivity {
             curPos.setLatitude(gps.getLatitude());
             curPos.setLongitude(gps.getLongitude());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }
