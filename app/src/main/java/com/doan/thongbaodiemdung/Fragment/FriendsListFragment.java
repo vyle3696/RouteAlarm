@@ -38,10 +38,8 @@ import java.util.List;
 
 public class FriendsListFragment extends Fragment {
 
-    private DatabaseHelper dbHelper;
     private ListView listView;
     private Context context;
-
 
     public FriendsListFragment() {
     }

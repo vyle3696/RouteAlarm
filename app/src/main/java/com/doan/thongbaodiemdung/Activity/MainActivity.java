@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
+import com.doan.thongbaodiemdung.Fragment.AlertsListFragment;
 import com.doan.thongbaodiemdung.Fragment.FriendsListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_MAP = "map";
     private static final String TAG_ALARM = "alarm";
     private static final String TAG_FRIENDS = "friends";
+    private static final String TAG_ALERTS = "alerts";
+
     public static String CURRENT_TAG = TAG_MAP;
 
     private static final String urlProfileImg = "https://scontent.fsgn2-2.fna.fbcdn.net/v/t1.0-9/12119138_1512040019118750_7771828771415927462_n.jpg?oh=962a62cafc003edba31349b4accee231&oe=599A50EB";
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /***
-     * Return respected fragment that user
+     * Return respected fragment which was
      * selected from navigation menu
      */
     private void loadHomeFragment() {
@@ -167,6 +170,9 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 FriendsListFragment friendsListFragment = new FriendsListFragment();
                 return friendsListFragment;
+            case 3:
+                AlertsListFragment alertsListFragment = new AlertsListFragment();
+                return alertsListFragment;
             default:
                 return new MapsFragment();
         }
@@ -197,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_FRIENDS;
                         break;
+                    
                     case R.id.nav_info:
                         //start activity info
                         drawerLayout.closeDrawers();

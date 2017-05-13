@@ -159,12 +159,23 @@ public class FirebaseHandle {
         return listFriends;
     }
 
+    public List<FriendInfo> getListFriendsInNoti()
+    {
+        List<FriendInfo> friends = new ArrayList<>();
+        for (FriendInfo friendInfo:listFriends) {
+            if(friendInfo.getStatus()== "online")
+            {
+                friends.add(friendInfo);
+            }
+        }
+        return friends;
+    }
+
     public void setFollowFriend(String id, boolean isFollowing) {
         mRef.child(FB_ACCOUNT).child(userID).child("friends").child(id)
                 .child("isFollowing").setValue(isFollowing);
     }
 
-<<<<<<< HEAD
     public double getDistanceFromFriend(String friendId)
     {
         Location location = new Location(LocationManager.GPS_PROVIDER);
@@ -222,7 +233,6 @@ public class FirebaseHandle {
         return location;
     }
 
-=======
     public void updateNotiOfFriend(String id, int minDis) {
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child("minDis").setValue(minDis);
@@ -232,5 +242,4 @@ public class FirebaseHandle {
         mRef.child(FB_ACCOUNT).child(userID).child("friends").child(id)
                 .child("isNotifying").setValue(isNotifying);
     }
->>>>>>> origin/master
 }
