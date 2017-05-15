@@ -135,6 +135,10 @@ public class FirebaseHandle {
                                     tempAccount.setFollowing(postSnapshot.child(ISFOLLOWING).getValue(Boolean.class));
                                 else
                                     tempAccount.setFollowing(false);
+                                if(postSnapshot.hasChild("isNotifying"))
+                                    tempAccount.setNotifying(postSnapshot.child("isNotifying").getValue(Boolean.class));
+                                else
+                                    tempAccount.setNotifying(false);
                                 if(postSnapshot.hasChild(MIN_DISTANCE)) {
                                     tempAccount.setMinDis(postSnapshot.child(MIN_DISTANCE).getValue(Integer.class));
                                 } else {
@@ -179,8 +183,9 @@ public class FirebaseHandle {
     public List<FriendInfo> getListFriendsInNoti()
     {
         List<FriendInfo> friends = new ArrayList<>();
-        for (FriendInfo friendInfo:listFriends) {
-            if(friendInfo.getStatus()== "online")
+        for (FriendInfo friendInfo:listFriends)
+        {
+            //if(friendInfo.getStatus()== "online")
             {
                 friends.add(friendInfo);
             }
@@ -213,7 +218,6 @@ public class FirebaseHandle {
         return location.distanceTo(friendLocation);
     }
 
-<<<<<<< HEAD
     public Map<String, Float> DistanceFromFriends() {
         Map<String, Float> listDistance = new HashMap<String, Float>();
 
@@ -249,17 +253,18 @@ public class FirebaseHandle {
         return location;
     }
 
-    public void updateNotiOfFriend(String id, int minDis) {
-=======
+    public void updateNotiOfFriend(String id, int minDis) {}
+
     public void updateNotiOfFriend(String id, int minDis, String ringtoneName, String ringtonePath) {
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child(MIN_DISTANCE).setValue(minDis);
->>>>>>> origin/master
+
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child(RINGTONE_NAME).setValue(ringtoneName);
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                 .child(RINGTONE_PATH).setValue(ringtonePath);
     }
+
 
     public void setNotifyFriend(String id, boolean isNotifying) {
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)

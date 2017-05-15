@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -14,10 +15,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +37,16 @@ import com.doan.thongbaodiemdung.Service.AppService;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NavigationView navigationView;
+    public static TextView notiCounter;
+    public static View NotiView;
+
+    public static NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private View navHeader;
     private ImageView imgProfile;
     private TextView txtName;
     private Toolbar toolbar;
+
 
     //index to identify current menu item
     public static int navItemIndex = 0;
@@ -70,6 +78,15 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View view = inflater.inflate(R.layout.menu_dot, null);
+
+
+
+
+
+        //notiCounter = (TextView) navigationView.getMenu().findItem(R.id.notification_counter).getActionView();
 
         //Navigation view header
         navHeader = navigationView.getHeaderView(0);
@@ -113,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.ic_account)
                     .into(imgProfile);
+
+            navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
+
         }
     }
 
@@ -201,16 +221,16 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_FRIENDS;
                         break;
-<<<<<<< HEAD
-                    
-=======
+                    case R.id.nav_alerts:
+                        navItemIndex = 3;
+                        CURRENT_TAG = TAG_ALERTS;
+                        break;
                     case R.id.nav_Logout:
                         SignIn.disconnectFromFacebook();
                         Toast.makeText(getBaseContext(),"Vui lòng đăng nhập lại",Toast.LENGTH_LONG).show();
                         Intent mainIntent = new Intent(MainActivity.this, SplashScreen.class);
                         startActivity(mainIntent);
                         return true;
->>>>>>> origin/master
                     case R.id.nav_info:
                         //start activity info
                         drawerLayout.closeDrawers();
@@ -287,4 +307,12 @@ public class MainActivity extends AppCompatActivity {
 
         super.onDestroy();
     }
+
+    public static void UpdateNotiCounter(String count)
+    {
+        View view = navigationView.getMenu().getItem(3).getActionView();
+        notiCounter = (TextView) view.findViewById(R.id.notification_counter);
+        notiCounter.setText(count);
+    }
+
 }

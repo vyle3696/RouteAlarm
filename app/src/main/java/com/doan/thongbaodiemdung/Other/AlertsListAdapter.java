@@ -20,8 +20,12 @@ import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.FriendInfo;
 import com.doan.thongbaodiemdung.Fragment.AlertsListFragment;
 import com.doan.thongbaodiemdung.R;
+import com.google.android.gms.vision.text.Text;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -44,23 +48,23 @@ public class AlertsListAdapter extends BaseAdapter {
         public LinearLayout itemLayout;
         public ImageView alert_avatar;
         public TextView alert_name;
-        public TextView alert_location;
         public TextView alert_distance;
+        public TextView alert_time;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return accounts.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return accounts.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
@@ -70,11 +74,11 @@ public class AlertsListAdapter extends BaseAdapter {
         if(view == null) {
             view = inflater.inflate(R.layout.fragment_alerts, null);
             holder = new AlertsListAdapter.ViewHolder();
-            holder.alert_avatar = (ImageView) view.findViewById(R.id.img_avatar);
+            holder.alert_avatar = (ImageView) view.findViewById(R.id.alert_image);
             holder.alert_name = (TextView) view.findViewById(R.id.alert_name);
             holder.itemLayout = (LinearLayout) view.findViewById(R.id.alert_item);
-            holder.alert_location = (TextView) view.findViewById(R.id.alert_location);
             holder.alert_distance = (TextView) view.findViewById(R.id.alert_distance);
+            holder.alert_time = (TextView) view.findViewById(R.id.noti_time);
             view.setTag(holder);
         } else{
             holder = (AlertsListAdapter.ViewHolder) view.getTag();
@@ -87,17 +91,18 @@ public class AlertsListAdapter extends BaseAdapter {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.alert_avatar);
 
+
         holder.alert_name.setText(accounts.get(i).getName() + " đang ở gần bạn");
 
-        if(accounts.get(i).getStatus() == "online") {
-            DecimalFormat decimalFormat = new DecimalFormat("0.00");
-            Double distance = FirebaseHandle.getInstance().getDistanceFromFriend(accounts.get(i).getId());
-            holder.alert_distance.setText((distance < 1000) ? ("Cách bạn khoảng: " + decimalFormat.format(distance) + " m") : ("Cách bạn khoảng: " + decimalFormat.format(distance / 1000.0) + " km"));
-        }
-        else
-            holder.alert_distance.setText("");
 
-        final FriendInfo friendInfo= accounts.get(i);
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        Double distance = FirebaseHandle.getInstance().getDistanceFromFriend(accounts.get(i).getId());
+        holder.alert_distance.setText((distance < 1000) ? ("Cách bạn khoảng: " + decimalFormat.format(distance) + " m") : ("Cách bạn khoảng: " + decimalFormat.format(distance / 1000.0) + " km"));
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyy HH:mm");
+        String formattedDate = df.format(c.getTime());
+        holder.alert_time.setText(formattedDate);
 
         // Cập nhật location ở đây
         //holder.alert_location = accounts.get(i).getLocation();

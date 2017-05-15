@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.doan.thongbaodiemdung.Data.FriendInfo;
 import com.doan.thongbaodiemdung.Other.AlertsListAdapter;
 import com.doan.thongbaodiemdung.Other.FriendsListAdapter;
 import com.doan.thongbaodiemdung.R;
+import com.doan.thongbaodiemdung.Service.AppService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +47,11 @@ public class AlertsListFragment extends Fragment {
     }
 
     private List<FriendInfo> getListAccount() {
-        List<FriendInfo> account = FirebaseHandle.getInstance().getListFriendsInNoti();
+        List<FriendInfo> account = AppService.friendNear;
         if(account == null) {
             account = new ArrayList<>();
         }
+        Log.e("hanh benh", String.valueOf(account.size()));
         return account;
     }
 
