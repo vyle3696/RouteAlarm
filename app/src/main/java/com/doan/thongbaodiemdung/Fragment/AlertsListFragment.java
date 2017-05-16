@@ -2,6 +2,7 @@ package com.doan.thongbaodiemdung.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,6 +20,9 @@ import com.doan.thongbaodiemdung.Other.AlertsListAdapter;
 import com.doan.thongbaodiemdung.Other.FriendsListAdapter;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.Service.AppService;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ public class AlertsListFragment extends Fragment {
 
     private ListView listView;
     private Context context;
+    private ShareButton shareButton;
 
     public AlertsListFragment() {
     }
@@ -80,6 +85,11 @@ public class AlertsListFragment extends Fragment {
             }
         });
 
+        shareButton = (ShareButton) view.findViewById(R.id.share_app);
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.doan.thongbaodiemdung"))
+                .build();
+        shareButton.setShareContent(content);
 
         return view;
     }

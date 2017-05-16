@@ -3,6 +3,7 @@ package com.doan.thongbaodiemdung.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
@@ -34,6 +35,9 @@ import com.doan.thongbaodiemdung.Fragment.MapsFragment;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.Service.AppService;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -239,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
                         //start activity help
                         drawerLayout.closeDrawers();
                         return true;
+
                     default:
                         navItemIndex = 0;
                 }
