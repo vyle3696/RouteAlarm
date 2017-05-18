@@ -3,10 +3,8 @@ package com.doan.thongbaodiemdung.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,13 +14,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,13 +30,8 @@ import com.doan.thongbaodiemdung.Fragment.MapsFragment;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.Service.AppService;
-<<<<<<< HEAD
 import com.facebook.FacebookSdk;
-=======
-import com.facebook.share.model.ShareContent;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareButton;
->>>>>>> origin/master
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -321,9 +311,16 @@ public class MainActivity extends AppCompatActivity {
 
     public static void UpdateNotiCounter(String count)
     {
-        View view = navigationView.getMenu().getItem(3).getActionView();
-        notiCounter = (TextView) view.findViewById(R.id.notification_counter);
-        notiCounter.setText(count);
+        try
+        {
+            View view = navigationView.getMenu().getItem(3).getActionView();
+            notiCounter = (TextView) view.findViewById(R.id.notification_counter);
+            notiCounter.setText(count);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
 }
