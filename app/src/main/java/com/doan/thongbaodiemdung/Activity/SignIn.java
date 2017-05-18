@@ -11,9 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
-import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.Other.Account;
 import com.doan.thongbaodiemdung.R;
 import com.facebook.AccessToken;
@@ -288,9 +286,8 @@ public class SignIn extends AppCompatActivity implements
                 .Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
+                AccessToken.setCurrentAccessToken(null);
                 LoginManager.getInstance().logOut();
-
-
             }
         }).executeAsync();
     }

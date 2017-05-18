@@ -20,7 +20,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
-            android:text="Tên điểm đến:"
+            android:text="Tên báo thức:"
             android:textSize="20dp"
             android:textStyle = "bold"
             android:textColor="@android:color/black"/>

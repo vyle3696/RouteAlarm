@@ -29,6 +29,7 @@ import com.doan.thongbaodiemdung.Fragment.MapsFragment;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.Service.AppService;
+import com.facebook.FacebookSdk;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -197,8 +198,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_Logout:
                         SignIn.disconnectFromFacebook();
+                        FacebookSdk.sdkInitialize(getApplicationContext());
                         Toast.makeText(getBaseContext(),"Vui lòng đăng nhập lại",Toast.LENGTH_LONG).show();
                         Intent mainIntent = new Intent(MainActivity.this, SplashScreen.class);
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(mainIntent);
                         return true;
                     case R.id.nav_info:
