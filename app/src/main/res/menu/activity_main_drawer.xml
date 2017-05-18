@@ -18,6 +18,11 @@
             android:title="Friends"/>
 
         <item
+            android:id="@+id/nav_alerts"
+            android:icon="@drawable/ic_drawer_alerts"
+            android:title="Alert" />
+
+        <item
             android:id="@+id/nav_Logout"
             android:icon="@drawable/logout"
             android:title="Logout" />

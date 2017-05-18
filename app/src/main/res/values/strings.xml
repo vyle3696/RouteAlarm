@@ -41,6 +41,7 @@
         <item>Map</item>
         <item>Alarm</item>
         <item>Friends</item>
+        <item>Alert</item>
     </string-array>
 
     <string name="openDrawer">open_drawer</string>

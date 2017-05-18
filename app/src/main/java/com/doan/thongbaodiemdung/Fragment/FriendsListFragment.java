@@ -43,7 +43,6 @@ public class FriendsListFragment extends Fragment {
     private Context context;
     private Timer timer;
 
-
     public FriendsListFragment() {
     }
 
