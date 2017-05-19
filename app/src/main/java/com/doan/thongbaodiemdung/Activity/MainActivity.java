@@ -24,20 +24,27 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
+import com.doan.thongbaodiemdung.Fragment.AlertsListFragment;
 import com.doan.thongbaodiemdung.Fragment.FriendsListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.Service.AppService;
+import com.facebook.FacebookSdk;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private NavigationView navigationView;
+    public static TextView notiCounter;
+    public static View NotiView;
+
+    public static NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private View navHeader;
     private ImageView imgProfile;
     private TextView txtName;
     private Toolbar toolbar;
+
 
     //index to identify current menu item
     public static int navItemIndex = 0;
@@ -46,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_MAP = "map";
     private static final String TAG_ALARM = "alarm";
     private static final String TAG_FRIENDS = "friends";
+    private static final String TAG_ALERTS = "alerts";
+
     public static String CURRENT_TAG = TAG_MAP;
 
     //toolbar titles respected to selected nav menu item
@@ -67,6 +76,15 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View view = inflater.inflate(R.layout.menu_dot, null);
+
+
+
+
+
+        //notiCounter = (TextView) navigationView.getMenu().findItem(R.id.notification_counter).getActionView();
 
         //Navigation view header
         navHeader = navigationView.getHeaderView(0);
@@ -110,11 +128,14 @@ public class MainActivity extends AppCompatActivity {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.ic_account)
                     .into(imgProfile);
+
+            navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
+
         }
     }
 
     /***
-     * Return respected fragment that user
+     * Return respected fragment which was
      * selected from navigation menu
      */
     private void loadHomeFragment() {
@@ -165,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 FriendsListFragment friendsListFragment = new FriendsListFragment();
                 return friendsListFragment;
+            case 3:
+                AlertsListFragment alertsListFragment = new AlertsListFragment();
+                return alertsListFragment;
             default:
                 return new MapsFragment();
         }
@@ -195,10 +219,16 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_FRIENDS;
                         break;
+                    case R.id.nav_alerts:
+                        navItemIndex = 3;
+                        CURRENT_TAG = TAG_ALERTS;
+                        break;
                     case R.id.nav_Logout:
                         SignIn.disconnectFromFacebook();
+                        FacebookSdk.sdkInitialize(getApplicationContext());
                         Toast.makeText(getBaseContext(),"Vui lòng đăng nhập lại",Toast.LENGTH_LONG).show();
                         Intent mainIntent = new Intent(MainActivity.this, SplashScreen.class);
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(mainIntent);
                         return true;
                     case R.id.nav_info:
@@ -209,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                         //start activity help
                         drawerLayout.closeDrawers();
                         return true;
+
                     default:
                         navItemIndex = 0;
                 }
@@ -277,4 +308,19 @@ public class MainActivity extends AppCompatActivity {
 
         super.onDestroy();
     }
+
+    public static void UpdateNotiCounter(String count)
+    {
+        try
+        {
+            View view = navigationView.getMenu().getItem(3).getActionView();
+            notiCounter = (TextView) view.findViewById(R.id.notification_counter);
+            notiCounter.setText(count);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
 }

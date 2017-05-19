@@ -11,15 +11,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
-import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.Other.Account;
 import com.doan.thongbaodiemdung.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
@@ -153,6 +152,14 @@ public class SignIn extends AppCompatActivity implements
 
     private void LoginFacebookHandle()
     {
+        if (AccessToken.getCurrentAccessToken() == null) {
+            disconnectFromFacebook();
+            FacebookSdk.sdkInitialize(getApplicationContext());
+            Toast.makeText(getBaseContext(),"Đang tiến hành đăng nhập lại",Toast.LENGTH_LONG).show();
+            Intent mainIntent = new Intent(SignIn.this, SplashScreen.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(mainIntent);
+        }
         Toast.makeText(getBaseContext(), getResources().getText(R.string.login_success),Toast.LENGTH_LONG).show();
         UpdateDatabse();
     }
@@ -288,9 +295,8 @@ public class SignIn extends AppCompatActivity implements
                 .Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
+                AccessToken.setCurrentAccessToken(null);
                 LoginManager.getInstance().logOut();
-
-
             }
         }).executeAsync();
     }
