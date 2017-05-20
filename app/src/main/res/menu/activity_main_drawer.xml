@@ -5,37 +5,37 @@
         <item
             android:id="@+id/nav_maps"
             android:icon="@drawable/ic_map"
-            android:title="Map" />
+            android:title="Bản đồ" />
 
         <item
             android:id="@+id/nav_alarm"
             android:icon="@drawable/ic_alarm"
-            android:title="List Alarm"/>
+            android:title="Báo thức"/>
 
         <item
             android:id="@+id/nav_friends"
             android:icon="@drawable/ic_friends"
-            android:title="Friends"/>
+            android:title="Bạn bè"/>
 
         <item
             android:id="@+id/nav_alerts"
             android:icon="@drawable/ic_drawer_alerts"
-            android:title="Alert" />
+            android:title="Thông báo" />
 
         <item
             android:id="@+id/nav_Logout"
             android:icon="@drawable/logout"
-            android:title="Logout" />
+            android:title="Đăng xuất" />
     </group>
 
-    <item android:title="Other">
+    <item android:title="Thêm">
         <menu>
             <item
                 android:id="@+id/nav_info"
-                android:title="About us"/>
+                android:title="Thông tin ứng dụng"/>
             <item
                 android:id="@+id/nav_help"
-                android:title="Help"/>
+                android:title="Trợ giúp"/>
         </menu>
     </item>
 

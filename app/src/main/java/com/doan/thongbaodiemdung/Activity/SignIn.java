@@ -119,12 +119,13 @@ public class SignIn extends AppCompatActivity implements
                 // ...
             }
         });
+
+
         if (isLoggedIn()) {
             LoginButton loginButton1 = (LoginButton) findViewById(R.id.login_button);
             loginButton1.setVisibility(View.INVISIBLE);
             LoginFacebookHandle();
         }
-
     }
 
     private void handleFacebookAccessToken(AccessToken token) {

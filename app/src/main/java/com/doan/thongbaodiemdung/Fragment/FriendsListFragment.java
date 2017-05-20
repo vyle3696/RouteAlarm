@@ -82,26 +82,6 @@ public class FriendsListFragment extends Fragment {
             }
         });
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Object obj = adapterView.getItemAtPosition(i);
-                FriendInfo friendInfo = (FriendInfo) obj;
-
-                if(friendInfo.isNotifying()) {
-                    FirebaseHandle.getInstance().setNotifyFriend(friendInfo.getId(), false);
-                    Toast.makeText(context, getResources().getText(R.string.delete_notify) + friendInfo.getName(),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    FirebaseHandle.getInstance().setNotifyFriend(friendInfo.getId(), true);
-                    Toast.makeText(context, getResources().getText(R.string.set_notify) + friendInfo.getName(),
-                            Toast.LENGTH_SHORT).show();
-                }
-
-                return false;
-            }
-        });
-
         setUpdateListView();
 
         return view;

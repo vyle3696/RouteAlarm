@@ -43,7 +43,7 @@ public class AlertsListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AlertsListFragment extends Fragment {
         if(account == null) {
             account = new ArrayList<>();
         }
-        Log.e("hanh benh", String.valueOf(account.size()));
+
         return account;
     }
 

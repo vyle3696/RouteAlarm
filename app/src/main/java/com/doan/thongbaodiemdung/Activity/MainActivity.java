@@ -115,9 +115,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadNavHeader() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_info", Context.MODE_PRIVATE);
-        Log.e("MainActivity", "loadNavHeader");
         if(sharedPreferences != null) {
-            Log.e("MainActivity", "user name : " + sharedPreferences.getString("name", "User name"));
             txtName.setText(sharedPreferences.getString("name", "User name"));
 
             //load profile image
