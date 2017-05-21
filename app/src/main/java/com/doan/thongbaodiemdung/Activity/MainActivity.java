@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     .thumbnail(0.5f)
                     .bitmapTransform(new CircleTransform(this))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.drawable.ic_account)
+                    .error(VectorDrawableCompat.create(getResources(), R.drawable.ic_account, null))
                     .into(imgProfile);
 
             navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);

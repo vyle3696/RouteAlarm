@@ -245,8 +245,6 @@ public class MapsFragment extends Fragment {
             Toast.makeText(context, getResources().getText(R.string.error_get_current_location),
                     Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     @Override
