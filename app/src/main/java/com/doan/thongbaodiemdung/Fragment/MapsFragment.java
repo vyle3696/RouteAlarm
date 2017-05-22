@@ -36,6 +36,8 @@ import com.doan.thongbaodiemdung.Data.FriendInfo;
 import com.doan.thongbaodiemdung.Service.GPSTracker;
 import com.doan.thongbaodiemdung.Other.MapsHandle;
 import com.doan.thongbaodiemdung.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
@@ -72,6 +74,8 @@ public class MapsFragment extends Fragment {
     private String mDestinationInfo = "";
     private double currentDistance;
 
+    private AdView mAdView;
+
     private FloatingActionButton fabSetAlarm;
 
     public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
@@ -99,6 +103,11 @@ public class MapsFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        mAdView =(AdView) rootView.findViewById(R.id.adView);
+        //Load ads
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
