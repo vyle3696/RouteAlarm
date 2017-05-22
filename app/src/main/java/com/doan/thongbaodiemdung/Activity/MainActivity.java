@@ -230,15 +230,6 @@ public class MainActivity extends AppCompatActivity {
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(mainIntent);
                         return true;
-                    case R.id.nav_info:
-                        //start activity info
-                        drawerLayout.closeDrawers();
-                        return true;
-                    case R.id.nav_help:
-                        //start activity help
-                        drawerLayout.closeDrawers();
-                        return true;
-
                     default:
                         navItemIndex = 0;
                 }
