@@ -121,10 +121,10 @@ public class FriendsListAdapter extends BaseAdapter {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 FirebaseHandle.getInstance().setFollowFriend(friendInfo.getId(), b);
                 if(b) {
-                    Toast.makeText(context, context.getResources().getText(R.string.set_follow_friend) + friendInfo.getName(),
+                    Toast.makeText(context, context.getResources().getText(R.string.set_follow_friend) + " " + friendInfo.getName(),
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, context.getResources().getText(R.string.delete_follow_friend) + friendInfo.getName(),
+                    Toast.makeText(context, context.getResources().getText(R.string.delete_follow_friend) + " " + friendInfo.getName(),
                             Toast.LENGTH_SHORT).show();
                 }
             }

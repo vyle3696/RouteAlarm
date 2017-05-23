@@ -35,7 +35,6 @@ public class AlertsListFragment extends Fragment {
 
     private ListView listView;
     private Context context;
-    private ShareButton shareButton;
 
     public AlertsListFragment() {
     }
@@ -84,12 +83,6 @@ public class AlertsListFragment extends Fragment {
                 }
             }
         });
-
-        shareButton = (ShareButton) view.findViewById(R.id.share_app);
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.doan.thongbaodiemdung"))
-                .build();
-        shareButton.setShareContent(content);
 
         return view;
     }

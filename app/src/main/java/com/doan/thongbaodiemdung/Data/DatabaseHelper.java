@@ -189,4 +189,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean deleteRoute(String where) {
         return delete(where);
     }
+
+    public void deleteAllData() {
+        openToWrite();
+        database.execSQL("delete from " + TABLE_ROUTE);
+    }
+
+    public void insertRouteWithId(Route route) {
+        ContentValues values = routeToValues(route);
+        values.put(COLUMN_ID, route.getId());
+        insert(values);
+    }
 }

@@ -1,5 +1,8 @@
 package com.doan.thongbaodiemdung.Data;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
@@ -43,6 +46,7 @@ public class FirebaseHandle {
     private String userID;
     private static FirebaseHandle instance;
     private List<FriendInfo> listFriends;
+    private List<Route> listRoute;
     private Double latitude;
     private Double longitude;
 
@@ -71,11 +75,13 @@ public class FirebaseHandle {
                 boolean connected = dataSnapshot.getValue(Boolean.class);
                 if(connected) {
                     try {
-                        mRef.child(FB_ACCOUNT).child(userID)
-                                .child(STATUS).setValue(ONLINE);
+                        if(userID != "") {
+                            mRef.child(FB_ACCOUNT).child(userID)
+                                    .child(STATUS).setValue(ONLINE);
 
-                        mRef.child(FB_ACCOUNT).child(userID)
-                                .child(STATUS).onDisconnect().setValue(OFFLINE);
+                            mRef.child(FB_ACCOUNT).child(userID)
+                                    .child(STATUS).onDisconnect().setValue(OFFLINE);
+                        }
                     }catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -92,8 +98,10 @@ public class FirebaseHandle {
 
     public void updateRoute(Route route){
         try {
-            mRef.child(FB_ACCOUNT).child(userID)
-                    .child("listRoute").child(String.valueOf(route.getId())).setValue(route);
+            if(userID != "") {
+                mRef.child(FB_ACCOUNT).child(userID)
+                        .child("listRoute").child(String.valueOf(route.getId())).setValue(route);
+            }
         }catch (Exception ex)
         {
             ex.printStackTrace();
@@ -115,8 +123,10 @@ public class FirebaseHandle {
     }
 
     public void removeRoute(String id) {
-        mRef.child(FB_ACCOUNT).child(userID)
-                .child(ALARMS).child(id).removeValue();
+        if(userID != "") {
+            mRef.child(FB_ACCOUNT).child(userID)
+                    .child(ALARMS).child(id).removeValue();
+        }
     }
 
     public void setAccountListener() {
@@ -166,6 +176,24 @@ public class FirebaseHandle {
                                         .child(LONGITUDE).getValue(Double.class);
                             }
                         }
+
+                        listRoute = new ArrayList<Route>();
+                        for (DataSnapshot data : dataSnapshot.child(userID).child("listRoute").getChildren()) {
+                            if(listRoute.size() < dataSnapshot.child(userID).child("listRoute").getChildrenCount()) {
+                                Route route = new Route();
+                                route.setId(data.child(ID).getValue(Integer.class));
+                                route.setName(data.child("name").getValue(String.class));
+                                route.setDistance(data.child("distance").getValue(Double.class));
+                                route.setInfo(data.child("info").getValue(String.class));
+                                route.setIsEnable(data.child("isEnable").getValue(Integer.class));
+                                route.setLatitude(data.child("latitude").getValue(Double.class));
+                                route.setLongitude(data.child("longitude").getValue(Double.class));
+                                route.setRingtone(data.child("ringtone").getValue(String.class));
+                                route.setRingtonePath(data.child("ringtoneName").getValue(String.class));
+                                route.setMinDistance(data.child("minDistance").getValue(Integer.class));
+                                listRoute.add(route);
+                            }
+                        }
                     }
 
                     @Override
@@ -179,6 +207,8 @@ public class FirebaseHandle {
     {
         return listFriends;
     }
+
+    public List<Route> getListRoute() {return listRoute;}
 
     public void setFollowFriend(String id, boolean isFollowing) {
         mRef.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)

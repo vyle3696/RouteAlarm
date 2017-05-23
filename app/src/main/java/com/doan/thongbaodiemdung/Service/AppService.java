@@ -14,9 +14,11 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.doan.thongbaodiemdung.Activity.AlarmActivity;
 import com.doan.thongbaodiemdung.Activity.MainActivity;
+import com.doan.thongbaodiemdung.Activity.SignIn;
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.FriendInfo;
@@ -44,6 +46,7 @@ public class AppService extends Service implements LocationListener,
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
+    private static Location currentLocation;
 
     @Nullable
     @Override
@@ -65,19 +68,55 @@ public class AppService extends Service implements LocationListener,
 
         FirebaseHandle.getInstance().setStatusChange();
 
+        friendNear = new ArrayList<>();
+    }
 
-        List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
+    private boolean isHasRoute(Route route, List<Route> listRoute) {
+        for (Route localRoute : listRoute) {
+            if(route.getId() == localRoute.getId())
+                return true;
+        }
+        return false;
+    }
 
-        for(Route route : listRoute) {
-            try {
-                FirebaseHandle.getInstance().updateRoute(route);
-            }catch (Exception ex)
-            {
-                ex.printStackTrace();
+    private void syncData() {
+        //neu la lan dang nhap dau tien
+        if(SignIn.isLoginFirst) {
+            List<Route> routeList = FirebaseHandle.getInstance().getListRoute();
+            DatabaseHelper dbHelper = new DatabaseHelper(AppService.this);
+            dbHelper.deleteAllData();
+
+            if (routeList != null) {
+                for (Route route : routeList) {
+                    dbHelper.insertRouteWithId(route);
+                }
             }
         }
 
-        friendNear = new ArrayList<>();
+        //neu khong phai dang nhap lan dau, dong bo hoa dư lieu tu may len firebase
+        if(!SignIn.isLoginFirst) {
+            //cap nhat nhưng bao thuc tu may len firebase
+            List<Route> listRoute = dbHelper.getListRoute("SELECT * FROM " + DatabaseHelper.TABLE_ROUTE);
+
+            for(Route route : listRoute) {
+                try {
+                    FirebaseHandle.getInstance().updateRoute(route);
+                }catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+
+            //xoa nhung bao thuc ma trong may da xoa
+            List<Route> firebaseRoute = FirebaseHandle.getInstance().getListRoute();
+            if(firebaseRoute != null) {
+                for (Route route : firebaseRoute) {
+                    if (!isHasRoute(route, listRoute))
+                        FirebaseHandle.getInstance().removeRoute(String.valueOf(route.getId()));
+                }
+            }
+        }
+
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -97,8 +136,13 @@ public class AppService extends Service implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
 
+        currentLocation = location;
+
         FirebaseHandle.getInstance().updateCurPos(location.getLatitude(), location.getLongitude());
         FirebaseHandle.getInstance().setStatusChange();
+
+        //dong bo hoa du lieu
+        syncData();
 
         List<FriendInfo> friends = FirebaseHandle.getInstance().getListFriends();
         if(friends != null) {
@@ -209,5 +253,7 @@ public class AppService extends Service implements LocationListener,
         super.onDestroy();
     }
 
-
+    public static Location getCurrentPosition() {
+        return currentLocation;
+    }
 }

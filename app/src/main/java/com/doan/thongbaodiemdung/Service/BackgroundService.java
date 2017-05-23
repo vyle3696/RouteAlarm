@@ -117,8 +117,10 @@ public class BackgroundService extends Service implements LocationListener,
                     Location desLocation = new Location(LocationManager.GPS_PROVIDER);
                     desLocation.setLatitude(listRoute.get(i).getLatitude());
                     desLocation.setLongitude(listRoute.get(i).getLongitude());
-                    Log.e("BackgroundService", listRoute.get(i).getName());
-                    Log.e("BackgroundService", listRoute.get(i).getDistance().toString());
+
+                    listRoute.get(i).setDistance((double)mLastLocation.distanceTo(desLocation));
+                    dbHelper.updateRoute(listRoute.get(i));
+                    FirebaseHandle.getInstance().updateRoute(listRoute.get(i));
 
                     if (mLastLocation.distanceTo(desLocation) < listRoute.get(i).getMinDistance()) {
                         PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);

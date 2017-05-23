@@ -3,6 +3,7 @@ package com.doan.thongbaodiemdung.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     .error(VectorDrawableCompat.create(getResources(), R.drawable.ic_account, null))
                     .into(imgProfile);
 
-            navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
+            navigationView.getMenu().getItem(1).setActionView(R.layout.menu_dot);
 
         }
     }
@@ -180,14 +181,14 @@ public class MainActivity extends AppCompatActivity {
                 MapsFragment mapsFragment = new MapsFragment();
                 return mapsFragment;
             case 1:
-                AlarmListFragment alarmListFragment = new AlarmListFragment();
-                return alarmListFragment;
-            case 2:
-                FriendsListFragment friendsListFragment = new FriendsListFragment();
-                return friendsListFragment;
-            case 3:
                 AlertsListFragment alertsListFragment = new AlertsListFragment();
                 return alertsListFragment;
+            case 2:
+                AlarmListFragment alarmListFragment = new AlarmListFragment();
+                return alarmListFragment;
+            case 3:
+                FriendsListFragment friendsListFragment = new FriendsListFragment();
+                return friendsListFragment;
             default:
                 return new MapsFragment();
         }
@@ -210,18 +211,27 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_MAP;
                         break;
-                    case R.id.nav_alarm:
+                    case R.id.nav_alerts:
                         navItemIndex = 1;
+                        CURRENT_TAG = TAG_ALERTS;
+                        break;
+                    case R.id.nav_alarm:
+                        navItemIndex = 2;
                         CURRENT_TAG = TAG_ALARM;
                         break;
                     case R.id.nav_friends:
-                        navItemIndex = 2;
+                        navItemIndex = 3;
                         CURRENT_TAG = TAG_FRIENDS;
                         break;
-                    case R.id.nav_alerts:
-                        navItemIndex = 3;
-                        CURRENT_TAG = TAG_ALERTS;
-                        break;
+                    case R.id.nav_share:
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("text/plain");
+                        i.putExtra(Intent.EXTRA_SUBJECT, getResources().getText(R.string.app_name));
+                        String sAux = "\n" + getResources().getText(R.string.send_message) + "\n\n";
+                        sAux = sAux + getResources().getText(R.string.link_app) + " \n\n";
+                        i.putExtra(Intent.EXTRA_TEXT, sAux);
+                        startActivity(Intent.createChooser(i, "Choose one"));
+                        return true;
                     case R.id.nav_Logout:
                         SignIn.disconnectFromFacebook();
                         FacebookSdk.sdkInitialize(getApplicationContext());

@@ -8,6 +8,11 @@
             android:title="Bản đồ" />
 
         <item
+            android:id="@+id/nav_alerts"
+            android:icon="@drawable/ic_drawer_alerts"
+            android:title="Thông báo" />
+
+        <item
             android:id="@+id/nav_alarm"
             android:icon="@drawable/ic_alarm"
             android:title="Báo thức"/>
@@ -18,9 +23,9 @@
             android:title="Bạn bè"/>
 
         <item
-            android:id="@+id/nav_alerts"
-            android:icon="@drawable/ic_drawer_alerts"
-            android:title="Thông báo" />
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share"
+            android:title="Chia sẻ"/>
 
         <item
             android:id="@+id/nav_Logout"

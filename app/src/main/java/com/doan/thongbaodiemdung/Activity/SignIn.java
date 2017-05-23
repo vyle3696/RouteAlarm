@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
+import com.doan.thongbaodiemdung.Data.Route;
 import com.doan.thongbaodiemdung.Other.Account;
 import com.doan.thongbaodiemdung.R;
 import com.facebook.AccessToken;
@@ -53,6 +55,7 @@ public class SignIn extends AppCompatActivity implements
     public String userID;
 
     private static final String TAG = "FacebookLogin";
+    public static boolean isLoginFirst = false;
 
     private CallbackManager mCallbackManager;
 
@@ -66,7 +69,6 @@ public class SignIn extends AppCompatActivity implements
         mAuth = FirebaseAuth.getInstance();
 
         if(mAuth.getCurrentUser() != null)
-        Debug("mAuth: ", mAuth.toString());
         InitFacebookLogin();
 
     }
@@ -105,6 +107,7 @@ public class SignIn extends AppCompatActivity implements
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 LoginFacebookHandle();
 
+                isLoginFirst = true;
             }
 
             @Override
@@ -211,22 +214,25 @@ public class SignIn extends AppCompatActivity implements
                             e.printStackTrace();
                         }
 
-                        Account account = new Account(id, name, avatarURL);
-
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
                         try {
-                            ref.child(FB_ACCOUNT).child(id).child("name").setValue(name);
+                            if(id != "")
+                            {
+                                ref.child(FB_ACCOUNT).child(id).child("name").setValue(name);
 
-                            ref.child(FB_ACCOUNT).child(id).child("avatarURL").setValue(avatarURL);
+                                ref.child(FB_ACCOUNT).child(id).child("avatarURL").setValue("");
+                                ref.child(FB_ACCOUNT).child(id).child("avatarURL").setValue(avatarURL);
 
-                            savePreference(name, avatarURL);
+                                savePreference(name, avatarURL, id);
 
-                            FirebaseHandle.getInstance().setUserID(id);
+                                FirebaseHandle.getInstance().setUserID(id);
+                            }
 
                             //Khoi chay mainActivity
                             Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
                             startActivity(mainIntent);
+
                         }catch (Exception e)
                         {
                             e.printStackTrace();
@@ -237,13 +243,14 @@ public class SignIn extends AppCompatActivity implements
         ).executeAsync();
     }
 
-    private void savePreference(String name, String avatarURL) {
+    private void savePreference(String name, String avatarURL, String userID) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_info", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if(!name.equals(""))
             editor.putString("name", name);
         editor.putString("avatarURL", avatarURL);
+        editor.putString("userID", userID);
 
         editor.apply();
     }
@@ -258,7 +265,6 @@ public class SignIn extends AppCompatActivity implements
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
                         JSONObject jsonObject = response.getJSONObject();
-                        List<String> list = new ArrayList<String>();
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                         JSONArray array = new JSONArray();
                         try {
@@ -269,10 +275,7 @@ public class SignIn extends AppCompatActivity implements
                         for(int i = 0 ; i < array.length() ; i++){
                             try {
                                 JSONObject obj = array.getJSONObject(i);
-                                String name = obj.getString("name");
                                 String id = obj.getString("id");
-                                String avatarURL = "https" + "://graph.facebook.com/" + id + "/picture";
-                                Account account = new Account(id, name, avatarURL);
                                 if(mAuth.getCurrentUser() != null) {
                                     ref.child(FB_ACCOUNT).child(userID).child(FB_FRIENDS).child(id)
                                             .child(ID).setValue(id);
@@ -301,6 +304,8 @@ public class SignIn extends AppCompatActivity implements
             }
         }).executeAsync();
     }
+
+
 }
 
 
