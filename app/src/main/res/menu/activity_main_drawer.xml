@@ -5,38 +5,32 @@
         <item
             android:id="@+id/nav_maps"
             android:icon="@drawable/ic_map"
-            android:title="Map" />
-
-        <item
-            android:id="@+id/nav_alarm"
-            android:icon="@drawable/ic_alarm"
-            android:title="List Alarm"/>
-
-        <item
-            android:id="@+id/nav_friends"
-            android:icon="@drawable/ic_friends"
-            android:title="Friends"/>
+            android:title="Bản đồ" />
 
         <item
             android:id="@+id/nav_alerts"
             android:icon="@drawable/ic_drawer_alerts"
-            android:title="Alert" />
+            android:title="Thông báo" />
+
+        <item
+            android:id="@+id/nav_alarm"
+            android:icon="@drawable/ic_alarm"
+            android:title="Báo thức"/>
+
+        <item
+            android:id="@+id/nav_friends"
+            android:icon="@drawable/ic_friends"
+            android:title="Bạn bè"/>
+
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share"
+            android:title="Chia sẻ"/>
 
         <item
             android:id="@+id/nav_Logout"
             android:icon="@drawable/logout"
-            android:title="Logout" />
+            android:title="Đăng xuất" />
     </group>
-
-    <item android:title="Other">
-        <menu>
-            <item
-                android:id="@+id/nav_info"
-                android:title="About us"/>
-            <item
-                android:id="@+id/nav_help"
-                android:title="Help"/>
-        </menu>
-    </item>
 
 </menu>

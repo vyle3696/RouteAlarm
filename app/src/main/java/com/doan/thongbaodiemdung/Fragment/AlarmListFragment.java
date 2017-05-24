@@ -1,9 +1,12 @@
 package com.doan.thongbaodiemdung.Fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +23,15 @@ import com.doan.thongbaodiemdung.R;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AlarmListFragment extends Fragment {
 
     private DatabaseHelper dbHelper;
     private ListView listView;
+    private Timer timer;
+    private Context context;
 
     public AlarmListFragment() {
     }
@@ -37,7 +44,8 @@ public class AlarmListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        listView.setAdapter(new RouteListAdapter(getListRoute(),getContext()));
+        if(timer == null)
+            setUpdateListView();
     }
 
     @Override
@@ -45,9 +53,10 @@ public class AlarmListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm_list, container, false);
 
+        context = view.getContext();
         dbHelper = new DatabaseHelper(getContext());
         listView = (ListView) view.findViewById(R.id.list_view);
-        listView.setAdapter(new RouteListAdapter(getListRoute(), getContext()));
+        listView.setAdapter(new RouteListAdapter(getListRoute(), context));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -98,7 +107,30 @@ public class AlarmListFragment extends Fragment {
             }
         });
 
+        setUpdateListView();
+
         return view;
+    }
+
+    private void setUpdateListView() {
+        timer = new Timer();
+
+        final Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                listView.setAdapter(null);
+                listView.setAdapter(new RouteListAdapter(getListRoute(), context));
+            }
+        };
+
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.sendEmptyMessage(0);
+            }
+        };
+
+        timer.schedule(timerTask, 3000, 1500);
     }
 
     private List<Route> getListRoute() {

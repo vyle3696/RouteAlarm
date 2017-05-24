@@ -3,22 +3,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chia sẽ ứng dụng để kết nối bạn bè rộng hơn!"
-        android:textColor="@color/com_facebook_blue"
-        android:textSize="17dp"
-        android:layout_gravity="center_horizontal"
-        />
-        <com.facebook.share.widget.ShareButton
-            android:id="@+id/share_app"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-        android:background="@color/com_facebook_blue"
-        />
-
     <ListView
         android:id="@+id/list_alerts"
         android:layout_width="match_parent"
