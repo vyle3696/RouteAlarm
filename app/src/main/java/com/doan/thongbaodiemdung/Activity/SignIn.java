@@ -66,11 +66,12 @@ public class SignIn extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
+        //mAuth = FirebaseAuth.getInstance();
 
-        if(mAuth.getCurrentUser() != null)
-        InitFacebookLogin();
+        //if(mAuth.getCurrentUser() != null)
+            InitFacebookLogin();
 
+        //Log.d(TAG, mAuth.getCurrentUser().getEmail());
     }
 
     @Override
@@ -83,7 +84,10 @@ public class SignIn extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
 
         // Pass the activity result back to the Facebook SDK
+        mCallbackManager = CallbackManager.Factory.create();
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+
+
     }
 
     private void InitFacebookLogin()
@@ -92,6 +96,7 @@ public class SignIn extends AppCompatActivity implements
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email", "user_friends"));
+        Log.d(TAG, "init");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
 
             // Đăng nhập vào facebook lần đầu tiên
@@ -228,7 +233,7 @@ public class SignIn extends AppCompatActivity implements
 
                                 FirebaseHandle.getInstance().setUserID(id);
                             }
-
+                            Log.d("Chuyenscene" , "scene");
                             //Khoi chay mainActivity
                             Intent mainIntent = new Intent(SignIn.this, MainActivity.class);
                             startActivity(mainIntent);

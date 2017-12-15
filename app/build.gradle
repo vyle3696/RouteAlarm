@@ -5,16 +5,12 @@ android {
         config {
             keyAlias 'keyalias'
             keyPassword '123456789'
-<<<<<<< HEAD
-            storeFile file('D:\\Git\\RouteAlarm\\KeyStore\\keystore.jks')
-=======
-            storeFile file('C:\\Users\\Hong Hanh\\Documents\\RouteAlarm\\KeyStore\\keystore.jks')
->>>>>>> origin/master
+            storeFile file('D:\\Project\\RouteAlarm\\KeyStore\\keystore.jks')
             storePassword '123456789'
         }
     }
     compileSdkVersion 24
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.doan.thongbaodiemdung"
         minSdkVersion 15
@@ -45,7 +41,9 @@ android {
     }
 }
 
-repositories { mavenCentral() }
+repositories { mavenCentral()
+    google()
+}
 
 
 
@@ -72,7 +70,6 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:10.2.0'
     compile 'com.google.firebase:firebase-database:10.2.0'
     testCompile 'junit:junit:4.12'
-    1
     compile 'com.google.android.gms:play-services-ads:10.2.1'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -4,6 +4,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="default_ringtone">ringtone</string>
     <string name="facebook_app_id">1468167886551331</string>
+    <string name="fb_login_protocol_scheme">fb1861013520819747</string>
     <string name="update_alarm_success">Cập nhật báo thức thành công</string>
     <string name="error_update_alarm">Tên của báo thức không được để trống</string>
     <string name="warning_exit">Nếu bấm thoát sẽ không lưu lại những dữ liệu đã sửa đổi. Bạn có muốn thoát không?</string>
