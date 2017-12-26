@@ -188,10 +188,10 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 AlarmListFragment alarmListFragment = new AlarmListFragment();
                 return alarmListFragment;
-            case 3:
+            case 4:
                 FriendsListFragment friendsListFragment = new FriendsListFragment();
                 return friendsListFragment;
-            case 4:
+            case 3:
                 TimeAlarmListFragment timeAlarmListFragment = new TimeAlarmListFragment();
                 return timeAlarmListFragment;
             default:
@@ -225,11 +225,11 @@ public class MainActivity extends AppCompatActivity {
                         CURRENT_TAG = TAG_ALARM;
                         break;
                     case R.id.nav_friends:
-                        navItemIndex = 3;
+                        navItemIndex = 4;
                         CURRENT_TAG = TAG_FRIENDS;
                         break;
                     case R.id.nav_time_alarm:
-                        navItemIndex = 4;
+                        navItemIndex = 3;
                         CURRENT_TAG = TAG_TIME_ALARM;
                         break;
                     case R.id.nav_share:
