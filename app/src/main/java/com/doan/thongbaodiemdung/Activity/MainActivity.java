@@ -29,6 +29,7 @@ import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
 import com.doan.thongbaodiemdung.Fragment.AlertsListFragment;
 import com.doan.thongbaodiemdung.Fragment.FriendsListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
+import com.doan.thongbaodiemdung.Fragment.TimeAlarmListFragment;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.Service.AppService;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_ALARM = "alarm";
     private static final String TAG_FRIENDS = "friends";
     private static final String TAG_ALERTS = "alerts";
+    private static final String TAG_TIME_ALARM = "time_alarm";
 
     public static String CURRENT_TAG = TAG_MAP;
 
@@ -189,6 +191,9 @@ public class MainActivity extends AppCompatActivity {
             case 3:
                 FriendsListFragment friendsListFragment = new FriendsListFragment();
                 return friendsListFragment;
+            case 4:
+                TimeAlarmListFragment timeAlarmListFragment = new TimeAlarmListFragment();
+                return timeAlarmListFragment;
             default:
                 return new MapsFragment();
         }
@@ -222,6 +227,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_friends:
                         navItemIndex = 3;
                         CURRENT_TAG = TAG_FRIENDS;
+                        break;
+                    case R.id.nav_time_alarm:
+                        navItemIndex = 4;
+                        CURRENT_TAG = TAG_TIME_ALARM;
                         break;
                     case R.id.nav_share:
                         Intent i = new Intent(Intent.ACTION_SEND);

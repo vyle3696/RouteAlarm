@@ -9,19 +9,18 @@
         android:id="@+id/dot"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:background="@drawable/bg_circle"
-        android:orientation="vertical">
+        android:background="@drawable/bg_circle">
 
         <TextView
             android:id="@+id/notification_counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:text="0"
-            android:textColor="#ff4444"
-            android:layout_marginTop="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginLeft="4dp"
-            />
+            android:layout_marginTop="3dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="#ff4444"
+            android:textSize="15dp" />
     </LinearLayout>
 
 </LinearLayout>

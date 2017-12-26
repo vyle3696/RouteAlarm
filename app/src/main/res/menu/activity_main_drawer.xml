@@ -15,8 +15,11 @@
         <item
             android:id="@+id/nav_alarm"
             android:icon="@drawable/ic_alarm"
-            android:title="Báo thức"/>
-
+            android:title="Báo thức không gian" />
+        <item
+            android:id="@+id/nav_time_alarm"
+            android:icon="@drawable/ic_alarm"
+            android:title="Báo thức thời gian" />
         <item
             android:id="@+id/nav_friends"
             android:icon="@drawable/ic_friends"

@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'keyalias'
             keyPassword '123456789'
-            storeFile file('D:\\Project\\RouteAlarm\\KeyStore\\keystore.jks')
+            storeFile file('D:\\SOURCE\\RouteAlarm\\KeyStore\\keystore.jks')
             storePassword '123456789'
         }
     }
@@ -41,7 +41,8 @@ android {
     }
 }
 
-repositories { mavenCentral()
+repositories {
+    mavenCentral()
     google()
 }
 
