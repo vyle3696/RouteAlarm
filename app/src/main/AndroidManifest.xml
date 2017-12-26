@@ -69,7 +69,6 @@
             android:showOnLockScreen="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activity.MainActivity">
-
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
 
@@ -100,6 +99,7 @@
         <activity android:name=".Activity.SetFriendNotiActivity"
             android:label="Thông báo vị trí bạn bè"
             android:theme="@style/AppTheme.ActionBar"></activity>
+        <receiver android:name=".Other.AlarmReceiver"/>
 
     </application>
 
