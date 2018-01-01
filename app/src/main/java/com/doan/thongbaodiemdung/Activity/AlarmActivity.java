@@ -74,6 +74,9 @@ public class AlarmActivity extends AppCompatActivity {
             ringtone = getIntent().getStringExtra("ringtone");
 
             try {
+                if(ringtone.equals("")) {
+                    ringtone = "ringtone";
+                }
                 int resId = this.getResources().getIdentifier(ringtone, "raw", this.getPackageName());
                 mediaPlayer = MediaPlayer.create(this, resId);
                 mediaPlayer.setLooping(true);
@@ -106,8 +109,7 @@ public class AlarmActivity extends AppCompatActivity {
                 mediaPlayer.stop();
                 vibrator.cancel();
                 BackgroundService.IS_ALARMING = false;
-                Intent intent = new Intent(AlarmActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }
