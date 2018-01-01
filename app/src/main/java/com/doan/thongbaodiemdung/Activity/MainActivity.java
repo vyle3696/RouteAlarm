@@ -3,7 +3,6 @@ package com.doan.thongbaodiemdung.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -16,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,7 +27,7 @@ import com.doan.thongbaodiemdung.Fragment.AlarmListFragment;
 import com.doan.thongbaodiemdung.Fragment.AlertsListFragment;
 import com.doan.thongbaodiemdung.Fragment.FriendsListFragment;
 import com.doan.thongbaodiemdung.Fragment.MapsFragment;
-import com.doan.thongbaodiemdung.Fragment.TimeAlarmListFragment;
+import com.doan.thongbaodiemdung.Fragment.SetTimeAlarmFragment;
 import com.doan.thongbaodiemdung.Other.CircleTransform;
 import com.doan.thongbaodiemdung.R;
 import com.doan.thongbaodiemdung.Service.AppService;
@@ -192,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
                 FriendsListFragment friendsListFragment = new FriendsListFragment();
                 return friendsListFragment;
             case 3:
-                TimeAlarmListFragment timeAlarmListFragment = new TimeAlarmListFragment();
-                return timeAlarmListFragment;
+                SetTimeAlarmFragment setTimeAlarmFragment = new SetTimeAlarmFragment();
+                return setTimeAlarmFragment;
             default:
                 return new MapsFragment();
         }

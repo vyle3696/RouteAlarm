@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#00508c</color>
     <color name="colorAccent">#50ce50</color>
     <color name="colorFriendOffline">#eaecef</color>
+    <color name="textColor">#00a600</color>
+    <color name="hintColor">#eb50ce50</color>
 </resources>
