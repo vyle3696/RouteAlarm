@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.sql.Time;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATA_VERSION);
     }
 
+//    -------- TABLE ROUTE (FOR DISTANCE ALARM) --------
     public static final String TABLE_ROUTE = "tb_route";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_LATITUDE = "latitude";
@@ -34,8 +36,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_RINGTONE = "ringtone";
     public static final String COLUMN_RINGTONEPATH = "ringtonePath";
 
+//   -------- TABLE TIMEHISTORY (FOR TIME ALARM) --------
+public static final String TABLE_TIMEHISTORY = "tb_timehistory";
+    public static final String COLUMN_TIMEID = "timeId";
+    public static final String COLUMN_HOUR = "hour";
+    public static final String COLUMN_MINUTE = "minute";
+    public static final String COLUMN_NOTE = "note";
+
     @Override
     public void onCreate(SQLiteDatabase db) {
+//        Create table for route alarm
         String script = "CREATE TABLE " + TABLE_ROUTE + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_LATITUDE + " DOUBLE, "
@@ -47,12 +57,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_DISTORING + " INT, "
                 + COLUMN_RINGTONE + " TEXT, "
                 + COLUMN_RINGTONEPATH + " TEXT)";
+
+//        Create tbale for time alarm
+        script += "CREATE TABLE " + TABLE_TIMEHISTORY + "("
+                + COLUMN_TIMEID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_HOUR + " INT, "
+                + COLUMN_MINUTE + " INT, "
+                + COLUMN_NOTE + " TEXT)";
         db.execSQL(script);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ROUTE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TIMEHISTORY);
         onCreate(db);
     }
 
@@ -98,6 +116,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         close();
         return index;
     }
+    public long insertTime(ContentValues values) {
+        openToWrite();
+        long index = database.insert(TABLE_TIMEHISTORY, null, values);
+        close();
+        return index;
+    }
 
     public boolean update(ContentValues values, String where) {
         openToWrite();
@@ -105,10 +129,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         close();
         return index > 0;
     }
+    public boolean updateTime(ContentValues values, String when) {
+        openToWrite();
+        long index = database.update(TABLE_TIMEHISTORY, values, when, null);
+        close();
+        return index > 0;
+    }
 
     public boolean delete(String where) {
         openToWrite();
         long index = database.delete(TABLE_ROUTE, where, null);
+        close();
+        return index > 0;
+    }
+    public boolean deleteTime(String when) {
+        openToWrite();
+        long index = database.delete(TABLE_TIMEHISTORY, when, null);
         close();
         return index > 0;
     }
@@ -127,6 +163,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_RINGTONEPATH, route.getRingtonePath());
         return contentValues;
     }
+    //convert time to values
+    private ContentValues timeToValues(TimeInfo time) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_HOUR, time.getHour());
+        contentValues.put(COLUMN_MINUTE, time.getMinute());
+        contentValues.put(COLUMN_NOTE, time.getNote());
+        return contentValues;
+    }
+
 
     //convert cursor to route
     private Route cursorToRoute(Cursor cursor) {
@@ -150,6 +195,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    //convert cursor to timeinfo
+    private TimeInfo cursorToTime(Cursor cursor) {
+        try {
+            TimeInfo time = new TimeInfo();
+            time.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_TIMEID)))
+                    .setHour(cursor.getInt(cursor.getColumnIndex(COLUMN_HOUR)))
+                    .setMinute(cursor.getInt(cursor.getColumnIndex(COLUMN_MINUTE)))
+                    .setNote(cursor.getString(cursor.getColumnIndex(COLUMN_NOTE)));
+            return time;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+
+    }
+
     //get route by sql command
     public Route getRoute(String sql) {
         Route route = null;
@@ -159,6 +220,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         return route;
+    }
+    //get time info by sql command
+    public TimeInfo getTimeInfo(String sql) {
+        TimeInfo time = null;
+        Cursor cursor = getAll(sql);
+        if(cursor != null) {
+            time = cursorToTime(cursor);
+            cursor.close();
+        }
+        return time;
     }
 
     //get all route by sql command
@@ -174,15 +245,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return routes;
     }
 
+    //get all time info by sql command
+    public ArrayList<TimeInfo> getListTimeInfo(String sql) {
+        ArrayList<TimeInfo> timeInfos = new ArrayList<>();
+        Cursor cursor = getAll(sql);
+
+        while (!cursor.isAfterLast()) {
+            timeInfos.add(cursorToTime(cursor));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return timeInfos;
+    }
+
     //insert route to table
     //return id of route
     public long insertRoute(Route route) {
         return insert(routeToValues(route));
     }
 
+    //insert time info to table
+    //return id of timeinfo
+    public long insertTimeInfo(TimeInfo timeInfo) {
+        return insert(timeToValues(timeInfo));
+    }
+
     //update route
     public boolean updateRoute(Route route) {
         return update(routeToValues(route), COLUMN_ID + " = " + route.getId());
+    }
+    //update timeInfo
+    public boolean updateTimeInfo(TimeInfo timeInfo) {
+        return update(timeToValues(timeInfo), COLUMN_ID + " = " + timeInfo.getId());
     }
 
     //delete route
@@ -190,14 +284,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return delete(where);
     }
 
+    //delete time info
+    public boolean deleteTimeInfo(String when) {
+        return delete(when);
+    }
+
     public void deleteAllData() {
         openToWrite();
         database.execSQL("delete from " + TABLE_ROUTE);
+    }
+    public void deleteAllTimeData() {
+        openToWrite();
+        database.execSQL("delete from " + TABLE_TIMEHISTORY);
     }
 
     public void insertRouteWithId(Route route) {
         ContentValues values = routeToValues(route);
         values.put(COLUMN_ID, route.getId());
+        insert(values);
+    }
+    public void insertTimeWithId(TimeInfo timeInfo) {
+        ContentValues values = timeToValues(timeInfo);
+        values.put(COLUMN_TIMEID, timeInfo.getId());
         insert(values);
     }
 }

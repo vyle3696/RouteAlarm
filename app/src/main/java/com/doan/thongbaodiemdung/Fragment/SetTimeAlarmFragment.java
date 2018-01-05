@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.doan.thongbaodiemdung.Data.DatabaseHelper;
+import com.doan.thongbaodiemdung.Data.TimeInfo;
 import com.doan.thongbaodiemdung.Other.AlarmReceiver;
 import com.doan.thongbaodiemdung.R;
 
@@ -27,6 +30,9 @@ public class SetTimeAlarmFragment extends Fragment {
     private Context context;
     private TimePicker timePicker;
     private Button setAlarm;
+    private EditText noteText;
+
+    private DatabaseHelper dbHelper;
 
     public SetTimeAlarmFragment() {
         // Required empty public constructor
@@ -44,6 +50,10 @@ public class SetTimeAlarmFragment extends Fragment {
         context = view.getContext();
         timePicker = (TimePicker) view.findViewById(R.id.timePicker);
         setAlarm = (Button)view.findViewById(R.id.btnSetTimeAlarm);
+        noteText = (EditText)view.findViewById(R.id.remindText);
+
+        dbHelper = new DatabaseHelper(context);
+
         setAlarm.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -51,9 +61,11 @@ public class SetTimeAlarmFragment extends Fragment {
                 if (android.os.Build.VERSION.SDK_INT >= 23) {
                     calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                             timePicker.getHour(), timePicker.getMinute(), 0);
+                    addTimeInfoToDatabase(noteText.getText().toString(), timePicker.getHour(), timePicker.getMinute());
                 } else {
                     calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                             timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
+                    addTimeInfoToDatabase(noteText.getText().toString(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
                 }
 
 
@@ -77,4 +89,11 @@ public class SetTimeAlarmFragment extends Fragment {
         Toast.makeText(context, getResources().getText(R.string.set_alarm_success), Toast.LENGTH_SHORT).show();
     }
 
+    private void addTimeInfoToDatabase(String note, int hour, int minute) {
+        TimeInfo timeInfo = new TimeInfo();
+        timeInfo.setNote(note)
+                .setHour(hour)
+                .setMinute(minute);
+        dbHelper.insertTimeInfo(timeInfo);
+    }
 }
