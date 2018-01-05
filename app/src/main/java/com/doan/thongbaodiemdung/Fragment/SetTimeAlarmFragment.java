@@ -15,10 +15,12 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.doan.thongbaodiemdung.Activity.SetAlarmActivity;
 import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.TimeInfo;
 import com.doan.thongbaodiemdung.Other.AlarmReceiver;
 import com.doan.thongbaodiemdung.R;
+import com.doan.thongbaodiemdung.Service.BackgroundService;
 
 import java.util.Calendar;
 
@@ -33,6 +35,7 @@ public class SetTimeAlarmFragment extends Fragment {
     private EditText noteText;
 
     private DatabaseHelper dbHelper;
+    private Intent intentService;
 
     public SetTimeAlarmFragment() {
         // Required empty public constructor
@@ -67,7 +70,6 @@ public class SetTimeAlarmFragment extends Fragment {
                             timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
                     addTimeInfoToDatabase(noteText.getText().toString(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
                 }
-
 
                 setAlarm(calendar.getTimeInMillis());
             }

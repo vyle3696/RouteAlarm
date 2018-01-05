@@ -267,7 +267,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
     //insert time info to table
     //return id of timeinfo
     public long insertTimeInfo(TimeInfo timeInfo) {
-        return insert(timeToValues(timeInfo));
+        return insertTime(timeToValues(timeInfo));
     }
 
     //update route
@@ -276,7 +276,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
     }
     //update timeInfo
     public boolean updateTimeInfo(TimeInfo timeInfo) {
-        return update(timeToValues(timeInfo), COLUMN_ID + " = " + timeInfo.getId());
+        return updateTime(timeToValues(timeInfo), COLUMN_ID + " = " + timeInfo.getId());
     }
 
     //delete route
@@ -286,7 +286,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
 
     //delete time info
     public boolean deleteTimeInfo(String when) {
-        return delete(when);
+        return deleteTime(when);
     }
 
     public void deleteAllData() {
@@ -306,6 +306,6 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
     public void insertTimeWithId(TimeInfo timeInfo) {
         ContentValues values = timeToValues(timeInfo);
         values.put(COLUMN_TIMEID, timeInfo.getId());
-        insert(values);
+        insertTime(values);
     }
 }

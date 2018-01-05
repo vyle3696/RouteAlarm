@@ -23,6 +23,7 @@ import com.doan.thongbaodiemdung.Data.DatabaseHelper;
 import com.doan.thongbaodiemdung.Data.FirebaseHandle;
 import com.doan.thongbaodiemdung.Data.FriendInfo;
 import com.doan.thongbaodiemdung.Data.Route;
+import com.doan.thongbaodiemdung.Data.TimeInfo;
 import com.doan.thongbaodiemdung.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
