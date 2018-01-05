@@ -7,7 +7,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.sql.Time;
 import java.util.ArrayList;
 
 /**
@@ -16,14 +15,14 @@ import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "data.db";
-    public static final int DATA_VERSION = 2;
+    public static final int DATA_VERSION = 3;
     private SQLiteDatabase database;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATA_VERSION);
     }
 
-//    -------- TABLE ROUTE (FOR DISTANCE ALARM) --------
+    //    -------- TABLE ROUTE (FOR DISTANCE ALARM) --------
     public static final String TABLE_ROUTE = "tb_route";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_LATITUDE = "latitude";
@@ -36,8 +35,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_RINGTONE = "ringtone";
     public static final String COLUMN_RINGTONEPATH = "ringtonePath";
 
-//   -------- TABLE TIMEHISTORY (FOR TIME ALARM) --------
-public static final String TABLE_TIMEHISTORY = "tb_timehistory";
+    //   -------- TABLE TIMEHISTORY (FOR TIME ALARM) --------
+    public static final String TABLE_TIMEHISTORY = "tb_timehistory";
     public static final String COLUMN_TIMEID = "timeId";
     public static final String COLUMN_HOUR = "hour";
     public static final String COLUMN_MINUTE = "minute";
@@ -45,8 +44,8 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-//        Create table for route alarm
-        String script = "CREATE TABLE " + TABLE_ROUTE + "("
+        //Create table for route alarm
+        String createTableRoute = "CREATE TABLE " + TABLE_ROUTE + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_LATITUDE + " DOUBLE, "
                 + COLUMN_LONGITUDE + " DOUBLE, "
@@ -58,13 +57,14 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
                 + COLUMN_RINGTONE + " TEXT, "
                 + COLUMN_RINGTONEPATH + " TEXT)";
 
-//        Create tbale for time alarm
-        script += "CREATE TABLE " + TABLE_TIMEHISTORY + "("
+        //Create table for time alarm
+        String createTableTime = "CREATE TABLE " + TABLE_TIMEHISTORY + "("
                 + COLUMN_TIMEID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_HOUR + " INT, "
                 + COLUMN_MINUTE + " INT, "
                 + COLUMN_NOTE + " TEXT)";
-        db.execSQL(script);
+        db.execSQL(createTableRoute);
+        db.execSQL(createTableTime);
     }
 
     @Override
@@ -91,7 +91,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
     }
 
     public void close() {
-        if(database != null && database.isOpen()) {
+        if (database != null && database.isOpen()) {
             try {
                 database.close();
             } catch (SQLException e) {
@@ -103,7 +103,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
     public Cursor getAll(String sql) {
         openToRead();
         Cursor cursor = database.rawQuery(sql, null);
-        if(cursor != null) {
+        if (cursor != null) {
             cursor.moveToFirst();
         }
         close();
@@ -116,6 +116,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
         close();
         return index;
     }
+
     public long insertTime(ContentValues values) {
         openToWrite();
         long index = database.insert(TABLE_TIMEHISTORY, null, values);
@@ -129,6 +130,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
         close();
         return index > 0;
     }
+
     public boolean updateTime(ContentValues values, String when) {
         openToWrite();
         long index = database.update(TABLE_TIMEHISTORY, values, when, null);
@@ -142,6 +144,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
         close();
         return index > 0;
     }
+
     public boolean deleteTime(String when) {
         openToWrite();
         long index = database.delete(TABLE_TIMEHISTORY, when, null);
@@ -163,6 +166,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
         contentValues.put(COLUMN_RINGTONEPATH, route.getRingtonePath());
         return contentValues;
     }
+
     //convert time to values
     private ContentValues timeToValues(TimeInfo time) {
         ContentValues contentValues = new ContentValues();
@@ -215,17 +219,18 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
     public Route getRoute(String sql) {
         Route route = null;
         Cursor cursor = getAll(sql);
-        if(cursor != null) {
+        if (cursor != null) {
             route = cursorToRoute(cursor);
             cursor.close();
         }
         return route;
     }
+
     //get time info by sql command
     public TimeInfo getTimeInfo(String sql) {
         TimeInfo time = null;
         Cursor cursor = getAll(sql);
-        if(cursor != null) {
+        if (cursor != null) {
             time = cursorToTime(cursor);
             cursor.close();
         }
@@ -274,6 +279,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
     public boolean updateRoute(Route route) {
         return update(routeToValues(route), COLUMN_ID + " = " + route.getId());
     }
+
     //update timeInfo
     public boolean updateTimeInfo(TimeInfo timeInfo) {
         return updateTime(timeToValues(timeInfo), COLUMN_ID + " = " + timeInfo.getId());
@@ -293,6 +299,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
         openToWrite();
         database.execSQL("delete from " + TABLE_ROUTE);
     }
+
     public void deleteAllTimeData() {
         openToWrite();
         database.execSQL("delete from " + TABLE_TIMEHISTORY);
@@ -303,6 +310,7 @@ public static final String TABLE_TIMEHISTORY = "tb_timehistory";
         values.put(COLUMN_ID, route.getId());
         insert(values);
     }
+
     public void insertTimeWithId(TimeInfo timeInfo) {
         ContentValues values = timeToValues(timeInfo);
         values.put(COLUMN_TIMEID, timeInfo.getId());
