@@ -46,7 +46,7 @@ public class SetTimeAlarmFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_set_time_alarm, container, false);
@@ -87,7 +87,7 @@ public class SetTimeAlarmFragment extends Fragment {
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 
         //setting the repeating alarm that will be fired every day
-        am.setRepeating(AlarmManager.RTC, time, AlarmManager.INTERVAL_DAY, pi);
+        am.setRepeating(AlarmManager.RTC, 0, AlarmManager.INTERVAL_DAY, pi);
         Toast.makeText(context, getResources().getText(R.string.set_alarm_success), Toast.LENGTH_SHORT).show();
     }
 

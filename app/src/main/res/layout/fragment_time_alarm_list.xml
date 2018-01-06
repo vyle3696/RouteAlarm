@@ -6,22 +6,15 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/list_time_view"
         android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
+
+    <Button
+        android:layout_width="32dp"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/startTimeAlarm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/start_time_alarm" />
-
-        <Button
-            android:id="@+id/stopTimeAlarm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/stop_time_alarm" />
-    </LinearLayout>
+        android:text="QQQQ" />
 
 </RelativeLayout>

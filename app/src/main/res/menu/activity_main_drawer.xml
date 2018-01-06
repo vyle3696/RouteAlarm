@@ -8,6 +8,10 @@
             android:title="Bản đồ" />
 
         <item
+            android:id="@+id/nav_time_alarm"
+            android:icon="@drawable/ic_alarm"
+            android:title="Đồng hồ" />
+        <item
             android:id="@+id/nav_alerts"
             android:icon="@drawable/ic_drawer_alerts"
             android:title="Thông báo" />
@@ -15,10 +19,9 @@
         <item
             android:id="@+id/nav_alarm"
             android:icon="@drawable/ic_alarm"
-            android:title="Báo thức không gian" />
+            android:title="Báo thức khoảng cách" />
         <item
-            android:id="@+id/nav_time_alarm"
-            android:icon="@drawable/ic_alarm"
+            android:id="@+id/nav_time_list"
             android:title="Báo thức thời gian" />
         <item
             android:id="@+id/nav_friends"

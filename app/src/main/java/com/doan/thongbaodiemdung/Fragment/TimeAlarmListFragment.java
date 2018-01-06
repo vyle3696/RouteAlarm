@@ -1,31 +1,38 @@
 package com.doan.thongbaodiemdung.Fragment;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
+import com.doan.thongbaodiemdung.Activity.EditAlarmActivity;
+import com.doan.thongbaodiemdung.Data.DatabaseHelper;
+import com.doan.thongbaodiemdung.Data.Route;
+import com.doan.thongbaodiemdung.Data.TimeInfo;
 import com.doan.thongbaodiemdung.Other.AlarmReceiver;
+import com.doan.thongbaodiemdung.Other.RouteListAdapter;
+import com.doan.thongbaodiemdung.Other.TimeListAdapter;
 import com.doan.thongbaodiemdung.R;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class TimeAlarmListFragment extends Fragment {
 
     private Context context;
-    private Button startAlarm;
-    private Button stopAlarm;
-    private PendingIntent mAlarmIntent;
+    private ListView listView;
+
+    private DatabaseHelper dbHelper;
+
 
     public TimeAlarmListFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -38,40 +45,28 @@ public class TimeAlarmListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_time_alarm_list, container, false);
-
         context = view.getContext();
-        startAlarm=(Button) view.findViewById(R.id.startTimeAlarm);
-        stopAlarm=(Button) view.findViewById(R.id.stopTimeAlarm);
 
-        Intent launchIntent = new Intent(context, AlarmReceiver.class);
-        mAlarmIntent = PendingIntent.getBroadcast(context,0,launchIntent,0);
+        dbHelper = new DatabaseHelper(getContext());
+        listView = (ListView) view.findViewById(R.id.list_time_view);
+        listView.setAdapter(new TimeListAdapter(getListTime(), context));
 
-        final AlarmManager  manager=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Object obj = adapterView.getItemAtPosition(i);
+//                Route route = (Route) obj;
+//
+//                //move edit alarm activity
+//                Intent intent = new Intent(getContext(), EditAlarmActivity.class);
+//                intent.putExtra("route", (Serializable) route);
+//                getContext().startActivity(intent);
+//            }
+//        });
 
-        startAlarm.setOnClickListener(new View.OnClickListener() {
-
-            long interval = 5*1000;
-
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context,"Da dat bao thuc",Toast.LENGTH_SHORT).show();
-                manager.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime()+interval,
-                        interval, mAlarmIntent);
-            }
-        });
-
-        stopAlarm.setOnClickListener(new View.OnClickListener() {
-
-            AlarmManager manager=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-            long interval = 5*1000;
-
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context,"Da huy bao thuc",Toast.LENGTH_SHORT).show();
-                manager.cancel(mAlarmIntent);
-            }
-        });
         return view;
     }
-
+    private List<TimeInfo> getListTime() {
+        return dbHelper.getListTimeInfo("SELECT * FROM " + DatabaseHelper.TABLE_TIMEHISTORY);
+    }
 }

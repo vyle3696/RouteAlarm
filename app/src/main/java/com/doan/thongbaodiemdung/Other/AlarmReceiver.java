@@ -35,15 +35,17 @@ public class AlarmReceiver extends BroadcastReceiver {
         dbHelper = new DatabaseHelper(context);
         listTimeInfo = dbHelper.getListTimeInfo("SELECT * FROM " + DatabaseHelper.TABLE_TIMEHISTORY);
 
-        Calendar now = Calendar.getInstance();
-        DateFormat formatter = SimpleDateFormat.getTimeInstance();
-        Toast.makeText(context,formatter.format(now.getTime()),Toast.LENGTH_SHORT).show();
+//        Calendar now = Calendar.getInstance();
+//        DateFormat formatter = SimpleDateFormat.getTimeInstance();
+//        Toast.makeText(context,formatter.format(now.getTime()),Toast.LENGTH_SHORT).show();
+        Toast.makeText(context,"Vao alarm receiver",Toast.LENGTH_SHORT).show();
 
         if(listTimeInfo != null && listTimeInfo.size() > 0){
+            Toast.makeText(context,"Vao if",Toast.LENGTH_SHORT).show();
             if(!this.IS_ALARMING) {
                 for (int i = 0; i < listTimeInfo.size(); i++){
 Log.d("timelist", String.valueOf(listTimeInfo.get(i).getHour()));
-
+                    Toast.makeText(context,"Vao for"+String.valueOf(listTimeInfo.get(i).getHour()),Toast.LENGTH_SHORT).show();
 
 
 //                    intent = new Intent(context, AlarmActivity.class);
