@@ -15,7 +15,7 @@
         android:layout_marginLeft="10dp"
         android:text="Nhạc chuông hệ thống"
         android:textColor="@android:color/black"
-        android:textSize="15dp"></TextView>
+        android:textSize="15dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"

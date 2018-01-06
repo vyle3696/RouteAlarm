@@ -44,9 +44,9 @@
 
     <string-array name="nav_item_activity_titles">
         <item>Bản đồ</item>
-        <item>Báo thức khoảng cách</item>
-        <item>Thông báo</item>
         <item>Đồng hồ</item>
+        <item>Thông báo</item>
+        <item>Báo thức khoảng cách</item>
         <item>Báo thức thời gian</item>
         <item>Bạn bè</item>
     </string-array>

@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -84,12 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 //        View view = inflater.inflate(R.layout.menu_dot, null);
-
-
-
-
-
-        //notiCounter = (TextView) navigationView.getMenu().findItem(R.id.notification_counter).getActionView();
+//        notiCounter = (TextView) navigationView.getMenu().findItem(R.id.notification_counter).getActionView();
 
         //Navigation view header
         navHeader = navigationView.getHeaderView(0);
@@ -132,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     .error(VectorDrawableCompat.create(getResources(), R.drawable.ic_account, null))
                     .into(imgProfile);
 
-            navigationView.getMenu().getItem(1).setActionView(R.layout.menu_dot);
+            navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
 
         }
     }
@@ -184,14 +180,14 @@ public class MainActivity extends AppCompatActivity {
                 MapsFragment mapsFragment = new MapsFragment();
                 return mapsFragment;
             case 1:
-                AlertsListFragment alertsListFragment = new AlertsListFragment();
-                return alertsListFragment;
-            case 2:
-                AlarmListFragment alarmListFragment = new AlarmListFragment();
-                return alarmListFragment;
-            case 3:
                 SetTimeAlarmFragment setTimeAlarmFragment = new SetTimeAlarmFragment();
                 return setTimeAlarmFragment;
+            case 2:
+                AlertsListFragment alertsListFragment = new AlertsListFragment();
+                return alertsListFragment;
+            case 3:
+                AlarmListFragment alarmListFragment = new AlarmListFragment();
+                return alarmListFragment;
             case 4:
                 TimeAlarmListFragment timeAlarmListFragment=new TimeAlarmListFragment();
                 return timeAlarmListFragment;
@@ -220,25 +216,25 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_MAP;
                         break;
-                    case R.id.nav_alerts:
+                    case R.id.nav_time_alarm:
                         navItemIndex = 1;
+                        CURRENT_TAG = TAG_TIME_ALARM;
+                        break;
+                    case R.id.nav_alerts:
+                        navItemIndex = 2;
                         CURRENT_TAG = TAG_ALERTS;
                         break;
-                    case R.id.nav_alarm:
-                        navItemIndex = 2;
-                        CURRENT_TAG = TAG_ALARM;
-                        break;
-                    case R.id.nav_friends:
-                        navItemIndex = 5;
-                        CURRENT_TAG = TAG_FRIENDS;
-                        break;
-                    case R.id.nav_time_alarm:
+                    case R.id.nav_alarm_list:
                         navItemIndex = 3;
-                        CURRENT_TAG = TAG_TIME_ALARM;
+                        CURRENT_TAG = TAG_ALARM;
                         break;
                     case R.id.nav_time_list:
                         navItemIndex = 4;
                         CURRENT_TAG = TAG_TIME_LIST;
+                        break;
+                    case R.id.nav_friends:
+                        navItemIndex = 5;
+                        CURRENT_TAG = TAG_FRIENDS;
                         break;
                     case R.id.nav_share:
                         Intent i = new Intent(Intent.ACTION_SEND);
